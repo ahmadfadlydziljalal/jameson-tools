@@ -1,0 +1,143 @@
+@import "vars";
+
+table {
+
+  page-break-inside: auto;
+
+  //div {
+  //  page-break-inside: avoid;
+  //}
+
+  /* This is the key */
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group
+  }
+
+  tfoot {
+    display: table-footer-group
+  }
+
+  &.table {
+
+    margin: 0;
+    width: 99.9%;
+    border-collapse: collapse;
+    //border-spacing: 0;
+    font-size: 8.5pt;
+
+    border-left: 0.1em solid $dark;
+    border-right: 0.1em solid $dark;
+    border-top: 0.1em solid $dark;
+    border-bottom: 0.1em solid $dark;
+
+    th {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    td {
+      //letter-spacing: 0.05em;
+      vertical-align: top;
+    }
+
+    th, td {
+      padding: 1pt 2pt;
+
+      &.border-0 {
+        border: 0 !important;
+      }
+
+      &.border-start-0 {
+        border-left: 0 !important;
+      }
+
+      &.border-end-0 {
+        border-right: 0 !important;
+      }
+
+      &.border-end-1 {
+        border-right: 0.1em solid $dark !important;
+      }
+
+      &.border-top-0 {
+        border-top: 0 !important;
+      }
+
+      &.border-top-1 {
+        border-top: 0.1em solid $dark !important;
+      }
+
+
+      &.border-bottom-0 {
+        border-bottom: 0 !important;
+      }
+
+      &.border-bottom-1 {
+        border-bottom: 0.1em solid $dark !important;
+      }
+    }
+
+
+    &.table-bordered {
+
+      th, td {
+        border-left: 0.1em solid $dark;
+        border-right: 0;
+        border-top: 0.1em solid $dark;
+        border-bottom: 0;
+        border-collapse: collapse;
+      }
+
+    }
+
+    &.table-detail-view {
+      width: 50%;
+    }
+
+    &.table-borderless {
+      border: none;
+
+      tr, td, th {
+        border: none;
+      }
+    }
+
+  }
+
+}
+
+
+.card {
+
+  margin-top: 6pt;
+  padding: 6pt 0;
+
+  .table {
+    th, td {
+      padding: 5pt 0;
+      border: none;
+    }
+
+    &.table-grid-view {
+
+      th, td {
+        padding: 5pt;
+        border: 1pt solid $black;
+      }
+
+      thead {
+        tr {
+          th {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}

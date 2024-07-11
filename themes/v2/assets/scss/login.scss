@@ -1,0 +1,13 @@
+@use "vars";
+@use "sass:meta";
+
+@include meta.load-css("dark-mode");
+
+body {
+  overflow-x: hidden;
+  //background-color: vars.$page;
+  background-image: linear-gradient(to right,
+          vars.$page 0%,
+          vars.$pastel-100 90%
+  );
+}
