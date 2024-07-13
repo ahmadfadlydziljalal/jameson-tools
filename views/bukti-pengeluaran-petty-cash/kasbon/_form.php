@@ -42,13 +42,12 @@ use yii\bootstrap5\ActiveForm;
             <?php
             $data = [];
             if(!$model->isNewRecord){
-                $data [$model->buktiPengeluaranPettyCashCashAdvance->job_order_detail_cash_advance_id] =
-                    "Kasbon ke " . $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order . ': ' .
-                    $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number;
-                $model->kasbon = $model->buktiPengeluaranPettyCashCashAdvance->job_order_detail_cash_advance_id;
+                $data [$model->job_order_detail_cash_advance_id] =
+                    "Kasbon ke " . $model->jobOrderDetailCashAdvance->order . ': ' .
+                    $model->jobOrderDetailCashAdvance->jobOrder->reference_number;
             }
             $data = ArrayHelper::merge($data, JobOrderDetailCashAdvance::find()->notYetRegistered());
-            echo $form->field($model, 'kasbon')->widget(Select2::class,[
+            echo $form->field($model, 'job_order_detail_cash_advance_id')->widget(Select2::class,[
                 'data' => $data,
                 'options' => [
                     'placeholder' => 'Pilih Kasbon ...',

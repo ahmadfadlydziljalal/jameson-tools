@@ -35,10 +35,10 @@ return [
         'header' => 'Nomor JO',
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->buktiPengeluaranPettyCashCashAdvance){
-                return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance?->jobOrder?->reference_number;
+            if($model->jobOrderDetailCashAdvance){
+                return $model->jobOrderDetailCashAdvance->jobOrder?->reference_number;
             }
-            return $model->buktiPengeluaranPettyCashBill?->jobOrderBill->jobOrder->reference_number;
+            return $model->jobOrderBill->jobOrder->reference_number;
 
         }
     ],
@@ -47,10 +47,10 @@ return [
         'header' => 'Vendor',
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->buktiPengeluaranPettyCashCashAdvance){
-                return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance?->vendor?->nama;
+            if($model->jobOrderDetailCashAdvance){
+                return $model->jobOrderDetailCashAdvance?->vendor?->nama;
             }
-            return $model->buktiPengeluaranPettyCashBill?->jobOrderBill->vendor->nama;
+            return $model->jobOrderBill->vendor->nama;
 
         }
     ],
@@ -61,7 +61,7 @@ return [
         'format' => 'raw',
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->buktiPengeluaranPettyCashCashAdvance){
+            if($model->jobOrderDetailCashAdvance){
                 return $model->getStatusCashAdvance();
             }
             return '';
@@ -72,7 +72,7 @@ return [
         'header' => 'Bill Payment',
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
-            return $model->buktiPengeluaranPettyCashBill?->jobOrderBill?->reference_number;
+            return $model->jobOrderBill?->reference_number;
         }
     ],
     [
@@ -83,10 +83,10 @@ return [
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
 
-            if($model->buktiPengeluaranPettyCashCashAdvance){
-                return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance?->cash_advance;
+            if($model->jobOrderDetailCashAdvance){
+                return $model->jobOrderDetailCashAdvance?->cash_advance;
             }
-            return $model->buktiPengeluaranPettyCashBill?->jobOrderBill?->getTotalPrice();
+            return $model->jobOrderBill?->getTotalPrice();
 
         },
     ],
@@ -119,7 +119,7 @@ return [
                 /* @see \app\controllers\BuktiPengeluaranPettyCashController::actionUpdateByCashAdvance() */
                 /* @see \app\controllers\BuktiPengeluaranPettyCashController::actionUpdateByBill() */
                 # Kasbon / Cash Advance
-                if($model->buktiPengeluaranPettyCashCashAdvance){
+                if($model->jobOrderDetailCashAdvance){
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-petty-cash/update-by-cash-advance', 'id' => $model->id]);
                 }
 
@@ -131,7 +131,7 @@ return [
                 /* @see \app\controllers\BuktiPengeluaranPettyCashController::actionDeleteByCashAdvance() */
 
                 # Kasbon / Cash Advance
-                if($model->buktiPengeluaranPettyCashCashAdvance){
+                if($model->jobOrderDetailCashAdvance){
                     return Html::a('<i class="bi bi-trash"></i>', ['bukti-pengeluaran-petty-cash/delete-by-cash-advance', 'id' => $model->id], [
                         'data' => [
                             'confirm' => 'Are you sure you want to delete this item?',

@@ -14,8 +14,6 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
 {
 
     const SCENARIO_REALISASI_KASBON = 'scenario_realisasi_kasbon';
-    public ?string $buktiPengeluaranKasbonReferenceNumber = null;
-
 
     public function behaviors()
     {
@@ -33,7 +31,7 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-           ['buktiPengeluaranKasbonReferenceNumber', 'required', 'on' => self::SCENARIO_REALISASI_KASBON],
+           ['bukti_pengeluaran_petty_cash_cash_advance_id', 'required', 'on' => self::SCENARIO_REALISASI_KASBON],
         ]);
     }
 
@@ -41,39 +39,27 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
     {
         $parent = parent::scenarios();
         $parent[self::SCENARIO_REALISASI_KASBON] = [
-            'buktiPengeluaranKasbonReferenceNumber',
+            'bukti_pengeluaran_petty_cash_cash_advance_id',
         ];
 
         return $parent;
     }
 
-    public function createByRealisasiKasbon()
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'bukti_pengeluaran_petty_cash_cash_advance_id' => 'Bukti Pengeluaran',
+        ]);
+    }
+
+    public function createByCashAdvanceRealization()
     {
         if(!$this->validate()){
             return false;
         }
 
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            if($flag = $this->save(false)){
-                $flag = (new BuktiPenerimaanPettyCashCashAdvance([
-                    'bukti_penerimaan_petty_cash_id' => $this->id,
-                    'bukti_pengeluaran_petty_cash_cash_advance_id' => $this->buktiPengeluaranKasbonReferenceNumber,
-                ]))->save(false);
-            }
+        return $this->save(false);
 
-            if($flag){
-                $transaction->commit();
-                return true;
-            }else{
-                $transaction->rollBack();
-            }
-        }catch(Exception $e) {
-            Yii::error($e->getMessage());
-            $transaction->rollBack();
-        }
-
-        return false;
     }
 
     public function updateByRealisasiKasbon()
@@ -83,30 +69,11 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
             return false;
         }
 
-        if ($this->buktiPenerimaanPettyCashCashAdvance->bukti_pengeluaran_petty_cash_cash_advance_id == $this->buktiPengeluaranKasbonReferenceNumber) {
+        if ($this->getOldAttribute('bukti_pengeluaran_petty_cash_cash_advance_id') == $this->bukti_pengeluaran_petty_cash_cash_advance_id) {
             //  do nothing
             return true;
         }
 
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            if ($flag = $this->buktiPenerimaanPettyCashCashAdvance->delete()) {
-                $flag = (new BuktiPenerimaanPettyCashCashAdvance([
-                    'bukti_penerimaan_petty_cash_id' => $this->id,
-                    'bukti_pengeluaran_petty_cash_cash_advance_id' => $this->buktiPengeluaranKasbonReferenceNumber,
-                ]))->save(false);
-            }
-            if ($flag) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-            }
-        } catch (Exception $e) {
-            Yii::error($e->getMessage());
-            $transaction->rollBack();
-        }
-
-        return false;
+        return $this->save(false);
     }
 }

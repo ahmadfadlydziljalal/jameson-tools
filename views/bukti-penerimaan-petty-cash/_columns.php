@@ -26,12 +26,16 @@ return [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'voucher',
     ],
+    /*[
+        'class'=>'\yii\grid\DataColumn',
+        'attribute'=>'bukti_pengeluaran_petty_cash_cash_advance_id',
+    ],*/
     [
         'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'bukti_pengeluaran',
+        'attribute'=>'bukti_pengeluaran_petty_cash_cash_advance_id',
         'value'=>function($model){
             /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->buktiPengeluaranPettyCash->reference_number;
+            return $model->buktiPengeluaranPettyCashCashAdvance->reference_number;
         }
     ],
     [
@@ -39,8 +43,8 @@ return [
         'attribute'=>'cash_advance',
         'value'=>function($model){
             /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            if( $model->buktiPenerimaanPettyCashCashAdvance){
-                return 'Kasbon ke ' . $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order;
+            if( $model->buktiPengeluaranPettyCashCashAdvance){
+                return 'Kasbon ke ' . $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order;
             }
 
         }
@@ -50,7 +54,7 @@ return [
         'attribute'=>'jenis_biaya',
         'value'=>function($model){
             /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name;
+            return $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name;
         }
     ],
     [
@@ -58,7 +62,7 @@ return [
         'attribute'=>'nominal',
         'value'=>function($model){
             /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance;
+            return $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance;
         },
         'contentOptions'=>['style'=>'text-align:right'],
         'format'=> ['decimal',2],
@@ -85,11 +89,16 @@ return [
     // ],
     [
         'class' => 'kartik\grid\ActionColumn',
-        'template' => '{view} {update} {delete}',
+        'template' => '{export-to-pdf} {view} {update} {delete}',
         'buttons' => [
+            'export-to-pdf' => function ($url, $model) {
+                return Html::a('<i class="bi bi-printer"></i>', $url,[
+                    'target' => '_blank'
+                ]);
+            },
             'update' => function ($url, $model) {
                 /** @var BuktiPenerimaanPettyCash $model */
-                if($model->buktiPenerimaanPettyCashCashAdvance){
+                if($model->buktiPengeluaranPettyCashCashAdvance){
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-penerimaan-petty-cash/update-by-realisasi-kasbon', 'id' => $model->id]);
                 }
                 return '';
@@ -97,7 +106,7 @@ return [
             'delete' => function ($url, $model) {
                 /** @var BuktiPenerimaanPettyCash $model */
                 /** @see \app\controllers\BuktiPenerimaanPettyCashController::actionDeleteByRealisasiKasbon() */
-                if($model->buktiPenerimaanPettyCashCashAdvance){
+                if($model->buktiPengeluaranPettyCashCashAdvance){
                     return Html::a('<i class="bi bi-trash"></i>', ['bukti-penerimaan-petty-cash/delete-by-realisasi-kasbon', 'id' => $model->id],[
                         'data' => [
                             'confirm' => 'Are you sure you want to delete this item?',

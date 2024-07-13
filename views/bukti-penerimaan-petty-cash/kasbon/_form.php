@@ -4,6 +4,7 @@
 /* @var $model app\models\BuktiPenerimaanPettyCash*/
 
 use app\components\helpers\ArrayHelper;
+use app\models\BuktiPengeluaranPettyCash;
 use app\models\BuktiPengeluaranPettyCashCashAdvance;
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
@@ -44,17 +45,16 @@ use yii\web\View;
 
             $data = [];
             if(!$model->isNewRecord){
-                $data [$model->buktiPenerimaanPettyCashCashAdvance->bukti_pengeluaran_petty_cash_cash_advance_id] =
-                    $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->buktiPengeluaranPettyCash->reference_number . ' - ' .
-                    $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number . ' - ' .
-                    "Kasbon ke " . $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order . ' - ' .
-                    $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name . ' - ' .
-                    Yii::$app->formatter->asDecimal($model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance, 2)
+                $data [$model->bukti_pengeluaran_petty_cash_cash_advance_id] =
+                    "Kasbon ke " . $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order . ' - ' .
+                    $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number . ' - ' .
+                    $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name . ' - ' .
+                    Yii::$app->formatter->asDecimal($model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance, 2) . ' - '  .
+                    $model->buktiPengeluaranPettyCashCashAdvance->reference_number
                 ;
-                $model->buktiPengeluaranKasbonReferenceNumber = $model->buktiPenerimaanPettyCashCashAdvance->bukti_pengeluaran_petty_cash_cash_advance_id;
             }
-            $data = ArrayHelper::merge($data, BuktiPengeluaranPettyCashCashAdvance::find()->notYetRealization());
-            echo $form->field($model, 'buktiPengeluaranKasbonReferenceNumber')->widget(Select2::class,[
+            $data = ArrayHelper::merge($data, BuktiPengeluaranPettyCash::find()->cashAdvanceNotYetRealization());
+            echo $form->field($model, 'bukti_pengeluaran_petty_cash_cash_advance_id')->widget(Select2::class,[
                 'data' => $data,
                 'options' => ['placeholder' => 'Pilih Bukti Pengeluaran Kasbon'],
             ])?>

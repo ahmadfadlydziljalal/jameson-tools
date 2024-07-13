@@ -20,7 +20,7 @@ use \app\models\active_queries\JobOrderDetailCashAdvanceQuery;
  * @property string $cash_advance
  * @property integer $order
  *
- * @property \app\models\BuktiPengeluaranPettyCashCashAdvance $buktiPengeluaranPettyCashCashAdvance
+ * @property \app\models\BuktiPengeluaranPettyCash $buktiPengeluaranPettyCash
  * @property \app\models\JenisBiaya $jenisBiaya
  * @property \app\models\JobOrder $jobOrder
  * @property \app\models\MataUang $mataUang
@@ -85,9 +85,9 @@ abstract class JobOrderDetailCashAdvance extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBuktiPengeluaranPettyCashCashAdvance()
+    public function getBuktiPengeluaranPettyCash()
     {
-        return $this->hasOne(\app\models\BuktiPengeluaranPettyCashCashAdvance::class, ['job_order_detail_cash_advance_id' => 'id']);
+        return $this->hasOne(\app\models\BuktiPengeluaranPettyCash::class, ['job_order_detail_cash_advance_id' => 'id']);
     }
 
     /**

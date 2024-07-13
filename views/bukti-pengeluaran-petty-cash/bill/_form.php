@@ -1,5 +1,6 @@
 <?php
 
+use app\components\helpers\ArrayHelper;
 use app\models\JobOrderBill;
 use kartik\select2\Select2;
 use yii\helpers\Html;
@@ -41,15 +42,15 @@ use yii\bootstrap5\ActiveForm;
             <?php
             $data = [];
             if(!$model->isNewRecord){
-                $data[$model->buktiPengeluaranPettyCashBill->job_order_bill_id] =
-                    $model->buktiPengeluaranPettyCashBill->jobOrderBill->jobOrder->reference_number . ' - ' .
-                    $model->buktiPengeluaranPettyCashBill->jobOrderBill->vendor->nama. ' - ' .
-                    Yii::$app->formatter->asDecimal($model->buktiPengeluaranPettyCashBill->jobOrderBill->getTotalPrice(),2)
+                $data[$model->job_order_bill_id] =
+                    $model->jobOrderBill->jobOrder->reference_number . ' - ' .
+                    $model->jobOrderBill->vendor->nama. ' - ' .
+                    Yii::$app->formatter->asDecimal($model->jobOrderBill->getTotalPrice(),2)
                 ;
-                $model->bill = $model->buktiPengeluaranPettyCashBill->job_order_bill_id;
+
             }
-            $data = \app\components\helpers\ArrayHelper::merge($data, JobOrderBill::find()->notYetRegistered());
-            echo $form->field($model, 'bill')->widget(Select2::class,[
+            $data = ArrayHelper::merge($data, JobOrderBill::find()->notYetRegistered());
+            echo $form->field($model, 'job_order_bill_id')->widget(Select2::class,[
                 'data' => $data,
                 'options' => [
                         'placeholder' => 'Pilih Bill ...',

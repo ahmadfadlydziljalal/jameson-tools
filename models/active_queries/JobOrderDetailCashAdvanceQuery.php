@@ -38,10 +38,10 @@ class JobOrderDetailCashAdvanceQuery extends ActiveQuery
             'id' => 'job_order_detail_cash_advance.id',
             'referenceNumber' =>new Expression("CONCAT('Kasbon ke ', job_order_detail_cash_advance.order ,': ' ,  job_order.reference_number)")
         ])
-            ->joinWith('buktiPengeluaranPettyCashCashAdvance')
+            ->joinWith('buktiPengeluaranPettyCash')
             ->joinWith('jobOrder')
             ->where([
-                'is', 'bukti_pengeluaran_petty_cash_cash_advance.id' , NULL
+                'is', 'bukti_pengeluaran_petty_cash.id' , NULL
             ])
             ->all();
 

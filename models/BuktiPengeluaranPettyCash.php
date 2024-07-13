@@ -15,11 +15,8 @@ use yii\helpers\VarDumper;
 class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
 {
     const SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON = 'scenario_pengeluaran_by_cash_advance_or_kasbon';
-
-    public ?int $kasbon = null;
-
     const SCENARIO_PENGELUARAN_BY_BILL = 'scenario_pengeluaran_by_bill';
-    public ?int $bill = null;
+
 
     public function behaviors()
     {
@@ -37,8 +34,8 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            ['kasbon', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON],
-            ['bill', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_BILL]
+            ['job_order_detail_cash_advance_id', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON],
+            ['job_order_bill_id', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_BILL]
         ]);
     }
 
@@ -46,10 +43,10 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON] = [
-            'kasbon'
+            'job_order_detail_cash_advance_id'
         ];
         $scenarios[self::SCENARIO_PENGELUARAN_BY_BILL] = [
-            'bill'
+            'job_order_bill_id'
         ];
         return $scenarios;
     }
@@ -67,16 +64,8 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
         try {
 
             if ($flag = $this->save(false)) {
-
-                $flag = (new BuktiPengeluaranPettyCashCashAdvance([
-                    'bukti_pengeluaran_petty_cash_id' => $this->id,
-                    'job_order_detail_cash_advance_id' => $this->kasbon
-                ]))->save(false);
-
-                if ($flag) {
-                    $advance = JobOrderDetailCashAdvance::findOne($this->kasbon);
-                    $flag = $advance->markAsPaid();
-                }
+                $advance = JobOrderDetailCashAdvance::findOne($this->job_order_detail_cash_advance_id);
+                $flag = $advance->markAsPaid();
             }
 
             if ($flag) {
@@ -95,34 +84,10 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
 
     }
 
-    public function saveByBill()
+    public function saveByBill(): bool
     {
         if (!$this->validate()) return false;
-
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-
-            if ($flag = $this->save(false)) {
-                $flag = (new BuktiPengeluaranPettyCashBill([
-                    'bukti_pengeluaran_petty_cash_id' => $this->id,
-                    'job_order_bill_id' => $this->bill
-                ]))->save(false);
-            }
-
-            if ($flag) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-            }
-
-        } catch (Exception $e) {
-            Yii::error($e->getMessage());
-            $transaction->rollBack();
-        }
-
-        return false;
-
+        return $this->save(false);
     }
 
     public function deleteByCashAdvance(): bool
@@ -131,7 +96,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
         try {
 
             /* Kasbon / Cash advance di reverse dari panjar ke kasbon field */
-            $flag = $this->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->reverseMarkAsPaid();
+            $flag = $this->jobOrderDetailCashAdvance->reverseMarkAsPaid();
             if ($this->delete() && $flag) {
                 $transaction->commit();
                 return true;
@@ -154,40 +119,21 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
             return false;
         }
 
-        if ($this->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->id == $this->kasbon) {
+        if ($this->getOldAttribute('job_order_detail_cash_advance_id') == $this->job_order_detail_cash_advance_id) {
             //  do nothing
             return true;
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             // re-back again from panjar ke kasbon
-            if ($flag = $this->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->reverseMarkAsPaid()) {
-
-                // remove yang lama si record junction link
-                if ($flag = ($this->buktiPengeluaranPettyCashCashAdvance->delete())) {
-
-                    // create new junction link
-                    $new = (new BuktiPengeluaranPettyCashCashAdvance([
-                        'bukti_pengeluaran_petty_cash_id' => $this->id,
-                        'job_order_detail_cash_advance_id' => $this->kasbon
-                    ]));
-
-                    if ($flag = $new->save(false)) {
-                        // junction yang baru di assign sebagai sudah paid
-                        $flag = $new->jobOrderDetailCashAdvance->markAsPaid();
-                    }
-                }
-
-            }
-
-            if ($flag) {
+            if ($this->jobOrderDetailCashAdvance->reverseMarkAsPaid() && $this->save(false)) {
                 $transaction->commit();
                 return true;
-            } else {
+            }else{
                 $transaction->rollBack();
             }
+
 
         } catch (Exception $e) {
             Yii::error($e->getMessage());
@@ -203,35 +149,11 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
         if (!$this->validate()) {
             return false;
         }
-
-        if ($this->buktiPengeluaranPettyCashBill->jobOrderBill->id == $this->bill) {
-            //  do nothing
-            return true;
+        if ($this->getOldAttribute('job_order_bill_id') == $this->job_order_bill_id) {
+            return true;  //  do nothing
         }
-
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            if ($flag = $this->buktiPengeluaranPettyCashBill->delete()) {
-                $flag = (new BuktiPengeluaranPettyCashBill([
-                    'bukti_pengeluaran_petty_cash_id' => $this->id,
-                    'job_order_bill_id' => $this->bill
-                ]))->save(false);
-            }
-            if ($flag) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-            }
-        } catch (Exception $e) {
-            Yii::error($e->getMessage());
-            $transaction->rollBack();
-        }
-        return false;
-
-
+        return $this->save(false);
     }
-
 
     public function deleteByBill(): bool|int
     {
@@ -240,15 +162,14 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
 
     public function getStatusCashAdvance(): string
     {
-        $string = 'Kasbon ke ' . $this->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance?->order;
-        if ($this->buktiPengeluaranPettyCashCashAdvance?->buktiPenerimaanPettyCashCashAdvance) {
-            $string .= ' ' . Html::tag('span', $this->buktiPengeluaranPettyCashCashAdvance?->buktiPenerimaanPettyCashCashAdvance->buktiPenerimaanPettyCash->reference_number, [
+        $string = 'Kasbon ke ' . $this->jobOrderDetailCashAdvance?->order;
+        if ($this->buktiPenerimaanPettyCash) {
+            $string .= ' ' . Html::tag('span', $this->buktiPenerimaanPettyCash->reference_number, [
                     'class' => 'badge bg-success'
                 ]);
         } else {
             $string .= ' ' . Html::tag('span', 'Kasbon belum lunas', ['class' => 'badge bg-danger']);
         }
-
         return $string;
     }
 

@@ -69,7 +69,6 @@ class BuktiPengeluaranPettyCashController extends Controller
     {
         $model = new BuktiPengeluaranPettyCash();
         $model->scenario = BuktiPengeluaranPettyCash::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON;
-
         if (Yii::$app->request->isPost) {
             if($model->load(Yii::$app->request->post()) && $model->saveByCashAdvance()){
                 Yii::$app->session->setFlash('success',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil ditambahkan.');
@@ -78,7 +77,6 @@ class BuktiPengeluaranPettyCashController extends Controller
                 $model->loadDefaultValues();
             }
         }
-
         return $this->render('kasbon/create', [
             'model' => $model,
         ]);
@@ -155,9 +153,16 @@ class BuktiPengeluaranPettyCashController extends Controller
     {
         $model = $this->findModel($id);
         $model->scenario = BuktiPengeluaranPettyCash::SCENARIO_PENGELUARAN_BY_BILL;
-        if($this->request->isPost && $model->load($this->request->post()) && $model->updateByBill()){
-            Yii::$app->session->setFlash('info',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil dirubah.');
-            return $this->redirect(['index']);
+        if($this->request->isPost && $model->load($this->request->post())){
+
+            if($model->updateByBill()){
+                Yii::$app->session->setFlash('info',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil dirubah.');
+                return $this->redirect(['index']);
+            }else{
+                Yii::$app->session->setFlash('danger',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' gagal dirubah.');
+            }
+
+
         }
 
         return $this->render('bill/update', [

@@ -17,7 +17,7 @@ return [
         'header' => 'Bukti Pengeluaran',
         'value' => function($model) {
             /** @var JobOrderDetailCashAdvance $model */
-            return $model->buktiPengeluaranPettyCashCashAdvance?->buktiPengeluaranPettyCash?->reference_number;
+            return $model->buktiPengeluaranPettyCash?->reference_number;
         }
     ],
     [

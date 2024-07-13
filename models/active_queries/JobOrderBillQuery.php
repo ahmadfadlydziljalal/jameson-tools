@@ -28,13 +28,13 @@ class JobOrderBillQuery extends ActiveQuery
 
     public function notYetRegistered(): array
     {
-        $bills = parent::joinWith('buktiPengeluaranPettyCashBill')
-            ->joinWith('jobOrder')
+        $bills = parent::joinWith('jobOrder')
+            ->joinWith('buktiPengeluaranPettyCash')
             ->joinWith(['vendor' => function ($vendor) {
                 $vendor->from(['vendor' => 'card']);
             }])
             ->where([
-                'is', 'bukti_pengeluaran_petty_cash_bill.id', NULL
+                'is', 'bukti_pengeluaran_petty_cash.id', NULL
             ])
             ->all();
 

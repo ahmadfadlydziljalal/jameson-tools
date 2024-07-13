@@ -70,45 +70,38 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     ?>
 
-    <?php if ($model->buktiPenerimaanPettyCashCashAdvance): ?>
+    <?php if ($model->buktiPengeluaranPettyCashCashAdvance): ?>
 
         <p><strong>Realisasi Petty Cash</strong></p>
         <?= DetailView::widget([
-            'model' => $model->buktiPenerimaanPettyCashCashAdvance,
+            'model' => $model->buktiPengeluaranPettyCashCashAdvance,
             'attributes' => [
                 [
                     'label' => 'Bukti Pengeluaran',
-                    'value' => $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->buktiPengeluaranPettyCash->reference_number,
+                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->reference_number,
                 ],
                 [
                     'label' => 'Job Order',
-                    'value' => $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number,
+                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number,
                 ],
                 [
                     'label' => 'Vendor',
-                    'value' => $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->vendor->nama,
+                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->vendor->nama,
                 ],
                 [
                     'label' => 'Jenis Biaya',
-                    'value' => $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name,
+                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name,
                 ],
                 [
                     'label' => 'Kasbon / Cash Advance',
-                    'value' => $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order,
+                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order,
                 ],
                 [
                     'label' => 'Total',
-                    'value' => $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance,
+                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance,
                     'format' => ['decimal', 2],
                 ],
             ]
-//            'attributes' => [
-//
-//                [
-//
-//                    'value' => $model->buktiPenerimaanPettyCashCashAdvance->buktiPengeluaranPettyCashCashAdvance->buktiPengeluaranPettyCash,
-//                ]
-//            ]
         ]) ?>
 
     <?php endif ?>

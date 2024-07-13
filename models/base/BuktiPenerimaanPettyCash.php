@@ -15,12 +15,14 @@ use \app\models\active_queries\BuktiPenerimaanPettyCashQuery;
  *
  * @property integer $id
  * @property string $reference_number
+ * @property integer $bukti_pengeluaran_petty_cash_cash_advance_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $created_by
  * @property integer $updated_by
  *
- * @property \app\models\BuktiPenerimaanPettyCashCashAdvance $buktiPenerimaanPettyCashCashAdvance
+ * @property \app\models\BuktiPengeluaranPettyCash $buktiPengeluaranPettyCashCashAdvance
+ * @property \app\models\MutasiKasPettyCash $mutasiKasPettyCash
  */
 abstract class BuktiPenerimaanPettyCash extends \yii\db\ActiveRecord
 {
@@ -56,7 +58,10 @@ abstract class BuktiPenerimaanPettyCash extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['reference_number'], 'string', 'max' => 50]
+            [['bukti_pengeluaran_petty_cash_cash_advance_id'], 'integer'],
+            [['reference_number'], 'string', 'max' => 50],
+            [['bukti_pengeluaran_petty_cash_cash_advance_id'], 'unique'],
+            [['bukti_pengeluaran_petty_cash_cash_advance_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BuktiPengeluaranPettyCash::class, 'targetAttribute' => ['bukti_pengeluaran_petty_cash_cash_advance_id' => 'id']]
         ]);
     }
 
@@ -68,6 +73,7 @@ abstract class BuktiPenerimaanPettyCash extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'reference_number' => 'Reference Number',
+            'bukti_pengeluaran_petty_cash_cash_advance_id' => 'Bukti Pengeluaran Petty Cash Cash Advance ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -78,9 +84,17 @@ abstract class BuktiPenerimaanPettyCash extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBuktiPenerimaanPettyCashCashAdvance()
+    public function getBuktiPengeluaranPettyCashCashAdvance()
     {
-        return $this->hasOne(\app\models\BuktiPenerimaanPettyCashCashAdvance::class, ['bukti_penerimaan_petty_cash_id' => 'id']);
+        return $this->hasOne(\app\models\BuktiPengeluaranPettyCash::class, ['id' => 'bukti_pengeluaran_petty_cash_cash_advance_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMutasiKasPettyCash()
+    {
+        return $this->hasOne(\app\models\MutasiKasPettyCash::class, ['bukti_penerimaan_petty_cash_id' => 'id']);
     }
 
     /**

@@ -27,7 +27,7 @@ return [
         'header' => 'Bukti Pengeluaran',
         'value' => function($model) {
             /** @var \app\models\JobOrderBill $model */
-            return $model->buktiPengeluaranPettyCashBill?->buktiPengeluaranPettyCash?->reference_number;
+            return $model->buktiPengeluaranPettyCash?->reference_number;
         }
     ],
     [

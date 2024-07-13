@@ -9,11 +9,11 @@ use yii\data\ActiveDataProvider;
 ?>
 <div class="">
     <h3>Bill Payment</h3>
-    <p><?= $model->buktiPengeluaranPettyCashBill->jobOrderBill->vendor->nama ?></p>
-    Ref: <?= $model->buktiPengeluaranPettyCashBill->jobOrderBill->reference_number ?>
+    <p><?= $model->jobOrderBill->vendor->nama ?></p>
+    Ref: <?= $model->jobOrderBill->reference_number ?>
     <?= GridView::widget([
         'dataProvider' => new ActiveDataProvider([
-                'query' => $model->buktiPengeluaranPettyCashBill->jobOrderBill->getJobOrderBillDetails(),
+                'query' => $model->jobOrderBill->getJobOrderBillDetails(),
                 'pagination' => false,
                 'sort' => false,
             ]

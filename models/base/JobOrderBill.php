@@ -16,7 +16,7 @@ use \app\models\active_queries\JobOrderBillQuery;
  * @property integer $vendor_id
  * @property string $reference_number
  *
- * @property \app\models\BuktiPengeluaranPettyCashBill $buktiPengeluaranPettyCashBill
+ * @property \app\models\BuktiPengeluaranPettyCash $buktiPengeluaranPettyCash
  * @property \app\models\JobOrder $jobOrder
  * @property \app\models\JobOrderBillDetail[] $jobOrderBillDetails
  * @property \app\models\Card $vendor
@@ -63,9 +63,9 @@ abstract class JobOrderBill extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBuktiPengeluaranPettyCashBill()
+    public function getBuktiPengeluaranPettyCash()
     {
-        return $this->hasOne(\app\models\BuktiPengeluaranPettyCashBill::class, ['job_order_bill_id' => 'id']);
+        return $this->hasOne(\app\models\BuktiPengeluaranPettyCash::class, ['job_order_bill_id' => 'id']);
     }
 
     /**

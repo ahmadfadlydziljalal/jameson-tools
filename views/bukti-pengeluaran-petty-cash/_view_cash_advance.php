@@ -11,18 +11,18 @@ use yii\widgets\DetailView;
     <p><strong>Kasbon / Cash Advance</strong></p>
 
     <?= DetailView::widget([
-        'model' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance,
+        'model' => $model->jobOrderDetailCashAdvance,
         'attributes' => [
             [
                 'attribute' => 'jenis_biaya_id',
-                'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name,
+                'value' => $model->jobOrderDetailCashAdvance->jenisBiaya->name,
                 'captionOptions' => [
                     'style' => 'text-align:left;',
                 ],
             ],
             [
                 'attribute' => 'mata_uang_id',
-                'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->mataUang->singkatan,
+                'value' => $model->jobOrderDetailCashAdvance->mataUang->singkatan,
                 'captionOptions' => [
                     'style' => 'text-align:left;',
                 ],
