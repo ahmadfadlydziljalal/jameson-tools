@@ -42,8 +42,7 @@ use yii\bootstrap5\ActiveForm;
             <?php
             $data = [];
             if(!$model->isNewRecord){
-                $data[$model->job_order_bill_id] =
-                    $model->jobOrderBill->jobOrder->reference_number . ' - ' .
+                $data[$model->job_order_bill_id] = $model->jobOrderBill->jobOrder->reference_number . ' - ' .
                     $model->jobOrderBill->vendor->nama. ' - ' .
                     Yii::$app->formatter->asDecimal($model->jobOrderBill->getTotalPrice(),2)
                 ;

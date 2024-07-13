@@ -15,7 +15,6 @@ use \app\models\active_queries\MutasiKasPettyCashQuery;
  * @property integer $kode_voucher_id
  * @property integer $bukti_penerimaan_petty_cash_id
  * @property integer $bukti_pengeluaran_petty_cash_id
- * @property integer $nomor
  * @property string $nomor_voucher
  * @property string $tanggal_mutasi
  * @property string $keterangan
@@ -23,6 +22,7 @@ use \app\models\active_queries\MutasiKasPettyCashQuery;
  * @property \app\models\BuktiPenerimaanPettyCash $buktiPenerimaanPettyCash
  * @property \app\models\BuktiPengeluaranPettyCash $buktiPengeluaranPettyCash
  * @property \app\models\KodeVoucher $kodeVoucher
+ * @property \app\models\TransaksiMutasiKasPettyCashLainnya $transaksiMutasiKasPettyCashLainnya
  */
 abstract class MutasiKasPettyCash extends \yii\db\ActiveRecord
 {
@@ -42,8 +42,8 @@ abstract class MutasiKasPettyCash extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['kode_voucher_id', 'nomor', 'nomor_voucher', 'tanggal_mutasi'], 'required'],
-            [['kode_voucher_id', 'bukti_penerimaan_petty_cash_id', 'bukti_pengeluaran_petty_cash_id', 'nomor'], 'integer'],
+            [['kode_voucher_id', 'tanggal_mutasi'], 'required'],
+            [['kode_voucher_id', 'bukti_penerimaan_petty_cash_id', 'bukti_pengeluaran_petty_cash_id'], 'integer'],
             [['tanggal_mutasi'], 'safe'],
             [['keterangan'], 'string'],
             [['nomor_voucher'], 'string', 'max' => 255],
@@ -65,7 +65,6 @@ abstract class MutasiKasPettyCash extends \yii\db\ActiveRecord
             'kode_voucher_id' => 'Kode Voucher ID',
             'bukti_penerimaan_petty_cash_id' => 'Bukti Penerimaan Petty Cash ID',
             'bukti_pengeluaran_petty_cash_id' => 'Bukti Pengeluaran Petty Cash ID',
-            'nomor' => 'Nomor',
             'nomor_voucher' => 'Nomor Voucher',
             'tanggal_mutasi' => 'Tanggal Mutasi',
             'keterangan' => 'Keterangan',
@@ -94,6 +93,14 @@ abstract class MutasiKasPettyCash extends \yii\db\ActiveRecord
     public function getKodeVoucher()
     {
         return $this->hasOne(\app\models\KodeVoucher::class, ['id' => 'kode_voucher_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransaksiMutasiKasPettyCashLainnya()
+    {
+        return $this->hasOne(\app\models\TransaksiMutasiKasPettyCashLainnya::class, ['mutasi_kas_petty_cash_id' => 'id']);
     }
 
     /**

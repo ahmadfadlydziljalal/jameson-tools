@@ -67,7 +67,7 @@ return [
         'class' => ActionColumn::class,
         'dropdown' => false,
         //'template' => '{payment}{update}{divider}{delete}',
-        'template' => '{payment} {update} {delete}',
+        'template' => '{payment} {export-to-pdf} {update} {delete}',
         'contentOptions' => [
             'class' => 'text-nowrap',
         ],
@@ -75,31 +75,35 @@ return [
             'divider' => function () {
                 return ' <li><hr class="dropdown-divider"></li>';
             },
-            'payment' => function ($url, $model) {
-
-                /** @var JobOrderDetailCashAdvance $model */
+//            'payment' => function ($url, $model) {
+//                /** @var JobOrderDetailCashAdvance $model */
+//                if($model->isPanjar()){
+//                    return '';
+//                }
+//                return Html::button('<i class="bi bi-pass-fill"></i>', [
+//                    'class' => 'btn btn-link mx-0 p-0',
+//                    'data' => [
+//                        'id' => $model->id,
+//                        'bs-toggle' => 'modal',
+//                        'bs-target' => '#modalPaymentKasbonForm'
+//                    ]]
+//                );
+//            },
+            'export-to-pdf' => function ($url, $model) {
+                return Html::a('<i class="bi bi-printer"></i>', ['export-to-pdf-payment-cash-advance', 'id' => $model->id], [
+                    'target' => '_blank',
+                ]);
+            },
+            'update' => function ($url, $model) {
                 if($model->isPanjar()){
                     return '';
                 }
-                return Html::button('<i class="bi bi-pass-fill"></i>', [
-                    'class' => 'btn btn-link mx-0 p-0',
-                    'data' => [
-                        'id' => $model->id,
-                        'bs-toggle' => 'modal',
-                        'bs-target' => '#modalPaymentKasbonForm'
-                    ]]
-                );
-            },
-            'update' => function ($url, $model) {
-               /* if($model->isPanjar()){
-                    return '';
-                }*/
                 return Html::a('<i class="bi bi-pencil"></i>', ['update-cash-advance', 'id' => $model->id], []);
             },
             'delete' => function ($url, $model) {
-               /* if($model->isPanjar()){
+                if($model->isPanjar()){
                     return '';
-                }*/
+                }
                 /** @see \app\controllers\JobOrderController::actionDeleteCashAdvance() */
                 return Html::a('<i class="bi bi-trash"></i>', ['delete-cash-advance', 'id' => $model->id], [
                     'data' => [

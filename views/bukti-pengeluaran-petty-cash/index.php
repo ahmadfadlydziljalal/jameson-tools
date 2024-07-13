@@ -37,10 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php  echo GridView::widget([
+    <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => require(__DIR__ . '/_columns.php'),
+        'tableOptions' => [
+            'class' => 'table table-grid-view table-fixes-last-column'
+        ],
     ]); ?>
 
 </div>

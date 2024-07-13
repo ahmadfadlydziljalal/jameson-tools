@@ -238,6 +238,15 @@ class JobOrderController extends Controller
         return $this->redirect(['view', 'id' => $model->job_order_id, '#'=> 'quotation-tab-tab1']);
     }
 
+    public function actionExportToPdfPaymentCashAdvance(int $id) : string{
+        $pdf = Yii::$app->pdf;
+        $pdf->content = $this->renderPartial('_pdf_cash_advance', [
+            'model' => JobOrderDetailCashAdvance::find()->asModel($id),
+        ]);
+        return $pdf->render();
+    }
+
+
     /**
      * @param $id
      * @return Response|string

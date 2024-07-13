@@ -2,6 +2,7 @@
 
 namespace app\models\active_queries;
 
+use app\components\helpers\ArrayHelper;
 use \app\models\JenisPendapatan;
 
 /**
@@ -14,4 +15,8 @@ use \app\models\JenisPendapatan;
 class JenisPendapatanQuery extends \yii\db\ActiveQuery
 {
 
+    public function map()
+    {
+        return ArrayHelper::map(parent::all(), 'id', 'name');
+    }
 }

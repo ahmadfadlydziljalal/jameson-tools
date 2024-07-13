@@ -8,6 +8,7 @@ use yii\web\View;
 
 ?>
 <?php
+/** @var BuktiPenerimaanPettyCash $model */
 return [
     [
         'class' => 'yii\grid\SerialColumn',
@@ -25,6 +26,7 @@ return [
     [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'voucher',
+        'value'=> fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
     ],
     /*[
         'class'=>'\yii\grid\DataColumn',
@@ -35,7 +37,7 @@ return [
         'attribute'=>'bukti_pengeluaran_petty_cash_cash_advance_id',
         'value'=>function($model){
             /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPengeluaranPettyCashCashAdvance->reference_number;
+            return $model->buktiPengeluaranPettyCashCashAdvance?->reference_number;
         }
     ],
     [
@@ -54,7 +56,7 @@ return [
         'attribute'=>'jenis_biaya',
         'value'=>function($model){
             /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name;
+            return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance->jenisBiaya->name;
         }
     ],
     [
@@ -62,7 +64,7 @@ return [
         'attribute'=>'nominal',
         'value'=>function($model){
             /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance;
+            return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance->cash_advance;
         },
         'contentOptions'=>['style'=>'text-align:right'],
         'format'=> ['decimal',2],

@@ -19,6 +19,7 @@ class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
         return ArrayHelper::merge(parent::attributeLabels(), [
             'mata_uang_id' => 'Cur.',
             'cash_advance' => 'Panjar / Cash Advance',
+            'jenis_biaya_id' => 'Jenis Biaya',
         ]);
     }
 

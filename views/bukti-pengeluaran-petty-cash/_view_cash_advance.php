@@ -33,6 +33,9 @@ use yii\widgets\DetailView;
                 'captionOptions' => [
                     'style' => 'text-align:left;',
                 ],
+                'contentOptions' => [
+                    'style' => 'text-align:right;',
+                ],
             ],
             [
                 'attribute' => 'cash_advance',
@@ -40,11 +43,17 @@ use yii\widgets\DetailView;
                 'captionOptions' => [
                     'style' => 'text-align:left;',
                 ],
+                'contentOptions' => [
+                    'style' => 'text-align:right;',
+                ],
             ],
             [
                 'attribute' => 'order',
                 'captionOptions' => [
                     'style' => 'text-align:left;',
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align:right;',
                 ],
             ],
         ]

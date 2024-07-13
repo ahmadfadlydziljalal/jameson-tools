@@ -51,6 +51,14 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
         return $scenarios;
     }
 
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+           'job_order_detail_cash_advance_id' => 'Kasbon | Cash Advance',
+        ]);
+    }
+
+
     /**
      * @return bool
      */

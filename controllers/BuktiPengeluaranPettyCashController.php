@@ -8,6 +8,8 @@ use app\models\BuktiPengeluaranPettyCash;
 use app\models\search\BuktiPengeluaranPettyCashSearch;
 use Throwable;
 use yii\db\Exception;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -113,9 +115,13 @@ class BuktiPengeluaranPettyCashController extends Controller
      */
     public function actionDeleteByCashAdvance(int $id) : Response {
         $model = $this->findModel($id);
-        $model->deleteByCashAdvance();
 
-        Yii::$app->session->setFlash('danger',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil dihapus.');
+        if($model->deleteByCashAdvance()){
+            Yii::$app->session->setFlash('success',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil dihapus.');
+        }else{
+            Yii::$app->session->setFlash('danger',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' gagal dihapus!');
+        }
+
         return $this->redirect(['index']);
     }
 
@@ -185,7 +191,8 @@ class BuktiPengeluaranPettyCashController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionExportToPdf($id){
+    public function actionExportToPdf($id): string
+    {
         /** @var Pdf $pdf */
         $pdf = Yii::$app->pdf;
         $pdf->content = $this->renderPartial('_pdf', [

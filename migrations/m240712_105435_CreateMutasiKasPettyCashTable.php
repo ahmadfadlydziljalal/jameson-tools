@@ -19,8 +19,8 @@ class m240712_105435_CreateMutasiKasPettyCashTable extends Migration
             'kode_voucher_id' => $this->integer()->notNull(),
             'bukti_penerimaan_petty_cash_id' => $this->integer(),
             'bukti_pengeluaran_petty_cash_id' => $this->integer(),
-            'nomor' => $this->integer()->notNull(),
-            'nomor_voucher' => $this->string()->notNull(),
+            'nomor' => $this->integer(),
+            'nomor_voucher' => $this->string(),
             'tanggal_mutasi' => $this->date()->notNull(),
             'keterangan' => $this->text(),
         ]);

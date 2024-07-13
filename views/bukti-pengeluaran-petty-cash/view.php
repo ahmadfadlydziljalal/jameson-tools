@@ -13,9 +13,9 @@ $this->params['breadcrumbs'][] = ['label' => 'Bukti Pengeluaran Petty Cash', 'ur
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="bukti-pengeluaran-petty-cash-view">
+<div class="bukti-pengeluaran-petty-cash-view d-flex flex-column gap-3">
 
-    <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
+    <div class="d-flex justify-content-between flex-wrap" style="gap: .5rem">
         <h1><?= Html::encode($this->title) ?></h1>
         <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
             <?= Html::a('Back', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
@@ -38,48 +38,43 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php try {
-        echo DetailView::widget([
-            'model' => $model,
-            'options' => [
-                'class' => 'table table-bordered table-detail-view'
+    <?php  echo DetailView::widget([
+        'model' => $model,
+        'options' => [
+            'class' => 'table table-bordered table-detail-view'
+        ],
+        'attributes' => [
+            'reference_number',
+            [
+                'attribute' => 'created_at',
+                'format' => 'datetime',
             ],
-            'attributes' => [
-                'reference_number',
-                [
-                    'attribute' => 'created_at',
-                    'format' => 'datetime',
-                ],
-                [
-                    'attribute' => 'updated_at',
-                    'format' => 'datetime',
-                ],
-                [
-                    'attribute' => 'created_by',
-                    'value' => function ($model) {
-                        return app\models\User::findOne($model->created_by)->username;
-                    }
-                ],
-                [
-                    'attribute' => 'updated_by',
-                    'value' => function ($model) {
-                        return app\models\User::findOne($model->updated_by)->username;
-                    }
-                ],
+            [
+                'attribute' => 'updated_at',
+                'format' => 'datetime',
             ],
-        ]);
-    } catch (Throwable $e) {
-        echo $e->getMessage();
-    }
-    ?>
+            [
+                'attribute' => 'created_by',
+                'value' => function ($model) {
+                    return app\models\User::findOne($model->created_by)->username;
+                }
+            ],
+            [
+                'attribute' => 'updated_by',
+                'value' => function ($model) {
+                    return app\models\User::findOne($model->updated_by)->username;
+                }
+            ],
+        ],
+    ]);?>
 
-    <?php if ($model->buktiPengeluaranPettyCashBill) : ?>
+    <?php if ($model->jobOrderBill) : ?>
         <?= $this->render('_view_bill_payment', [
             'model' => $model
         ]) ?>
     <?php endif ?>
 
-    <?php if ($model->buktiPengeluaranPettyCashCashAdvance) : ?>
+    <?php if ($model->jobOrderDetailCashAdvance) : ?>
         <?= $this->render('_view_cash_advance', [
             'model' => $model
         ]) ?>

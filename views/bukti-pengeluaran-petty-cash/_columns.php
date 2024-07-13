@@ -1,17 +1,12 @@
 <?php
 
 /* @var $this View */
+/** @var BuktiPengeluaranPettyCash $model */
 
 use app\models\base\BuktiPengeluaranPettyCash;
 use yii\helpers\Html;
 use yii\web\View;
 
-?>
-<?php
-
-/* @var $this View */
-?>
-<?php
 return [
     [
         'class' => 'yii\grid\SerialColumn',
@@ -29,6 +24,7 @@ return [
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'voucher',
+        'value' => fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
     ],
     [
         'class' => '\yii\grid\DataColumn',
@@ -36,9 +32,9 @@ return [
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
             if($model->jobOrderDetailCashAdvance){
-                return $model->jobOrderDetailCashAdvance->jobOrder?->reference_number;
+                return $model->jobOrderDetailCashAdvance?->jobOrder?->reference_number;
             }
-            return $model->jobOrderBill->jobOrder->reference_number;
+            return $model->jobOrderBill?->jobOrder->reference_number;
 
         }
     ],

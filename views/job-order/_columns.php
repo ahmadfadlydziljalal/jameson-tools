@@ -1,6 +1,9 @@
 <?php
 
 /* @var $this \yii\web\View */
+
+use yii\bootstrap5\Html;
+
 ?>
 <?php
 return [
@@ -55,6 +58,23 @@ return [
         // 'format'=>'text',
     // ],
     [
-        'class' => 'yii\grid\ActionColumn',
+        'class' => 'kartik\grid\ActionColumn',
+        'template' => '{export-to-pdf} {view} {update} {delete}',
+        'buttons' => [
+            'export-to-pdf' => function ($url, $model) {
+                return Html::a('<i class="bi bi-printer"></i>' ,['export-to-pdf', 'id' => $model->id], [
+                    'data-pjax' => '0',
+                    'target' => '_blank',
+                ]);
+            }
+        ],
+        'deleteOptions' => [
+            'label' => '<i class="bi bi-trash"></i>',
+            'class' => 'text-danger',
+            'title' => 'Delete',
+            'data-confirm' => 'Are you sure you want to delete this item?',
+            'data-method' => 'post',
+            'data-pjax' => '0'
+        ],
     ],
 ];   

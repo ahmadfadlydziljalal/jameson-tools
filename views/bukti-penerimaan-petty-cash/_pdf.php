@@ -2,7 +2,7 @@
 
 /* @var $this \yii\web\View */
 /* @var $model \app\models\BuktiPenerimaanPettyCash */
-
+/* @see \app\controllers\BuktiPenerimaanPettyCashController::actionExportToPdf() */
 ?>
 
 <div class="content-section">
