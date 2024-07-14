@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Rekening */
-/* @var $modelsDetail app\models\RekeningDetail */
+
 
 use yii\helpers\Html;
 $this->title = 'Tambah Rekening';
@@ -16,6 +16,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
-        'modelsDetail' => $modelsDetail,
     ]) ?>
 </div>

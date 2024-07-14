@@ -21,7 +21,7 @@ class BarangSearch extends Barang
    {
       return [
          [['id', 'originalitas_id', 'tipe_pembelian_id'], 'integer'],
-         [['nama', 'part_number', 'merk_part_number', 'ift_number'], 'safe'],
+         [['nama', 'part_number', 'merk_part_number'], 'safe'],
       ];
    }
 
@@ -47,7 +47,6 @@ class BarangSearch extends Barang
             'nama' => 'b.nama',
             'part_number' => 'b.part_number',
             'merk_part_number' => 'b.merk_part_number',
-            'ift_number' => 'b.ift_number',
             'originalitasNama' => 'originalitas.nama',
             'tipePembelianNama' => 'tipe_pembelian.nama',
             'tipe_pembelian_id' => 'tipe_pembelian_id',

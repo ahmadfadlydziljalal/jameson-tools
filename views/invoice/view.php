@@ -7,13 +7,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Rekening */
+/* @var $model app\models\Invoice */
 
-$this->title = $model->atas_nama;
-$this->params['breadcrumbs'][] = ['label' => 'Rekenings', 'url' => ['index']];
+$this->title = $model->reference_number;
+$this->params['breadcrumbs'][] = ['label' => 'Invoices', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="rekening-view">
+<div class="invoice-view">
 
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
         <h1><?= Html::encode($this->title) ?></h1>
@@ -44,7 +44,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'table table-bordered table-detail-view'
             ],
             'attributes' => [
-                'atas_nama',
+                'reference_number',
+                [
+                    'attribute' => 'customer_id',
+                    'value' => $model->customer ? $model->customer->nama : '-',
+                ],
+                'tanggal_invoice:date',
+                [
+                    'attribute' => 'nomor_rekening_tagihan_id',
+                    'value' => $model->nomorRekeningTagihan ? nl2br( $model->nomorRekeningTagihan->atas_nama): '-',
+                    'format' => 'html',
+                ],
                 [
                     'attribute' => 'created_at',
                     'format' => 'datetime',
@@ -67,6 +77,47 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ]);
+
+        echo Html::tag('h2', 'Invoice Detail');
+        echo !empty($model->invoiceDetails) ?
+            GridView::widget([
+                'dataProvider' => new ArrayDataProvider([
+                    'allModels' => $model->invoiceDetails
+                ]),
+                'columns' => [
+                    // [
+                    // 'class'=>'\yii\grid\DataColumn',
+                    // 'attribute'=>'id',
+                    // ],
+                    // [
+                    // 'class'=>'\yii\grid\DataColumn',
+                    // 'attribute'=>'invoice_id',
+                    // ],
+                    [
+                        'class' => '\yii\grid\DataColumn',
+                        'attribute' => 'quantity',
+                    ],
+                    [
+                        'class' => '\yii\grid\DataColumn',
+                        'attribute' => 'satuan_id',
+                        'value' => fn ($model) => $model->satuan ? $model->satuan->nama : '-',
+                    ],
+                    [
+                        'class' => '\yii\grid\DataColumn',
+                        'attribute' => 'barang_id',
+                        'value' => fn ($model) => $model->barang ? $model->barang->nama : '-',
+                    ],
+                    [
+                        'class' => '\yii\grid\DataColumn',
+                        'attribute' => 'harga',
+                        'format' => ['decimal', 2],
+                        'contentOptions' => ['class' => 'text-end'],
+                    ],
+                ]
+            ]) :
+            Html::tag("p", 'Invoice Detail tidak tersedia', [
+                'class' => 'text-warning font-weight-bold p-3'
+            ]);
     } catch (Exception $e) {
         echo $e->getMessage();
     } catch (Throwable $e) {

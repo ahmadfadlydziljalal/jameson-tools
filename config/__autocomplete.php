@@ -38,6 +38,10 @@ class __Application {
      * @var Pdf
      */
     public Pdf $pdf;
+    /**
+     * @var Pdf
+     */
+    public Pdf $pdfWithLetterhead;
 }
 
 /**

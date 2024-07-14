@@ -74,55 +74,18 @@ class RekeningController extends Controller
     {
         $request = Yii::$app->request;
         $model = new Rekening();
-        $modelsDetail = [ new RekeningDetail() ];
 
         if($model->load($request->post())){
-
-            $modelsDetail = Tabular::createMultiple(RekeningDetail::class);
-            Tabular::loadMultiple($modelsDetail, $request->post());
-
-            //validate models
-            $isValid = $model->validate();
-            $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
-
-            if($isValid){
-
-                $transaction = Rekening::getDb()->beginTransaction();
-
-                try{
-
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsDetail as $detail) :
-                            $detail->rekening_id = $model->id;
-                            if (!($flag = $detail->save(false))) {break;}
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1,'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0,'message' => 'Roll Back'];
-                    }
-
-                }catch (Exception $e){
-                    $transaction->rollBack();
-                    $status = ['code' => 0,'message' => 'Roll Back ' . $e->getMessage(),];
-                }
-
-                if($status['code']){
-                    Yii::$app->session->setFlash('success','Rekening: ' . Html::a($model->atas_nama,  ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
-                    return $this->redirect(['index']);
-                }
-
-                Yii::$app->session->setFlash('danger'," Rekening is failed to insert. Info: ". $status['message']);
+            if($model->save()){
+                Yii::$app->session->setFlash('success','Rekening: ' . Html::a($model->atas_nama,  ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
+                return $this->redirect(['index']);
+            }else{
+                Yii::$app->session->setFlash('danger'," Rekening is failed to insert.: ");
             }
         }
 
         return $this->render( 'create', [
             'model' => $model,
-            'modelsDetail' => empty($modelsDetail) ? [ new RekeningDetail() ] : $modelsDetail,
         ]);
 
     }
@@ -139,60 +102,18 @@ class RekeningController extends Controller
     {
         $request = Yii::$app->request;
         $model = $this->findModel($id);
-        $modelsDetail = !empty($model->rekeningDetails) ? $model->rekeningDetails : [new RekeningDetail()];
-
+        
         if($model->load($request->post())){
-
-            $oldDetailsID = ArrayHelper::map($modelsDetail, 'id', 'id');
-            $modelsDetail = Tabular::createMultiple(RekeningDetail::class, $modelsDetail);
-
-            Tabular::loadMultiple($modelsDetail, $request->post());
-            $deletedDetailsID = array_diff($oldDetailsID,array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
-
-            $isValid = $model->validate();
-            $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
-
-            if($isValid){
-                $transaction = Rekening::getDb()->beginTransaction();
-                try{
-                    if ($flag = $model->save(false)) {
-
-                        if (!empty($deletedDetailsID)) {
-                            RekeningDetail::deleteAll(['id' => $deletedDetailsID]);
-                        }
-
-                        foreach ($modelsDetail as $detail) :
-                            $detail->rekening_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1, 'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0,'message' => 'Roll Back'];
-                    }
-                }catch (Exception $e){
-                    $transaction->rollBack();
-                    $status = ['code' => 0,'message' => 'Roll Back ' . $e->getMessage(),];
-                }
-
-                if($status['code']){
-                    Yii::$app->session->setFlash('info',"Rekening: ".Html::a($model->atas_nama, ['view', 'id' => $model->id]) . " berhasil di update.");
-                    return $this->redirect(['index']);
-                }
-
-                Yii::$app->session->setFlash('danger'," Rekening is failed to updated. Info: ". $status['message']);
+            if($model->save()){
+                Yii::$app->session->setFlash('success','Rekening: ' . Html::a($model->atas_nama,  ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
+                return $this->redirect(['index']);
+            }else{
+                Yii::$app->session->setFlash('danger'," Rekening is failed to insert.: ");
             }
         }
 
         return $this->render('update', [
             'model' => $model,
-            'modelsDetail' => $modelsDetail
         ]);
     }
 

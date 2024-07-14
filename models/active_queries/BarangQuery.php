@@ -63,8 +63,7 @@ class BarangQuery extends ActiveQuery
          return
             (!empty($el->part_number) ? $el->part_number : 'Unknown part number') . ' - ' .
             (!empty($el->merk_part_number) ? $el->merk_part_number : 'Unknown merk') . ' - ' .
-            $el->nama . ' - ' .
-            $el->ift_number;
+            $el->nama;
       });
    }
 

@@ -2,9 +2,6 @@
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Rekening */
-
-/* @var $modelsDetail app\models\RekeningDetail */
-
 use yii\helpers\Html;
 
 $this->title = 'Update Rekening: ' . $model->card->nama;
@@ -18,7 +15,6 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
-        'modelsDetail' => $modelsDetail,
     ]) ?>
 
 </div>
