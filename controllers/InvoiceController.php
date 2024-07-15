@@ -234,13 +234,20 @@ class InvoiceController extends Controller
      * @throws PdfTypeException
      * @throws InvalidConfigException
      */
-    public function actionExportToPdf(int $id){
+    public function actionExportToPdf(int $id)
+    {
         /** @var Pdf $pdf */
         $pdf = Yii::$app->pdfWithLetterhead;
         $pdf->content = $this->renderPartial('_pdf', [
             'model' => $this->findModel($id),
         ]);
         return $pdf->render();
+    }
+
+    public function actionFindNotInBukuBankYet($q = null, array $id = [])
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Invoice::find()->notInBuktiPenerimaanBukuBankYet($q, $id);
     }
 
     /**

@@ -8,16 +8,16 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use \app\models\active_queries\InvoiceQuery;
+use \app\models\active_queries\SetoranKasirQuery;
 
 /**
- * This is the base-model class for table "invoice".
+ * This is the base-model class for table "setoran_kasir".
  *
  * @property integer $id
  * @property string $reference_number
- * @property integer $customer_id
- * @property string $tanggal_invoice
- * @property integer $nomor_rekening_tagihan_id
+ * @property string $tanggal_setoran
+ * @property integer $cashier_id
+ * @property string $staff_name
  * @property integer $bukti_penerimaan_buku_bank_id
  * @property integer $created_at
  * @property integer $updated_at
@@ -25,11 +25,10 @@ use \app\models\active_queries\InvoiceQuery;
  * @property integer $updated_by
  *
  * @property \app\models\BuktiPenerimaanBukuBank $buktiPenerimaanBukuBank
- * @property \app\models\Card $customer
- * @property \app\models\InvoiceDetail[] $invoiceDetails
- * @property \app\models\Rekening $nomorRekeningTagihan
+ * @property \app\models\Cashier $cashier
+ * @property \app\models\SetoranKasirDetail[] $setoranKasirDetails
  */
-abstract class Invoice extends \yii\db\ActiveRecord
+abstract class SetoranKasir extends \yii\db\ActiveRecord
 {
 
     /**
@@ -37,7 +36,7 @@ abstract class Invoice extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'invoice';
+        return 'setoran_kasir';
     }
 
     /**
@@ -63,12 +62,11 @@ abstract class Invoice extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['customer_id', 'tanggal_invoice', 'nomor_rekening_tagihan_id'], 'required'],
-            [['customer_id', 'nomor_rekening_tagihan_id', 'bukti_penerimaan_buku_bank_id'], 'integer'],
-            [['tanggal_invoice'], 'safe'],
-            [['reference_number'], 'string', 'max' => 255],
-            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['customer_id' => 'id']],
-            [['nomor_rekening_tagihan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Rekening::class, 'targetAttribute' => ['nomor_rekening_tagihan_id' => 'id']],
+            [['tanggal_setoran', 'cashier_id', 'staff_name'], 'required'],
+            [['tanggal_setoran'], 'safe'],
+            [['cashier_id', 'bukti_penerimaan_buku_bank_id'], 'integer'],
+            [['reference_number', 'staff_name'], 'string', 'max' => 50],
+            [['cashier_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Cashier::class, 'targetAttribute' => ['cashier_id' => 'id']],
             [['bukti_penerimaan_buku_bank_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BuktiPenerimaanBukuBank::class, 'targetAttribute' => ['bukti_penerimaan_buku_bank_id' => 'id']]
         ]);
     }
@@ -81,9 +79,9 @@ abstract class Invoice extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'reference_number' => 'Reference Number',
-            'customer_id' => 'Customer ID',
-            'tanggal_invoice' => 'Tanggal Invoice',
-            'nomor_rekening_tagihan_id' => 'Nomor Rekening Tagihan ID',
+            'tanggal_setoran' => 'Tanggal Setoran',
+            'cashier_id' => 'Cashier ID',
+            'staff_name' => 'Staff Name',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -103,33 +101,25 @@ abstract class Invoice extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCustomer()
+    public function getCashier()
     {
-        return $this->hasOne(\app\models\Card::class, ['id' => 'customer_id']);
+        return $this->hasOne(\app\models\Cashier::class, ['id' => 'cashier_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getInvoiceDetails()
+    public function getSetoranKasirDetails()
     {
-        return $this->hasMany(\app\models\InvoiceDetail::class, ['invoice_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNomorRekeningTagihan()
-    {
-        return $this->hasOne(\app\models\Rekening::class, ['id' => 'nomor_rekening_tagihan_id']);
+        return $this->hasMany(\app\models\SetoranKasirDetail::class, ['setoran_kasir_id' => 'id']);
     }
 
     /**
      * @inheritdoc
-     * @return InvoiceQuery the active query used by this AR class.
+     * @return SetoranKasirQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new InvoiceQuery(static::class);
+        return new SetoranKasirQuery(static::class);
     }
 }

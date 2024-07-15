@@ -8,6 +8,7 @@ use app\models\Invoice;
 use yii\bootstrap5\Html;
 use yii\helpers\StringHelper;
 
+
 return [
     [
         'class' => 'yii\grid\SerialColumn',
@@ -41,10 +42,26 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'buktiPenerimaanBukuBankReferenceNumber',
+        'format' => 'html',
+        'header' => 'BB Ref.',
+        'value' => fn($model) => !$model->buktiPenerimaanBukuBank ? Html::tag('span', 'Belum ada', ['class' => 'badge bg-danger']) :
+            $model->buktiPenerimaanBukuBank->reference_number
+        ,
+        'contentOptions' => [
+            'class' => 'small'
+        ]
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'total',
         'format' => ['decimal', 2],
         'hAlign' => 'right',
+        'contentOptions' => [
+            'class' => 'small'
+        ]
     ],
+
     // [
     // 'class'=>'\yii\grid\DataColumn',
     // 'attribute'=>'created_at',

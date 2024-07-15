@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\helpers\ArrayHelper;
 use \app\models\base\Invoice as BaseInvoice;
 use Yii;
 
@@ -33,7 +34,13 @@ class Invoice extends BaseInvoice
                 ],
             ]
         );
+    }
 
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'tanggal_invoice' => 'Tgl. Invoice',
+        ]);
     }
 
     protected function countTotal(){

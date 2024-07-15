@@ -4,12 +4,12 @@ namespace app\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Invoice;
+use app\models\SetoranKasir;
 
 /**
- * InvoiceSearch represents the model behind the search form about `app\models\Invoice`.
+ * SetoranKasirSearch represents the model behind the search form about `app\models\SetoranKasir`.
  */
-class InvoiceSearch extends Invoice
+class SetoranKasirSearch extends SetoranKasir
 {
     /**
      * @inheritdoc
@@ -17,8 +17,8 @@ class InvoiceSearch extends Invoice
     public function rules() : array
     {
         return [
-            [['id', 'customer_id', 'nomor_rekening_tagihan_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['reference_number', 'tanggal_invoice'], 'safe'],
+            [['id', 'cashier_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['tanggal_setoran', 'staff_name', 'reference_number'], 'safe'],
         ];
     }
 
@@ -38,10 +38,7 @@ class InvoiceSearch extends Invoice
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = Invoice::find()
-            ->joinWith('nomorRekeningTagihan')
-            ->joinWith('buktiPenerimaanBukuBank')
-        ;
+        $query = SetoranKasir::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -62,15 +59,15 @@ class InvoiceSearch extends Invoice
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'customer_id' => $this->customer_id,
-            'tanggal_invoice' => $this->tanggal_invoice,
-            'nomor_rekening_tagihan_id' => $this->nomor_rekening_tagihan_id,
+            'tanggal_setoran' => $this->tanggal_setoran,
+            'cashier_id' => $this->cashier_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
 
+        $query->andFilterWhere(['like', 'staff_name', $this->staff_name]);
         $query->andFilterWhere(['like', 'reference_number', $this->reference_number]);
 
         return $dataProvider;

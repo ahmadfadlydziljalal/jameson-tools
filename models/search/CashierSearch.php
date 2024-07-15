@@ -4,12 +4,12 @@ namespace app\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Invoice;
+use app\models\Cashier;
 
 /**
- * InvoiceSearch represents the model behind the search form about `app\models\Invoice`.
+ * CashierSearch represents the model behind the search form about `app\models\Cashier`.
  */
-class InvoiceSearch extends Invoice
+class CashierSearch extends Cashier
 {
     /**
      * @inheritdoc
@@ -17,8 +17,8 @@ class InvoiceSearch extends Invoice
     public function rules() : array
     {
         return [
-            [['id', 'customer_id', 'nomor_rekening_tagihan_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['reference_number', 'tanggal_invoice'], 'safe'],
+            [['id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -38,10 +38,7 @@ class InvoiceSearch extends Invoice
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = Invoice::find()
-            ->joinWith('nomorRekeningTagihan')
-            ->joinWith('buktiPenerimaanBukuBank')
-        ;
+        $query = Cashier::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -55,23 +52,20 @@ class InvoiceSearch extends Invoice
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
+            // if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
         }
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'customer_id' => $this->customer_id,
-            'tanggal_invoice' => $this->tanggal_invoice,
-            'nomor_rekening_tagihan_id' => $this->nomor_rekening_tagihan_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'reference_number', $this->reference_number]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }
