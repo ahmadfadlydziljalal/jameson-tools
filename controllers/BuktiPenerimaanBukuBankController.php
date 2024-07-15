@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\BuktiPenerimaanBukuBank;
 use app\models\search\BuktiPenerimaanBukuBankSearch;
+use kartik\mpdf\Pdf;
 use Throwable;
 use Yii;
 use yii\db\Exception;
@@ -61,29 +62,6 @@ class BuktiPenerimaanBukuBankController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new BuktiPenerimaanBukuBank model.
-     * If creation is successful, the browser will be redirected to the 'index' page.
-     * @return Response|string
-     * @throws Exception
-     */
-    public function actionCreate(): Response|string
-    {
-        $model = new BuktiPenerimaanBukuBank();
-
-        if ($this->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                Yii::$app->session->setFlash('success', 'BuktiPenerimaanBukuBank: ' . $model->reference_number . ' berhasil ditambahkan.');
-                return $this->redirect(['index']);
-            } else {
-                $model->loadDefaultValues();
-            }
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
 
     /**
      * @return Response|string
@@ -179,25 +157,13 @@ class BuktiPenerimaanBukuBankController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing BuktiPenerimaanBukuBank model.
-     * If update is successful, the browser will be redirected to the 'index' page with pagination URL
-     * @param integer $id
-     * @return Response|string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate(int $id)
-    {
-        $model = $this->findModel($id);
-
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('info', 'BuktiPenerimaanBukuBank: ' . $model->reference_number . ' berhasil dirubah.');
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
+    public function actionExportToPdf($id){
+        /** @var Pdf $pdf */
+        $pdf = Yii::$app->pdf;
+        $pdf->content = $this->renderPartial('_pdf', [
+            'model' => $this->findModel($id),
         ]);
+        return $pdf->render();
     }
 
     /**

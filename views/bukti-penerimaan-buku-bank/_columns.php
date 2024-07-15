@@ -30,12 +30,30 @@ return [
         'attribute' => 'customer_id',
         'value' => 'customer.nama',
         'format' => 'text',
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ]
     ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'rekening_saya_id',
         'format' => 'text',
-        'value' => fn($model) => StringHelper::truncate($model->rekeningSaya?->atas_nama, 20)
+        'value' => fn($model) => StringHelper::truncate($model->rekeningSaya?->atas_nama, 20),
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ]
     ],
     //    [
     //        'class' => '\yii\grid\DataColumn',
@@ -67,12 +85,30 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'sumberDana',
         'format' => 'text',
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ]
     ],
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'nominalSeharusnya',
         'format' => ['decimal', 2],
         'hAlign' => 'right',
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ]
     ],
 
     [
@@ -85,7 +121,7 @@ return [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'balance',
         'format' => 'html',
-        'value' => fn($model)=> $model->getBalance(true),
+        'value' => fn($model) => $model->getBalance(true),
     ],
 
 
@@ -115,15 +151,19 @@ return [
         'buttons' => [
             'update' => function ($url, $model) {
                 /** @var BuktiPenerimaanBukuBank $model */
-                if($model->invoices){
+                if ($model->invoices) {
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-penerimaan-buku-bank/update-for-invoices', 'id' => $model->id],);
                 }
-
-                if($model->setoranKasirs){
+                if ($model->setoranKasirs) {
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-penerimaan-buku-bank/update-for-setoran-kasir', 'id' => $model->id],);
                 }
-
                 return '';
+            },
+            'export-to-pdf' => function ($url, $model) {
+                return Html::a('<i class="bi bi-printer"></i>', $url, [
+                    'data-pjax' => '0',
+                    'target' => '_blank',
+                ]);
             }
         ],
 
