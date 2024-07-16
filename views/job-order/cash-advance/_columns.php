@@ -17,7 +17,15 @@ return [
         'header' => 'Bukti Pengeluaran',
         'value' => function($model) {
             /** @var JobOrderDetailCashAdvance $model */
-            return $model->buktiPengeluaranPettyCash?->reference_number;
+            if($model->bukti_pengeluaran_petty_cash_id){
+                return $model->buktiPengeluaranPettyCash?->reference_number;
+            }
+
+            if($model->bukti_pengeluaran_buku_bank_id){
+                return $model->buktiPengeluaranBukuBank?->reference_number;
+            }
+
+            return '';
         }
     ],
     [
@@ -27,6 +35,13 @@ return [
             /** @var JobOrderDetailCashAdvance $model */
             return $model->buktiPengeluaranPettyCash?->buktiPenerimaanPettyCash?->reference_number;
         }
+    ],
+    [
+        'class' => 'kartik\grid\DataColumn',
+        'attribute' => 'order',
+        'contentOptions' => [
+            'style' => 'text-align:right',
+        ],
     ],
     [
         'class' => 'kartik\grid\DataColumn',

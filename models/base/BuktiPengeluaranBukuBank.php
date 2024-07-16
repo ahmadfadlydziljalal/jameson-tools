@@ -28,6 +28,7 @@ use \app\models\active_queries\BuktiPengeluaranBukuBankQuery;
  * @property integer $updated_by
  *
  * @property \app\models\JenisTransfer $jenisTransfer
+ * @property \app\models\JobOrderBill[] $jobOrderBills
  * @property \app\models\JobOrderDetailCashAdvance[] $jobOrderDetailCashAdvances
  * @property \app\models\Rekening $rekeningSaya
  * @property \app\models\Card $vendor
@@ -107,6 +108,14 @@ abstract class BuktiPengeluaranBukuBank extends \yii\db\ActiveRecord
     public function getJenisTransfer()
     {
         return $this->hasOne(\app\models\JenisTransfer::class, ['id' => 'jenis_transfer_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJobOrderBills()
+    {
+        return $this->hasMany(\app\models\JobOrderBill::class, ['bukti_pengeluaran_buku_bank_id' => 'id']);
     }
 
     /**

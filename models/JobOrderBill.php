@@ -20,4 +20,9 @@ class JobOrderBill extends BaseJobOrderBill
         }
         return $total;
     }
+
+    public function hasPaid(): bool
+    {
+        return $this->bukti_pengeluaran_buku_bank_id || $this->bukti_pengeluaran_petty_cash_id;
+    }
 }

@@ -2,12 +2,6 @@
 
 /* @var $this View */
 
-/*
- * Vendor
- * Reference number
- * Total
- * */
-
 use kartik\grid\ActionColumn;
 use kartik\grid\ExpandRowColumn;
 use yii\helpers\Html;
@@ -26,8 +20,17 @@ return [
         'class' => 'kartik\grid\DataColumn',
         'header' => 'Bukti Pengeluaran',
         'value' => function($model) {
-            /** @var \app\models\JobOrderBill $model */
-            return $model->buktiPengeluaranPettyCash?->reference_number;
+            /** @var app\models\JobOrderBill $model */
+            if($model->bukti_pengeluaran_petty_cash_id){
+                return $model->buktiPengeluaranPettyCash?->reference_number;
+            }
+
+            if($model->bukti_pengeluaran_buku_bank_id){
+                return $model->buktiPengeluaranBukuBank?->reference_number;
+            }
+
+            return '';
+
         }
     ],
     [
@@ -60,19 +63,27 @@ return [
         'template' => '{update} {delete}',
         'buttons' => [
             'update' => function ($url, $model, $key) {
-                return Html::a('<i class="bi bi-pen"></i>', ['job-order/update-bill', 'id' => $model->id]);
+                /** @var app\models\JobOrderBill $model */
+                /** @see \app\controllers\JobOrderController::actionUpdateBill() */
+                if(!$model->hasPaid()){
+                    return Html::a('<i class="bi bi-pen"></i>', ['job-order/update-bill', 'id' => $model->id]);
+                }
+                return '';
             },
             'delete' => function ($url, $model) {
-
+                /** @var app\models\JobOrderBill $model */
                 /** @see \app\controllers\JobOrderController::actionDeleteBill() */
-                return Html::a('<i class="bi bi-trash"></i>', ['delete-bill', 'id' => $model->id], [
-                    'data' => [
-                        'confirm' => 'Are you sure you want to delete this item?',
-                        'method' => 'post',
-                        'pjax' => '0',
-                    ],
-                    'class'=>'text-danger',
-                ]);
+                if(!$model->hasPaid()){
+                    return Html::a('<i class="bi bi-trash"></i>', ['delete-bill', 'id' => $model->id], [
+                        'data' => [
+                            'confirm' => 'Are you sure you want to delete this item?',
+                            'method' => 'post',
+                            'pjax' => '0',
+                        ],
+                        'class'=>'text-danger',
+                    ]);
+                }
+                return Html::tag('span', '<i class="bi bi-hand-thumbs-up"></i> Paid', ['class' => 'badge bg-info']);
             }
         ]
     ]

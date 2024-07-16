@@ -60,27 +60,7 @@ class BuktiPengeluaranBukuBankController extends Controller
         ]);
     }
 
-    /**
-    * Creates a new BuktiPengeluaranBukuBank model.
-    * If creation is successful, the browser will be redirected to the 'index' page.
-    * @return Response|string
-    */
-    public function actionCreate(){
-        $model = new BuktiPengeluaranBukuBank();
 
-        if ($this->request->isPost) {
-            if($model->load(Yii::$app->request->post()) && $model->save()){
-                Yii::$app->session->setFlash('success',  'BuktiPengeluaranBukuBank: ' . $model->reference_number.  ' berhasil ditambahkan.');
-                return $this->redirect(['index']);
-            } else {
-                $model->loadDefaultValues();
-            }
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
 
     /**
      * Creates a new BuktiPengeluaranBukuBank model.
@@ -130,24 +110,51 @@ class BuktiPengeluaranBukuBankController extends Controller
     }
 
     /**
-    * Updates an existing BuktiPengeluaranBukuBank model.
-    * If update is successful, the browser will be redirected to the 'index' page with pagination URL
-    * @param integer $id
-    * @return Response|string
-    * @throws NotFoundHttpException if the model cannot be found
-    */
-    public function actionUpdate(int $id){
-        $model = $this->findModel($id);
+     * @return Response|string
+     */
+    public function actionCreateByBill(): Response|string
+    {
+        $model = new BuktiPengeluaranBukuBank();
+        $model->scenario = BuktiPengeluaranBukuBank::SCENARIO_PENGELUARAN_BY_BILL;
 
-        if($this->request->isPost && $model->load($this->request->post()) && $model->save()){
-            Yii::$app->session->setFlash('info',  'BuktiPengeluaranBukuBank: ' . $model->reference_number.  ' berhasil dirubah.');
-            return $this->redirect(['index']);
+        if (Yii::$app->request->isPost) {
+            if($model->load(Yii::$app->request->post()) && $model->saveForBills()){
+                Yii::$app->session->setFlash('success',  'BuktiPengeluaranBukuBank: ' . $model->reference_number.  ' berhasil ditambahkan.');
+                return $this->redirect(['index']);
+            } else {
+                $model->loadDefaultValues();
+            }
         }
 
-        return $this->render('update', [
+        return $this->render('bill/create', [
             'model' => $model,
         ]);
     }
+
+    /**
+     * @param int $id
+     * @return Response|string
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateByBill(int $id): Response|string
+    {
+        $model = $this->findModel($id);
+        $model->scenario = BuktiPengeluaranBukuBank::SCENARIO_PENGELUARAN_BY_BILL;
+
+        if(Yii::$app->request->isPost){
+            if($model->load(Yii::$app->request->post()) && $model->saveForBills()){
+                Yii::$app->session->setFlash('info',  'BuktiPengeluaranBukuBank: ' . $model->reference_number.  ' berhasil dirubah.');
+                return $this->redirect(['index']);
+            }
+            Yii::$app->session->setFlash('danger', 'Failed');
+        }
+
+        return $this->render('bill/update', [
+            'model' => $model,
+        ]);
+    }
+
+
 
     /**
     * Deletes an existing BuktiPengeluaranBukuBank model.

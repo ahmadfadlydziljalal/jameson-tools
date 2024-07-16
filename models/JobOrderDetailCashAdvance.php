@@ -7,6 +7,7 @@ use \app\models\base\JobOrderDetailCashAdvance as BaseJobOrderDetailCashAdvance;
 use yii\db\Exception;
 
 /**
+ * @property float $cash_advance
  * This is the model class for table "job_order_detail_cash_advance".
  */
 class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
@@ -75,7 +76,13 @@ class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
         return $this->cash_advance != 0 AND $this->kasbon_request == 0;
     }
 
-
+    public function markAsPaidFromBuktiPengeluaranBukuBank(int $id): bool
+    {
+        $this->cash_advance = $this->kasbon_request;
+        $this->kasbon_request = 0;
+        $this->bukti_pengeluaran_buku_bank_id = $id;
+        return $this->save(false);
+    }
 
 
 }

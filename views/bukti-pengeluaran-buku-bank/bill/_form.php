@@ -3,6 +3,7 @@
 use app\components\helpers\ArrayHelper;
 use app\models\Card;
 use app\models\JenisTransfer;
+use app\models\JobOrderBill;
 use app\models\JobOrderDetailCashAdvance;
 use app\models\Rekening;
 use kartik\datecontrol\DateControl;
@@ -82,14 +83,15 @@ use yii\helpers\Url;
 
             $data = [];
             if (!$model->isNewRecord) {
-                $data = ArrayHelper::map($model->jobOrderDetailCashAdvances, 'id', function($model){
-                    return 'Kasbon ke: ' .  $model->order  .', ' . $model->jobOrder->reference_number;
+                $data = ArrayHelper::map($model->jobOrderBills, 'id', function($model){
+                    /** @var JobOrderBill $model */
+                    return $model->jobOrder->reference_number . ' - ' . $model->vendor->nama . ' - ' . Yii::$app->formatter->asDecimal($model->getTotalPrice(), 2);
                 });
-                $model->cashAdvances = array_keys($data);
+                $model->bills = array_keys($data);
             }
 
-            $data = ArrayHelper::merge($data, JobOrderDetailCashAdvance::find()->notYetRegistered());
-            echo $form->field($model, 'cashAdvances')->widget(Select2::class, [
+            $data = ArrayHelper::merge($data, JobOrderBill::find()->notYetRegistered());
+            echo $form->field($model, 'bills')->widget(Select2::class, [
                 'data' => $data,
                 'options' => [
                     'multiple' => true,

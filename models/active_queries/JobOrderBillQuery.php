@@ -17,7 +17,12 @@ use yii\web\NotFoundHttpException;
 class JobOrderBillQuery extends ActiveQuery
 {
 
-    public function asModel($id)
+    /**
+     * @param $id
+     * @return JobOrderBill
+     * @throws NotFoundHttpException
+     */
+    public function asModel($id): JobOrderBill
     {
         if (($model = parent::where(['id' => $id])->one()) !== null) {
             return $model;
@@ -33,18 +38,17 @@ class JobOrderBillQuery extends ActiveQuery
                 $vendor->from(['vendor' => 'card']);
             }])
             ->where([
-                'is', 'bukti_pengeluaran_petty_cash_id', NULL
+                'is', 'job_order_bill.bukti_pengeluaran_petty_cash_id', NULL
+            ])
+            ->andWhere([
+                'is', 'job_order_bill.bukti_pengeluaran_buku_bank_id', NULL
             ])
             ->all();
 
         $data = [];
         foreach ($bills as $bill) {
-            $data[$bill->id] =
-                $bill->jobOrder->reference_number . ' - ' .
-                $bill->vendor->nama . ' - ' .
-                Yii::$app->formatter->asDecimal($bill->getTotalPrice(),2);
+            $data[$bill->id] = $bill->jobOrder->reference_number . ' - ' . $bill->vendor->nama . ' - ' . Yii::$app->formatter->asDecimal($bill->getTotalPrice(),2);
         }
-
         return $data;
     }
 }

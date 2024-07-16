@@ -16,7 +16,9 @@ use \app\models\active_queries\JobOrderBillQuery;
  * @property integer $vendor_id
  * @property string $reference_number
  * @property integer $bukti_pengeluaran_petty_cash_id
+ * @property integer $bukti_pengeluaran_buku_bank_id
  *
+ * @property \app\models\BuktiPengeluaranBukuBank $buktiPengeluaranBukuBank
  * @property \app\models\BuktiPengeluaranPettyCash $buktiPengeluaranPettyCash
  * @property \app\models\JobOrder $jobOrder
  * @property \app\models\JobOrderBillDetail[] $jobOrderBillDetails
@@ -40,11 +42,12 @@ abstract class JobOrderBill extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['job_order_id', 'vendor_id', 'bukti_pengeluaran_petty_cash_id'], 'integer'],
+            [['job_order_id', 'vendor_id', 'bukti_pengeluaran_petty_cash_id', 'bukti_pengeluaran_buku_bank_id'], 'integer'],
             [['vendor_id', 'reference_number'], 'required'],
             [['reference_number'], 'string', 'max' => 255],
             [['bukti_pengeluaran_petty_cash_id'], 'unique'],
             [['bukti_pengeluaran_petty_cash_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BuktiPengeluaranPettyCash::class, 'targetAttribute' => ['bukti_pengeluaran_petty_cash_id' => 'id']],
+            [['bukti_pengeluaran_buku_bank_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BuktiPengeluaranBukuBank::class, 'targetAttribute' => ['bukti_pengeluaran_buku_bank_id' => 'id']],
             [['job_order_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JobOrder::class, 'targetAttribute' => ['job_order_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
         ]);
@@ -61,7 +64,16 @@ abstract class JobOrderBill extends \yii\db\ActiveRecord
             'vendor_id' => 'Vendor ID',
             'reference_number' => 'Reference Number',
             'bukti_pengeluaran_petty_cash_id' => 'Bukti Pengeluaran Petty Cash ID',
+            'bukti_pengeluaran_buku_bank_id' => 'Bukti Pengeluaran Buku Bank ID',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBuktiPengeluaranBukuBank()
+    {
+        return $this->hasOne(\app\models\BuktiPengeluaranBukuBank::class, ['id' => 'bukti_pengeluaran_buku_bank_id']);
     }
 
     /**
