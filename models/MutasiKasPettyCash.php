@@ -105,7 +105,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
 
         # Pencatatan dari bukti penerimaan
         if($this->bukti_penerimaan_petty_cash_id){
-            if($this->buktiPenerimaanPettyCash->bukti_pengeluaran_petty_cash_cash_advance_id){
+            if($this->buktiPenerimaanPettyCash){
                 $this->businessProcess =
                     'Pengembalian Kasbon ke ' . $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order. ', '.
                     $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number;

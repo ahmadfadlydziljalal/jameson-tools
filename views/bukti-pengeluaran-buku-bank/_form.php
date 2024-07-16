@@ -3,11 +3,11 @@ use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\BuktiPengeluaranPettyCash */
+/* @var $model app\models\BuktiPengeluaranBukuBank */
 /* @var $form yii\bootstrap5\ActiveForm */
 ?>
 
-<div class="bukti-pengeluaran-petty-cash-form">
+<div class="bukti-pengeluaran-buku-bank-form">
 
     <?php $form = ActiveForm::begin([
 
@@ -39,6 +39,13 @@ use yii\bootstrap5\ActiveForm;
                     'maxlength' => true,
                     'autofocus'=> 'autofocus'
                 ])?>
+           <?= $form->field($model, 'rekening_saya_id')->textInput() ?>
+           <?= $form->field($model, 'jenis_transaksi_id')->textInput() ?>
+           <?= $form->field($model, 'vendor_id')->textInput() ?>
+           <?= $form->field($model, 'vendor_rekening_id')->textInput() ?>
+           <?= $form->field($model, 'nomor_bukti_transaksi')->textInput(['maxlength' => true]) ?>
+           <?= $form->field($model, 'tanggal_transaksi')->widget(\kartik\datecontrol\DateControl::class,[ 'type'=>\kartik\datecontrol\DateControl::FORMAT_DATE, ]) ?>
+           <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
 
             <div class="d-flex mt-3 justify-content-between">
                 <?= Html::a(' Tutup', ['index'], [

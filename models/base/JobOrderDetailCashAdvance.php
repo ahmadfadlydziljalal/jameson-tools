@@ -19,7 +19,10 @@ use \app\models\active_queries\JobOrderDetailCashAdvanceQuery;
  * @property string $kasbon_request
  * @property string $cash_advance
  * @property integer $order
+ * @property integer $bukti_pengeluaran_petty_cash_id
+ * @property integer $bukti_pengeluaran_buku_bank_id
  *
+ * @property \app\models\BuktiPengeluaranBukuBank $buktiPengeluaranBukuBank
  * @property \app\models\BuktiPengeluaranPettyCash $buktiPengeluaranPettyCash
  * @property \app\models\JenisBiaya $jenisBiaya
  * @property \app\models\JobOrder $jobOrder
@@ -44,9 +47,12 @@ abstract class JobOrderDetailCashAdvance extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['job_order_id', 'vendor_id', 'jenis_biaya_id', 'mata_uang_id', 'order'], 'integer'],
+            [['job_order_id', 'vendor_id', 'jenis_biaya_id', 'mata_uang_id', 'order', 'bukti_pengeluaran_petty_cash_id', 'bukti_pengeluaran_buku_bank_id'], 'integer'],
             [['vendor_id', 'jenis_biaya_id', 'mata_uang_id'], 'required'],
             [['kasbon_request', 'cash_advance'], 'number'],
+            [['bukti_pengeluaran_petty_cash_id'], 'unique'],
+            [['bukti_pengeluaran_petty_cash_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BuktiPengeluaranPettyCash::class, 'targetAttribute' => ['bukti_pengeluaran_petty_cash_id' => 'id']],
+            [['bukti_pengeluaran_buku_bank_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BuktiPengeluaranBukuBank::class, 'targetAttribute' => ['bukti_pengeluaran_buku_bank_id' => 'id']],
             [['mata_uang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MataUang::class, 'targetAttribute' => ['mata_uang_id' => 'id']],
             [['job_order_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JobOrder::class, 'targetAttribute' => ['job_order_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']],
@@ -68,6 +74,8 @@ abstract class JobOrderDetailCashAdvance extends \yii\db\ActiveRecord
             'kasbon_request' => 'Kasbon Request',
             'cash_advance' => 'Cash Advance',
             'order' => 'Order',
+            'bukti_pengeluaran_petty_cash_id' => 'Bukti Pengeluaran Petty Cash ID',
+            'bukti_pengeluaran_buku_bank_id' => 'Bukti Pengeluaran Buku Bank ID',
         ]);
     }
 
@@ -85,9 +93,17 @@ abstract class JobOrderDetailCashAdvance extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getBuktiPengeluaranBukuBank()
+    {
+        return $this->hasOne(\app\models\BuktiPengeluaranBukuBank::class, ['id' => 'bukti_pengeluaran_buku_bank_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getBuktiPengeluaranPettyCash()
     {
-        return $this->hasOne(\app\models\BuktiPengeluaranPettyCash::class, ['job_order_detail_cash_advance_id' => 'id']);
+        return $this->hasOne(\app\models\BuktiPengeluaranPettyCash::class, ['id' => 'bukti_pengeluaran_petty_cash_id']);
     }
 
     /**

@@ -32,17 +32,15 @@ class JobOrderDetailCashAdvanceQuery extends ActiveQuery
         }
     }
 
-    public function notYetRegistered()
+    public function notYetRegistered(): array
     {
         $data = parent::select([
             'id' => 'job_order_detail_cash_advance.id',
             'referenceNumber' =>new Expression("CONCAT('Kasbon ke ', job_order_detail_cash_advance.order ,': ' ,  job_order.reference_number)")
         ])
-            ->joinWith('buktiPengeluaranPettyCash')
             ->joinWith('jobOrder')
-            ->where([
-                'is', 'bukti_pengeluaran_petty_cash.id' , NULL
-            ])
+            ->where(['is', 'job_order_detail_cash_advance.bukti_pengeluaran_petty_cash_id' , NULL])
+            ->andWhere(['is', 'job_order_detail_cash_advance.bukti_pengeluaran_buku_bank_id' , NULL])
             ->all();
 
         return ArrayHelper::map($data, 'id', 'referenceNumber');

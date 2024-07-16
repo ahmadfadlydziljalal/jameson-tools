@@ -16,9 +16,6 @@ use yii\db\ActiveQuery;
  */
 class BuktiPengeluaranPettyCashQuery extends ActiveQuery
 {
-
-
-
     /**
      * Mencari bukti pengeluaran yang belum dikembalikan
      * @return array
@@ -30,7 +27,10 @@ class BuktiPengeluaranPettyCashQuery extends ActiveQuery
         }])
             ->joinWith('buktiPenerimaanPettyCash')
             ->where([
-                'IS NOT', 'job_order_detail_cash_advance_id', NULL
+                'IS NOT', 'job_order_detail_cash_advance.bukti_pengeluaran_petty_cash_id', NULL
+            ])
+            ->andWhere([
+                'IS', 'job_order_detail_cash_advance.bukti_pengeluaran_buku_bank_id', NULL
             ])
             ->andWhere([
                 'IS', 'bukti_penerimaan_petty_cash.id', NULL

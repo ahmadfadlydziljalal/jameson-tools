@@ -23,6 +23,26 @@ return [
     ],
     [
         'class' => '\yii\grid\DataColumn',
+        'header' => 'Kasbon',
+        'format' => 'raw',
+        'value' => function ($model) {
+            /** @var app\models\BuktiPengeluaranPettyCash $model */
+            if($model->jobOrderDetailCashAdvance){
+                return $model->getStatusCashAdvance();
+            }
+            return '';
+        }
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'header' => 'Bill Payment',
+        'value' => function ($model) {
+            /** @var app\models\BuktiPengeluaranPettyCash $model */
+            return $model->jobOrderBill?->reference_number;
+        }
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
         'attribute' => 'voucher',
         'value' => fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
     ],
@@ -50,27 +70,8 @@ return [
 
         }
     ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'header' => 'Kasbon',
-        'contentOptions' => ['class' => 'text-end'],
-        'format' => 'raw',
-        'value' => function ($model) {
-            /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->jobOrderDetailCashAdvance){
-                return $model->getStatusCashAdvance();
-            }
-            return '';
-        }
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'header' => 'Bill Payment',
-        'value' => function ($model) {
-            /** @var app\models\BuktiPengeluaranPettyCash $model */
-            return $model->jobOrderBill?->reference_number;
-        }
-    ],
+
+
     [
         'class' => '\yii\grid\DataColumn',
         'header' => 'Nominal',

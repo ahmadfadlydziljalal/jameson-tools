@@ -181,7 +181,30 @@ class CardController extends Controller
    }
 
 
-   /**
+    public function actionDepdropFindRekeningCardId(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (isset($_POST['depdrop_parents'])) {
+
+            $parents = $_POST['depdrop_parents'];
+
+            if ($parents != null) {
+                $out = Card::find()->rekening($parents[0]);
+                if (isset($out[0])) {
+                    if($out[0]['id'] != null){
+                        return ['output' => $out, 'selected' => $out[0]];
+                    }
+                }
+
+            }
+
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+
+    /**
     * @return CardPersonInCharge|array
     */
    public function actionFindPicAsAttendant(): CardPersonInCharge|array

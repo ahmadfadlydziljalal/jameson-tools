@@ -123,5 +123,19 @@ class CardQuery extends ActiveQuery
          ->all();
    }
 
+    public function rekening(mixed $id)
+    {
+        return parent::select([
+            'id' => 'rekening.id',
+            'name' => 'rekening.atas_nama'
+        ])
+            ->where([
+                'card.id' => $id
+            ])
+            ->joinWith('rekenings', false)
+            ->asArray()
+            ->all();
+    }
+
 
 }

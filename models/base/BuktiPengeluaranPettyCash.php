@@ -15,7 +15,6 @@ use \app\models\active_queries\BuktiPengeluaranPettyCashQuery;
  *
  * @property integer $id
  * @property string $reference_number
- * @property integer $job_order_detail_cash_advance_id
  * @property integer $job_order_bill_id
  * @property integer $created_at
  * @property integer $updated_at
@@ -61,11 +60,9 @@ abstract class BuktiPengeluaranPettyCash extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['job_order_detail_cash_advance_id', 'job_order_bill_id'], 'integer'],
+            [['job_order_bill_id'], 'integer'],
             [['reference_number'], 'string', 'max' => 255],
-            [['job_order_detail_cash_advance_id'], 'unique'],
             [['job_order_bill_id'], 'unique'],
-            [['job_order_detail_cash_advance_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JobOrderDetailCashAdvance::class, 'targetAttribute' => ['job_order_detail_cash_advance_id' => 'id']],
             [['job_order_bill_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JobOrderBill::class, 'targetAttribute' => ['job_order_bill_id' => 'id']]
         ]);
     }
@@ -78,7 +75,6 @@ abstract class BuktiPengeluaranPettyCash extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'reference_number' => 'Reference Number',
-            'job_order_detail_cash_advance_id' => 'Job Order Detail Cash Advance ID',
             'job_order_bill_id' => 'Job Order Bill ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -108,7 +104,7 @@ abstract class BuktiPengeluaranPettyCash extends \yii\db\ActiveRecord
      */
     public function getJobOrderDetailCashAdvance()
     {
-        return $this->hasOne(\app\models\JobOrderDetailCashAdvance::class, ['id' => 'job_order_detail_cash_advance_id']);
+        return $this->hasOne(\app\models\JobOrderDetailCashAdvance::class, ['bukti_pengeluaran_petty_cash_id' => 'id']);
     }
 
     /**

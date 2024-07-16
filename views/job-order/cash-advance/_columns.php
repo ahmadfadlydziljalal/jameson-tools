@@ -22,6 +22,14 @@ return [
     ],
     [
         'class' => 'kartik\grid\DataColumn',
+        'header' => 'Bukti Penerimaan',
+        'value' => function($model) {
+            /** @var JobOrderDetailCashAdvance $model */
+            return $model->buktiPengeluaranPettyCash?->buktiPenerimaanPettyCash?->reference_number;
+        }
+    ],
+    [
+        'class' => 'kartik\grid\DataColumn',
         'attribute' => 'vendor_id',
         'value' => 'vendor.nama',
     ],

@@ -3,20 +3,22 @@
 namespace app\models;
 
 use app\components\helpers\ArrayHelper;
-use \app\models\base\BuktiPengeluaranPettyCash as BaseBuktiPengeluaranPettyCash;
+use app\models\base\BuktiPengeluaranPettyCash as BaseBuktiPengeluaranPettyCash;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bukti_pengeluaran_petty_cash".
+ *
+ * @property-read string $statusCashAdvance
  */
 class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
 {
     const SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON = 'scenario_pengeluaran_by_cash_advance_or_kasbon';
     const SCENARIO_PENGELUARAN_BY_BILL = 'scenario_pengeluaran_by_bill';
 
+    public ?string $cashAdvanceReferenceNumber = null;
 
     public function behaviors()
     {
@@ -34,7 +36,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            ['job_order_detail_cash_advance_id', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON],
+            ['cashAdvanceReferenceNumber', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON],
             ['job_order_bill_id', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_BILL]
         ]);
     }
@@ -43,7 +45,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON] = [
-            'job_order_detail_cash_advance_id'
+            'cashAdvanceReferenceNumber'
         ];
         $scenarios[self::SCENARIO_PENGELUARAN_BY_BILL] = [
             'job_order_bill_id'
@@ -54,7 +56,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-           'job_order_detail_cash_advance_id' => 'Kasbon | Cash Advance',
+            'cashAdvanceReferenceNumber' => 'Kasbon | Cash Advance',
         ]);
     }
 
@@ -72,8 +74,8 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
         try {
 
             if ($flag = $this->save(false)) {
-                $advance = JobOrderDetailCashAdvance::findOne($this->job_order_detail_cash_advance_id);
-                $flag = $advance->markAsPaid();
+                $advance = JobOrderDetailCashAdvance::findOne($this->cashAdvanceReferenceNumber);
+                $flag = $advance->markAsPaidFromBuktiPengeluaranPettyCash($this->id);
             }
 
             if ($flag) {
@@ -122,26 +124,33 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
 
     public function updateByCashAdvance(): bool
     {
-
         if (!$this->validate()) {
             return false;
         }
 
-        if ($this->getOldAttribute('job_order_detail_cash_advance_id') == $this->job_order_detail_cash_advance_id) {
-            //  do nothing
-            return true;
-        }
-
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            // re-back again from panjar ke kasbon
-            if ($this->jobOrderDetailCashAdvance->reverseMarkAsPaid() && $this->save(false)) {
+
+            if ($flag = $this->save(false)) {
+
+                // Ada perbedaan antara kasbon yang sudah exist dengan update yang terbaru
+                if ($this->jobOrderDetailCashAdvance->id != intval($this->cashAdvanceReferenceNumber)) {
+
+                    // Reverse existing kasbon
+                    $flag = $this->jobOrderDetailCashAdvance->reverseMarkAsPaidFromBuktiPengeluaranPettyCash();
+
+                    // Set new kasbon
+                    $newCashAdvanceModel = JobOrderDetailCashAdvance::findOne($this->cashAdvanceReferenceNumber);
+                    $flag = $newCashAdvanceModel->markAsPaidFromBuktiPengeluaranPettyCash($this->id) && $flag;
+                }
+            }
+
+            if($flag){
                 $transaction->commit();
                 return true;
             }else{
                 $transaction->rollBack();
             }
-
 
         } catch (Exception $e) {
             Yii::error($e->getMessage());
