@@ -27,6 +27,7 @@ use \app\models\active_queries\BuktiPengeluaranBukuBankQuery;
  * @property integer $created_by
  * @property integer $updated_by
  *
+ * @property \app\models\BukuBank $bukuBank
  * @property \app\models\JenisTransfer $jenisTransfer
  * @property \app\models\JobOrderBill[] $jobOrderBills
  * @property \app\models\JobOrderDetailCashAdvance[] $jobOrderDetailCashAdvances
@@ -100,6 +101,14 @@ abstract class BuktiPengeluaranBukuBank extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBukuBank()
+    {
+        return $this->hasOne(\app\models\BukuBank::class, ['bukti_pengeluaran_buku_bank_id' => 'id']);
     }
 
     /**

@@ -74,7 +74,7 @@ return [
                     $element['jobOrder'] . ' - ' . $element['reference_number'],
                     ['class' => 'badge rounded-pill text-bg-primary']
                 );
-            } , $model->referensiPembayaran);
+            } , $model->referensiPembayaran['data']);
             return implode(' ', $map);
         },
         'contentOptions' => [
@@ -164,7 +164,7 @@ return [
     // 'format'=>'text',
     // ],
     [
-        'class' => 'yii\grid\ActionColumn',
+        'class' => 'kartik\grid\ActionColumn',
         'template' => '{export-to-pdf} {view} {update} {delete}',
         'buttons' => [
             'export-to-pdf' => function ($url, $model) {
@@ -181,6 +181,14 @@ return [
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-bill', 'id' => $model->id]);
                 }
                 return $model->id;
+            },
+            'delete' => function ($url, $model) {
+                if ($model->jobOrderDetailCashAdvances) {
+                    return Html::a('<i class="bi bi-trash"></i>', ['bukti-pengeluaran-buku-bank/delete-by-cash-advance', 'id' => $model->id],[
+                        'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                        'data-method' => 'post',
+                    ]);
+                }
             }
         ]
     ],

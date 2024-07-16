@@ -28,6 +28,7 @@ use \app\models\active_queries\BuktiPenerimaanBukuBankQuery;
  * @property integer $created_by
  * @property integer $updated_by
  *
+ * @property \app\models\BukuBank $bukuBank
  * @property \app\models\Card $customer
  * @property \app\models\Invoice[] $invoices
  * @property \app\models\JenisTransfer $jenisTransfer
@@ -113,6 +114,14 @@ abstract class BuktiPenerimaanBukuBank extends \yii\db\ActiveRecord
             'nomor_transaksi_transfer' => 'Bukti setor',
             'tanggal_transaksi_transfer' => 'Tanggal setor',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBukuBank()
+    {
+        return $this->hasOne(\app\models\BukuBank::class, ['bukti_penerimaan_buku_bank_id' => 'id']);
     }
 
     /**

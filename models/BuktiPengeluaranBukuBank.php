@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\helpers\ArrayHelper;
 use app\models\base\BuktiPengeluaranBukuBank as BaseBuktiPengeluaranBukuBank;
+use Throwable;
 use Yii;
 use yii\db\Exception;
 
@@ -31,14 +32,14 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         if ($this->jobOrderDetailCashAdvances) {
             $this->tujuanBayar = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
 
-
+            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
             foreach ($this->jobOrderDetailCashAdvances as $cashAdvance) {
                 $this->totalBayar += $cashAdvance->cash_advance;
-                $this->referensiPembayaran[] = [
+                $this->referensiPembayaran['data'][] = [
                     'jobOrder' => $cashAdvance->jobOrder->reference_number,
                     'vendor' => $cashAdvance->vendor->nama,
                     'reference_number' => 'Kasbon ke ' . $cashAdvance->order,
-                    'total' => $cashAdvance->cash_advance,
+                    'total' => round($cashAdvance->cash_advance, 2),
                 ];
             }
         }
@@ -46,13 +47,14 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         // Bayar untuk tagihan
         if ($this->jobOrderBills) {
             $this->tujuanBayar = static::PEMBAYARAN_BILL_JOB_ORDER;
+            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_BILL_JOB_ORDER;
             foreach ($this->jobOrderBills as $jobOrderBill) {
                 $this->totalBayar += $jobOrderBill->getTotalPrice();
-                $this->referensiPembayaran[] = [
+                $this->referensiPembayaran['data'][] = [
                     'jobOrder' => $jobOrderBill->jobOrder->reference_number,
                     'vendor' => $jobOrderBill->vendor->nama,
                     'reference_number' => $jobOrderBill->reference_number,
-                    'total' => $jobOrderBill->getTotalPrice(),
+                    'total' => round($jobOrderBill->getTotalPrice(), 2),
                 ];
             }
         }
@@ -159,7 +161,6 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 
                 if (!empty($setNull)) {
 
-                    // TODO, SET REVERSE
                     JobOrderDetailCashAdvance::updateAll(
                         ['job_order_detail_cash_advance.bukti_pengeluaran_buku_bank_id' => null],
                         ['id' => $setNull]
@@ -244,6 +245,39 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 
         return false;
 
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function deleteByCashAdvance(): bool
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            $flag = true;
+
+            /* Kasbon / Cash advance di reverse dari panjar ke kasbon field */
+            foreach ($this->jobOrderDetailCashAdvances as $jobOrderDetailCashAdvance) {
+                if(!$flag) break;
+                $flag = $jobOrderDetailCashAdvance->reverseMarkAsPaidFromBuktiPengeluaranBukuBank();
+            }
+
+            if ($flag) {
+                if($this->delete()){
+                    $transaction->commit();
+                    return true;
+                }
+            } else {
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
+            Yii::error($e->getMessage());
+            $transaction->rollBack();
+        }
+
+        return false;
     }
 
 

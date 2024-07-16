@@ -54,7 +54,7 @@ return [
     ],
     [
         'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'vendorName',
+        'attribute'=>'cardName',
         'contentOptions'=>[
             'class' => 'small'
         ],

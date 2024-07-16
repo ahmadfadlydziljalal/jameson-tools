@@ -6,6 +6,7 @@ enum KodeVoucherEnum: int
 {
     case CR = 1;
     case CP = 2;
+    case JP = 10;
 
     public static function map(): array{
         $cases = self::cases();

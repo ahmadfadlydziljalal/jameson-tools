@@ -47,6 +47,13 @@ class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
         return $this->save(false);
     }
 
+    public function reverseMarkAsPaid(): bool
+    {
+        $this->kasbon_request = $this->cash_advance;
+        $this->cash_advance = 0;
+        return $this->save(false);
+    }
+
     public function markAsPaidFromBuktiPengeluaranPettyCash($id): bool
     {
         $this->cash_advance = $this->kasbon_request;
@@ -64,12 +71,7 @@ class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
     }
 
 
-    public function reverseMarkAsPaid(): bool
-    {
-        $this->kasbon_request = $this->cash_advance;
-        $this->cash_advance = 0;
-        return $this->save(false);
-    }
+
 
     public function isPanjar(): bool
     {
@@ -81,6 +83,14 @@ class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
         $this->cash_advance = $this->kasbon_request;
         $this->kasbon_request = 0;
         $this->bukti_pengeluaran_buku_bank_id = $id;
+        return $this->save(false);
+    }
+
+    public function reverseMarkAsPaidFromBuktiPengeluaranBukuBank()
+    {
+        $this->kasbon_request = $this->cash_advance;
+        $this->cash_advance = 0;
+        $this->bukti_pengeluaran_buku_bank_id = null;
         return $this->save(false);
     }
 

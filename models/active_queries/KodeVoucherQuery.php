@@ -29,4 +29,11 @@ class KodeVoucherQuery extends \yii\db\ActiveQuery
         ])->one();
     }
 
+    public function bukuBankIn()
+    {
+        return parent::where([
+            'code' => KodeVoucherEnum::JP->value
+        ])->one();
+    }
+
 }

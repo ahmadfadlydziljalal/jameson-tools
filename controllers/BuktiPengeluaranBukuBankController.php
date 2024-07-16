@@ -106,6 +106,17 @@ class BuktiPengeluaranBukuBankController extends Controller
         ]);
     }
 
+    public function actionDeleteByCashAdvance(int $id): Response|string{
+        $model = $this->findModel($id);
+        if($model->deleteByCashAdvance()){
+            Yii::$app->session->setFlash('success',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil dihapus.');
+        }else{
+            Yii::$app->session->setFlash('danger',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' gagal dihapus!');
+        }
+
+        return $this->redirect(['index']);
+    }
+
     /**
      * @return Response|string
      */

@@ -19,7 +19,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
 
     public ?string $businessProcess = null;
     public ?string $nominal = null;
-    public ?string $vendorName = null;
+    public ?string $cardName = null;
 
     public function attributeLabels()
     {
@@ -84,7 +84,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
                     'Kasbon ke ' .$this->buktiPengeluaranPettyCash->jobOrderDetailCashAdvance->order . ', '.
                     $this->buktiPengeluaranPettyCash->jobOrderDetailCashAdvance->jobOrder->reference_number;
                 $this->nominal = $this->buktiPengeluaranPettyCash->jobOrderDetailCashAdvance->cash_advance;
-                $this->vendorName = $this->buktiPengeluaranPettyCash->jobOrderDetailCashAdvance->vendor->nama;
+                $this->cardName = $this->buktiPengeluaranPettyCash->jobOrderDetailCashAdvance->vendor->nama;
             }
             if($this->buktiPengeluaranPettyCash->jobOrderBill){
                 $this->businessProcess =
@@ -92,7 +92,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
                     $this->buktiPengeluaranPettyCash->jobOrderBill->jobOrder->reference_number
                 ;
                 $this->nominal = $this->buktiPengeluaranPettyCash->jobOrderBill->getTotalPrice();
-                $this->vendorName = $this->buktiPengeluaranPettyCash->jobOrderBill->vendor->nama;
+                $this->cardName = $this->buktiPengeluaranPettyCash->jobOrderBill->vendor->nama;
             }
         }
 
@@ -100,7 +100,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
         if($this->transaksiMutasiKasPettyCashLainnya && $this->transaksiMutasiKasPettyCashLainnya->jenis_biaya_id){
             $this->businessProcess = 'Pengeluaran lainnya';
             $this->nominal = $this->transaksiMutasiKasPettyCashLainnya->nominal;
-            $this->vendorName = $this->transaksiMutasiKasPettyCashLainnya->card->nama;
+            $this->cardName = $this->transaksiMutasiKasPettyCashLainnya->card->nama;
         }
 
         # Pencatatan dari bukti penerimaan
@@ -110,7 +110,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
                     'Pengembalian Kasbon ke ' . $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order. ', '.
                     $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number;
                 $this->nominal = $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance;
-                $this->vendorName =$this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->vendor->nama;
+                $this->cardName =$this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->vendor->nama;
             }
         }
 
@@ -118,7 +118,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
         if($this->transaksiMutasiKasPettyCashLainnya && $this->transaksiMutasiKasPettyCashLainnya->jenis_pendapatan_id){
             $this->businessProcess = 'Penerimaan lainnya';
             $this->nominal = $this->transaksiMutasiKasPettyCashLainnya->nominal;
-            $this->vendorName = $this->transaksiMutasiKasPettyCashLainnya->card->nama;
+            $this->cardName = $this->transaksiMutasiKasPettyCashLainnya->card->nama;
         }
     }
 

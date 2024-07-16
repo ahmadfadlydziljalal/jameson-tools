@@ -31,6 +31,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
     public ?string $nominalSeharusnya = null;
     public ?string $balance = null;
     public ?string $sumberDana = null;
+    public ?array $referensiPenerimaan = null;
 
     public static function optsBalance(): array
     {
@@ -46,20 +47,38 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
         parent::afterFind();
 
         if ($this->setoranKasirs) {
+
+            $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
+            $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
             foreach ($this->setoranKasirs as $setoranKasir) {
+                $this->referensiPenerimaan['data'][] = [
+                    'setoranKasir' => $setoranKasir->reference_number,
+                    'tanggalSetoran' => $setoranKasir->tanggal_setoran,
+                    'customer' => $setoranKasir->staff_name,
+                    'total' => $setoranKasir->total,
+                ];
                 $this->nominalSeharusnya = $setoranKasir->total;
             }
             $this->setBalance();
-            $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
         }
 
         if ($this->invoices) {
-            /** @var Invoice $invoice */
+
+            $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
+            $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
+
             foreach ($this->invoices as $invoice) {
+                $this->referensiPenerimaan['data'][] = [
+                    'invoice' => $invoice->reference_number,
+                    'tanggalInvoice' => $invoice->tanggal_invoice,
+                    'customer' => $invoice->customer->nama,
+                    'total' =>$invoice->getTotal(),
+                ];
+
                 $this->nominalSeharusnya += $invoice->getTotal();
             }
+
             $this->setBalance();
-            $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
         }
 
     }
