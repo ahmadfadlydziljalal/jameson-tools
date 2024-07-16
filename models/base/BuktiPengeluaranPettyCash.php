@@ -15,7 +15,6 @@ use \app\models\active_queries\BuktiPengeluaranPettyCashQuery;
  *
  * @property integer $id
  * @property string $reference_number
- * @property integer $job_order_bill_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $created_by
@@ -60,10 +59,7 @@ abstract class BuktiPengeluaranPettyCash extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['job_order_bill_id'], 'integer'],
-            [['reference_number'], 'string', 'max' => 255],
-            [['job_order_bill_id'], 'unique'],
-            [['job_order_bill_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JobOrderBill::class, 'targetAttribute' => ['job_order_bill_id' => 'id']]
+            [['reference_number'], 'string', 'max' => 255]
         ]);
     }
 
@@ -75,7 +71,6 @@ abstract class BuktiPengeluaranPettyCash extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'reference_number' => 'Reference Number',
-            'job_order_bill_id' => 'Job Order Bill ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -96,7 +91,7 @@ abstract class BuktiPengeluaranPettyCash extends \yii\db\ActiveRecord
      */
     public function getJobOrderBill()
     {
-        return $this->hasOne(\app\models\JobOrderBill::class, ['id' => 'job_order_bill_id']);
+        return $this->hasOne(\app\models\JobOrderBill::class, ['bukti_pengeluaran_petty_cash_id' => 'id']);
     }
 
     /**

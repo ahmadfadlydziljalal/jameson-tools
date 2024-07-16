@@ -7,6 +7,7 @@ use app\models\base\BuktiPengeluaranPettyCash as BaseBuktiPengeluaranPettyCash;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bukti_pengeluaran_petty_cash".
@@ -19,6 +20,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     const SCENARIO_PENGELUARAN_BY_BILL = 'scenario_pengeluaran_by_bill';
 
     public ?string $cashAdvanceReferenceNumber = null;
+    public ?string $jobOrderBillReferenceNumber = null;
 
     public function behaviors()
     {
@@ -37,7 +39,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     {
         return ArrayHelper::merge(parent::rules(), [
             ['cashAdvanceReferenceNumber', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON],
-            ['job_order_bill_id', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_BILL]
+            ['jobOrderBillReferenceNumber', 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_BILL]
         ]);
     }
 
@@ -48,7 +50,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
             'cashAdvanceReferenceNumber'
         ];
         $scenarios[self::SCENARIO_PENGELUARAN_BY_BILL] = [
-            'job_order_bill_id'
+            'jobOrderBillReferenceNumber'
         ];
         return $scenarios;
     }
@@ -57,6 +59,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'cashAdvanceReferenceNumber' => 'Kasbon | Cash Advance',
+            'jobOrderBillReferenceNumber' => 'Bill Ref.',
         ]);
     }
 
@@ -97,7 +100,28 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     public function saveByBill(): bool
     {
         if (!$this->validate()) return false;
-        return $this->save(false);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+                $bill = JobOrderBill::findOne($this->jobOrderBillReferenceNumber);
+                $bill->bukti_pengeluaran_petty_cash_id = $this->id;
+                $flag = $bill->save(false);
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
+            Yii::error($e->getMessage());
+            $transaction->rollBack();
+        }
+
+        return false;
     }
 
     public function deleteByCashAdvance(): bool
@@ -163,13 +187,49 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
 
     public function updateByBill(): bool
     {
-        if (!$this->validate()) {
-            return false;
+        if (!$this->validate()) return false;
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+                // Ada perbedaan antara bill yang sudah exist dengan update yang terbaru
+                if ($this->jobOrderBill->id != intval($this->jobOrderBillReferenceNumber)) {
+
+                    // set new
+                    $newJobOrderBill = JobOrderBill::findOne($this->jobOrderBillReferenceNumber);
+
+                    // kalau ga ada jangan jalankan transaction untuk mencegah bug
+                    if($newJobOrderBill){
+
+                        // set the new id
+                        $newJobOrderBill->bukti_pengeluaran_petty_cash_id = $this->id;
+
+                        // reset old to null
+                        $this->jobOrderBill->bukti_pengeluaran_petty_cash_id = null;
+
+                        // save, always reset old by first, then save the new one
+                        $flag = $this->jobOrderBill->save(false) && $newJobOrderBill->save(false);
+
+                    }else{
+                        $flag = false;
+                    }
+                }
+            }
+
+            if($flag){
+                $transaction->commit();
+                return true;
+            }else{
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
+            Yii::error($e->getMessage());
+            $transaction->rollBack();
         }
-        if ($this->getOldAttribute('job_order_bill_id') == $this->job_order_bill_id) {
-            return true;  //  do nothing
-        }
-        return $this->save(false);
+
+        return false;
     }
 
     public function deleteByBill(): bool|int

@@ -3,8 +3,8 @@
 use app\components\helpers\ArrayHelper;
 use app\models\JobOrderBill;
 use kartik\select2\Select2;
-use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\BuktiPengeluaranPettyCash */
@@ -41,20 +41,23 @@ use yii\bootstrap5\ActiveForm;
 
             <?php
             $data = [];
-            if(!$model->isNewRecord){
-                $data[$model->job_order_bill_id] = $model->jobOrderBill->jobOrder->reference_number . ' - ' .
-                    $model->jobOrderBill->vendor->nama. ' - ' .
-                    Yii::$app->formatter->asDecimal($model->jobOrderBill->getTotalPrice(),2)
-                ;
+            if (!$model->isNewRecord) {
+                $data[$model->jobOrderBill->id] = $model->jobOrderBill->jobOrder->reference_number . ' - ' .
+                    $model->jobOrderBill->vendor->nama . ' - ' .
+                    Yii::$app->formatter->asDecimal($model->jobOrderBill->getTotalPrice(), 2);
 
+                $model->jobOrderBillReferenceNumber = $model->jobOrderBill->id;
             }
+
             $data = ArrayHelper::merge($data, JobOrderBill::find()->notYetRegistered());
-            echo $form->field($model, 'job_order_bill_id')->widget(Select2::class,[
-                'data' => $data,
-                'options' => [
+            echo $form->field($model, 'jobOrderBillReferenceNumber')
+                ->dropDownList($data)
+                /*->widget(Select2::class, [
+                    'data' => $data,
+                    'options' => [
                         'placeholder' => 'Pilih Bill ...',
-                ]
-            ]);
+                    ]
+                ])*/;
             ?>
 
             <div class="d-flex mt-3 justify-content-between">
@@ -62,12 +65,11 @@ use yii\bootstrap5\ActiveForm;
                     'class' => 'btn btn-secondary',
                     'type' => 'button'
                 ]) ?>
-                <?= Html::submitButton(' Simpan', ['class' =>'btn btn-success' ]) ?>
+                <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
             </div>
 
         </div>
     </div>
-
 
 
     <?php ActiveForm::end(); ?>

@@ -15,6 +15,7 @@ use \app\models\active_queries\JobOrderBillQuery;
  * @property integer $job_order_id
  * @property integer $vendor_id
  * @property string $reference_number
+ * @property integer $bukti_pengeluaran_petty_cash_id
  *
  * @property \app\models\BuktiPengeluaranPettyCash $buktiPengeluaranPettyCash
  * @property \app\models\JobOrder $jobOrder
@@ -39,9 +40,11 @@ abstract class JobOrderBill extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['job_order_id', 'vendor_id'], 'integer'],
+            [['job_order_id', 'vendor_id', 'bukti_pengeluaran_petty_cash_id'], 'integer'],
             [['vendor_id', 'reference_number'], 'required'],
             [['reference_number'], 'string', 'max' => 255],
+            [['bukti_pengeluaran_petty_cash_id'], 'unique'],
+            [['bukti_pengeluaran_petty_cash_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BuktiPengeluaranPettyCash::class, 'targetAttribute' => ['bukti_pengeluaran_petty_cash_id' => 'id']],
             [['job_order_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JobOrder::class, 'targetAttribute' => ['job_order_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
         ]);
@@ -57,6 +60,7 @@ abstract class JobOrderBill extends \yii\db\ActiveRecord
             'job_order_id' => 'Job Order ID',
             'vendor_id' => 'Vendor ID',
             'reference_number' => 'Reference Number',
+            'bukti_pengeluaran_petty_cash_id' => 'Bukti Pengeluaran Petty Cash ID',
         ]);
     }
 
@@ -65,7 +69,7 @@ abstract class JobOrderBill extends \yii\db\ActiveRecord
      */
     public function getBuktiPengeluaranPettyCash()
     {
-        return $this->hasOne(\app\models\BuktiPengeluaranPettyCash::class, ['job_order_bill_id' => 'id']);
+        return $this->hasOne(\app\models\BuktiPengeluaranPettyCash::class, ['id' => 'bukti_pengeluaran_petty_cash_id']);
     }
 
     /**

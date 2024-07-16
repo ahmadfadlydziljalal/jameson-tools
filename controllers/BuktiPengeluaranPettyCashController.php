@@ -159,16 +159,14 @@ class BuktiPengeluaranPettyCashController extends Controller
     {
         $model = $this->findModel($id);
         $model->scenario = BuktiPengeluaranPettyCash::SCENARIO_PENGELUARAN_BY_BILL;
-        if($this->request->isPost && $model->load($this->request->post())){
 
+        if($this->request->isPost && $model->load($this->request->post())){
             if($model->updateByBill()){
                 Yii::$app->session->setFlash('info',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil dirubah.');
                 return $this->redirect(['index']);
-            }else{
-                Yii::$app->session->setFlash('danger',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' gagal dirubah.');
             }
 
-
+            Yii::$app->session->setFlash('danger',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' gagal dirubah.');
         }
 
         return $this->render('bill/update', [
