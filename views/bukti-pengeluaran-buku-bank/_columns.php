@@ -34,7 +34,7 @@ return [
             'class' => 'd-none d-lg-table-cell',
         ]
     ],
-    [
+    /*[
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'rekening_saya_id',
         'format' => 'text',
@@ -48,13 +48,13 @@ return [
         'filterOptions' => [
             'class' => 'd-none d-lg-table-cell',
         ]
-    ],
+    ],*/
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'tujuanBayar',
         'format' => 'text',
         'contentOptions' => [
-            'class' => 'd-none d-lg-table-cell',
+            'class' => 'd-none d-lg-table-cell text-wrap',
         ],
         'headerOptions' => [
             'class' => 'd-none d-lg-table-cell',
@@ -65,9 +65,47 @@ return [
     ],
     [
         'class' => '\yii\grid\DataColumn',
+        'attribute' => 'referensiPembayaran',
+        'format' => 'raw',
+        'value' => function ($model) {
+            $map = array_map(function($element){
+                return Html::tag(
+                    'span',
+                    $element['jobOrder'] . ' - ' . $element['reference_number'],
+                    ['class' => 'badge rounded-pill text-bg-primary']
+                );
+            } , $model->referensiPembayaran);
+            return implode(' ', $map);
+        },
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ]
+    ],
+    /*[
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'referensiPembayaran',
+        'format' => 'raw',
+        'value' => fn($model) => Html::tag('pre', \yii\helpers\VarDumper::dumpAsString($model->referensiPembayaran)),
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ]
+    ],*/
+    [
+        'class' => '\yii\grid\DataColumn',
         'attribute' => 'totalBayar',
         'format' => ['decimal', 2],
-
         'contentOptions' => [
             'class' => 'd-none d-lg-table-cell',
             'style' => 'text-align:right',
@@ -135,12 +173,12 @@ return [
             'update' => function ($url, $model) {
 
                 /** @var app\models\BuktiPengeluaranBukuBank $model */
-                if($model->jobOrderDetailCashAdvances){
-                    return Html::a('<i class="bi bi-pencil"></i>' ,['bukti-pengeluaran-buku-bank/update-by-cash-advance','id'=>$model->id]);
+                if ($model->jobOrderDetailCashAdvances) {
+                    return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-cash-advance', 'id' => $model->id]);
                 }
 
-                if($model->jobOrderBills){
-                    return Html::a('<i class="bi bi-pencil"></i>' ,['bukti-pengeluaran-buku-bank/update-by-bill','id'=>$model->id]);
+                if ($model->jobOrderBills) {
+                    return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-bill', 'id' => $model->id]);
                 }
                 return $model->id;
             }

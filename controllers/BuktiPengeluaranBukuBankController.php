@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\models\BuktiPenerimaanBukuBank;
 use Yii;
 use app\models\BuktiPengeluaranBukuBank;
 use app\models\search\BuktiPengeluaranBukuBankSearch;
@@ -59,8 +58,6 @@ class BuktiPengeluaranBukuBankController extends Controller
             'model' => $this->findModel($id)
         ]);
     }
-
-
 
     /**
      * Creates a new BuktiPengeluaranBukuBank model.
@@ -153,8 +150,6 @@ class BuktiPengeluaranBukuBankController extends Controller
             'model' => $model,
         ]);
     }
-
-
 
     /**
     * Deletes an existing BuktiPengeluaranBukuBank model.

@@ -14,31 +14,46 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 {
     const SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON = 'scenario_pengeluaran_by_cash_advance_or_kasbon';
     const SCENARIO_PENGELUARAN_BY_BILL = 'scenario_pengeluaran_by_bill';
-
     const PEMBAYARAN_CASH_ADVANCE_OR_KASBON = 'Cash Advance / Kasbon';
     const PEMBAYARAN_BILL_JOB_ORDER = 'Bill Job Order';
 
     public ?array $cashAdvances = [];
     public ?array $bills = [];
     public ?string $tujuanBayar = null;
+    public ?array $referensiPembayaran = null;
     public float|int $totalBayar = 0;
 
     public function afterFind(): void
     {
         parent::afterFind();
 
+        // Bayar untuk kasbon
         if ($this->jobOrderDetailCashAdvances) {
             $this->tujuanBayar = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
 
-            foreach ($this->jobOrderDetailCashAdvances as $cashAdvance){
+
+            foreach ($this->jobOrderDetailCashAdvances as $cashAdvance) {
                 $this->totalBayar += $cashAdvance->cash_advance;
+                $this->referensiPembayaran[] = [
+                    'jobOrder' => $cashAdvance->jobOrder->reference_number,
+                    'vendor' => $cashAdvance->vendor->nama,
+                    'reference_number' => 'Kasbon ke ' . $cashAdvance->order,
+                    'total' => $cashAdvance->cash_advance,
+                ];
             }
         }
 
+        // Bayar untuk tagihan
         if ($this->jobOrderBills) {
             $this->tujuanBayar = static::PEMBAYARAN_BILL_JOB_ORDER;
             foreach ($this->jobOrderBills as $jobOrderBill) {
                 $this->totalBayar += $jobOrderBill->getTotalPrice();
+                $this->referensiPembayaran[] = [
+                    'jobOrder' => $jobOrderBill->jobOrder->reference_number,
+                    'vendor' => $jobOrderBill->vendor->nama,
+                    'reference_number' => $jobOrderBill->reference_number,
+                    'total' => $jobOrderBill->getTotalPrice(),
+                ];
             }
         }
     }
