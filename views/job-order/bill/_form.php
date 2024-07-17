@@ -1,6 +1,8 @@
 <?php
 
+use app\enums\JenisBiayaCategoryEnum;
 use app\models\Card;
+use app\models\JenisBiaya;
 use app\models\JobOrderBill;
 use app\models\JobOrderBillDetail;
 use app\models\Satuan;
@@ -46,7 +48,7 @@ use yii\widgets\MaskedInput;
         <div class="form-master">
             <div class="row">
                 <div class="col-12 col-lg-7">
-                    <?= $form->field($model, 'vendor_id')->widget(Select2::class,[
+                    <?= $form->field($model, 'vendor_id')->widget(Select2::class, [
                         'data' => Card::find()->map(),
                         'options' => ['placeholder' => '...'],
                     ]) ?>
@@ -68,7 +70,7 @@ use yii\widgets\MaskedInput;
                 'deleteButton' => '.remove-item',
                 'model' => $modelsDetail[0],
                 'formId' => 'dynamic-form',
-                'formFields' => [ 'id',  'job_order_bill_id',  'quantity',  'satuan_id',  'name',  'price', ],
+                'formFields' => ['id', 'job_order_bill_id', 'jenis_biaya_id', 'quantity', 'satuan_id', 'name', 'price',],
             ]);
             ?>
 
@@ -76,10 +78,8 @@ use yii\widgets\MaskedInput;
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th colspan="6">Job order bill detail</th>
-                    </tr>
-                    <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Jenis Biaya</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Satuan</th>
                         <th scope="col">Name</th>
@@ -99,9 +99,15 @@ use yii\widgets\MaskedInput;
                                 } ?>
                                 <i class="bi bi-arrow-right-short"></i>
                             </td>
-
+                            <td>
+                                <?= $form->field($modelDetail, "[$i]jenis_biaya_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                    ->dropDownList(
+                                        JenisBiaya::find()->mapCategory([JenisBiayaCategoryEnum::EXPENSE, JenisBiayaCategoryEnum::COST]), [
+                                        'prompt' => '= Pilih Salah Satu ='
+                                    ]) ?>
+                            </td>
                             <td><?= $form->field($modelDetail, "[$i]quantity", ['template' =>
-                                    '{input}{error}{hint}', 'options' =>['class' => null] ])->widget(MaskedInput::class, [
+                                    '{input}{error}{hint}', 'options' => ['class' => null]])->widget(MaskedInput::class, [
                                     'clientOptions' => [
                                         'alias' => 'numeric',
                                         'digits' => 2,
@@ -116,13 +122,13 @@ use yii\widgets\MaskedInput;
                                     ]
                                 ]); ?></td>
                             <td><?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
-                                    '{input}{error}{hint}', 'options' =>['class' => null] ])->dropDownList(Satuan::find()->map(), [
+                                    '{input}{error}{hint}', 'options' => ['class' => null]])->dropDownList(Satuan::find()->map(), [
                                     'prompt' => '= Pilih Salah Satu ='
                                 ]) ?></td>
                             <td><?= $form->field($modelDetail, "[$i]name", ['template' =>
-                                    '{input}{error}{hint}', 'options' =>['class' => null] ]); ?></td>
+                                    '{input}{error}{hint}', 'options' => ['class' => null]]); ?></td>
                             <td><?= $form->field($modelDetail, "[$i]price", ['template' =>
-                                    '{input}{error}{hint}', 'options' =>['class' => null] ])->widget(MaskedInput::class, [
+                                    '{input}{error}{hint}', 'options' => ['class' => null]])->widget(MaskedInput::class, [
                                     'clientOptions' => [
                                         'alias' => 'numeric',
                                         'digits' => 2,
@@ -149,8 +155,8 @@ use yii\widgets\MaskedInput;
 
                     <tfoot>
                     <tr>
-                        <td class="text-end" colspan="5">
-                            <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', [ 'class' => 'add-item btn btn-success', ]); ?>
+                        <td class="text-end" colspan="6">
+                            <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                         </td>
                         <td></td>
                     </tr>
@@ -163,10 +169,10 @@ use yii\widgets\MaskedInput;
 
         <div class="d-flex justify-content-between">
             <?= Html::a('Close', ['index'], ['class' => 'btn btn-secondary']) ?>
-            <?= Html::submitButton(' Simpan', ['class' =>'btn btn-success'])?>
+            <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
         </div>
     </div>
 
-    <?php ActiveForm::end();  ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

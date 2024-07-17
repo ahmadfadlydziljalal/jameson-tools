@@ -13,11 +13,13 @@ use \app\models\active_queries\JobOrderBillDetailQuery;
  *
  * @property integer $id
  * @property integer $job_order_bill_id
+ * @property integer $jenis_biaya_id
  * @property string $quantity
  * @property integer $satuan_id
  * @property string $name
  * @property string $price
  *
+ * @property \app\models\JenisBiaya $jenisBiaya
  * @property \app\models\JobOrderBill $jobOrderBill
  * @property \app\models\Satuan $satuan
  */
@@ -39,12 +41,13 @@ abstract class JobOrderBillDetail extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['job_order_bill_id', 'satuan_id'], 'integer'],
-            [['quantity', 'satuan_id', 'name', 'price'], 'required'],
+            [['job_order_bill_id', 'jenis_biaya_id', 'satuan_id'], 'integer'],
+            [['jenis_biaya_id', 'quantity', 'satuan_id', 'name', 'price'], 'required'],
             [['quantity', 'price'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['job_order_bill_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JobOrderBill::class, 'targetAttribute' => ['job_order_bill_id' => 'id']],
-            [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']]
+            [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']],
+            [['jenis_biaya_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JenisBiaya::class, 'targetAttribute' => ['jenis_biaya_id' => 'id']]
         ]);
     }
 
@@ -56,11 +59,20 @@ abstract class JobOrderBillDetail extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'job_order_bill_id' => 'Job Order Bill ID',
+            'jenis_biaya_id' => 'Jenis Biaya ID',
             'quantity' => 'Quantity',
             'satuan_id' => 'Satuan ID',
             'name' => 'Name',
             'price' => 'Price',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJenisBiaya()
+    {
+        return $this->hasOne(\app\models\JenisBiaya::class, ['id' => 'jenis_biaya_id']);
     }
 
     /**

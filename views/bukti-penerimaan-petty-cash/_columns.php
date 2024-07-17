@@ -25,70 +25,53 @@ return [
     ],
     [
         'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'voucher',
+        'attribute'=>'nomorVoucherMutasiKasPettyCash',
         'value'=> fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
     ],
-    /*[
-        'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'bukti_pengeluaran_petty_cash_cash_advance_id',
-    ],*/
     [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'bukti_pengeluaran_petty_cash_cash_advance_id',
-        'value'=>function($model){
-            /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPengeluaranPettyCashCashAdvance?->reference_number;
-        }
+        'value'=> fn($model) => $model->buktiPengeluaranPettyCashCashAdvance?->reference_number
     ],
     [
         'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'cash_advance',
-        'value'=>function($model){
-            /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            if( $model->buktiPengeluaranPettyCashCashAdvance){
-                return 'Kasbon ke ' . $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order;
-            }
-
-        }
+        'attribute'=>'buku_bank_id',
+        'value'=> fn($model) => $model->bukuBank?->nomor_voucher
     ],
     [
         'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'jenis_biaya',
-        'value'=>function($model){
-            /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance->jenisBiaya->name;
-        }
+        'attribute'=>'businessProcess',
+        'value'=> fn($model) => $model->referensiPenerimaan['businessProcess']
+    ],
+    [
+        'class'=>'\yii\grid\DataColumn',
+        'attribute'=>'jobOrder',
+        'value'=> fn($model) => $model->referensiPenerimaan['data']['jobOrder']
+    ],
+    [
+        'class'=>'\yii\grid\DataColumn',
+        'attribute'=>'buktiPengeluaran',
+        'value'=> fn($model) => $model->referensiPenerimaan['data']['buktiPengeluaran']
+    ],
+    [
+        'class'=>'\yii\grid\DataColumn',
+        'attribute'=>'jenisBiaya',
+        'value'=> fn($model) => $model->referensiPenerimaan['data']['jenisBiaya']
+    ],
+    [
+        'class'=>'\yii\grid\DataColumn',
+        'attribute'=>'vendor',
+        'value'=> fn($model) => $model->referensiPenerimaan['data']['vendor']
     ],
     [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'nominal',
-        'value'=>function($model){
-            /** @var app\models\base\BuktiPenerimaanPettyCash $model */
-            return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance->cash_advance;
-        },
-        'contentOptions'=>['style'=>'text-align:right'],
         'format'=> ['decimal',2],
+        'contentOptions' => [
+            'style' => 'text-align:right',
+        ],
+        'value'=> fn($model) => $model->referensiPenerimaan['data']['nominal']
     ],
-    // [
-        // 'class'=>'\yii\grid\DataColumn',
-        // 'attribute'=>'created_at',
-        // 'format'=>'text',
-    // ],
-    // [
-        // 'class'=>'\yii\grid\DataColumn',
-        // 'attribute'=>'updated_at',
-        // 'format'=>'text',
-    // ],
-    // [
-        // 'class'=>'\yii\grid\DataColumn',
-        // 'attribute'=>'created_by',
-        // 'format'=>'text',
-    // ],
-    // [
-        // 'class'=>'\yii\grid\DataColumn',
-        // 'attribute'=>'updated_by',
-        // 'format'=>'text',
-    // ],
     [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{export-to-pdf} {view} {update} {delete}',
@@ -122,4 +105,59 @@ return [
             }
         ]
     ],
+//    [
+//        'class'=>'\yii\grid\DataColumn',
+//        'attribute'=>'referensiPenerimaan',
+//        'format'=>'html',
+//        'value' => fn($model) => Html::tag('pre',\yii\helpers\VarDumper::dumpAsString($model->referensiPenerimaan))
+//    ],
+//    [
+//        'class'=>'\yii\grid\DataColumn',
+//        'attribute'=>'cash_advance',
+//        'value'=>function($model){
+//            /** @var app\models\base\BuktiPenerimaanPettyCash $model */
+//            if( $model->buktiPengeluaranPettyCashCashAdvance){
+//                return 'Kasbon ke ' . $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order;
+//            }
+//        }
+//    ],
+//    [
+//        'class'=>'\yii\grid\DataColumn',
+//        'attribute'=>'jenis_biaya',
+//        'value'=>function($model){
+//            /** @var app\models\base\BuktiPenerimaanPettyCash $model */
+//            return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance->jenisBiaya->name;
+//        }
+//    ],
+//    [
+//        'class'=>'\yii\grid\DataColumn',
+//        'attribute'=>'nominal',
+//        'value'=>function($model){
+//            /** @var app\models\base\BuktiPenerimaanPettyCash $model */
+//            return $model->buktiPengeluaranPettyCashCashAdvance?->jobOrderDetailCashAdvance->cash_advance;
+//        },
+//        'contentOptions'=>['style'=>'text-align:right'],
+//        'format'=> ['decimal',2],
+//    ],
+    // [
+        // 'class'=>'\yii\grid\DataColumn',
+        // 'attribute'=>'created_at',
+        // 'format'=>'text',
+    // ],
+    // [
+        // 'class'=>'\yii\grid\DataColumn',
+        // 'attribute'=>'updated_at',
+        // 'format'=>'text',
+    // ],
+    // [
+        // 'class'=>'\yii\grid\DataColumn',
+        // 'attribute'=>'created_by',
+        // 'format'=>'text',
+    // ],
+    // [
+        // 'class'=>'\yii\grid\DataColumn',
+        // 'attribute'=>'updated_by',
+        // 'format'=>'text',
+    // ],
+
 ];   

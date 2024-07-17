@@ -17,8 +17,16 @@ class BuktiPenerimaanPettyCashSearch extends BuktiPenerimaanPettyCash
     public function rules() : array
     {
         return [
-            [['id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['reference_number'], 'safe'],
+            [[
+                'id',
+                'bukti_pengeluaran_petty_cash_cash_advance_id',
+                'buku_bank_id',
+                'created_at',
+                'updated_at',
+                'created_by',
+                'updated_by'
+            ], 'integer'],
+            [['reference_number', 'nomorVoucherMutasiKasPettyCash'], 'safe'],
         ];
     }
 
@@ -38,7 +46,7 @@ class BuktiPenerimaanPettyCashSearch extends BuktiPenerimaanPettyCash
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = BuktiPenerimaanPettyCash::find();
+        $query = BuktiPenerimaanPettyCash::find()->joinWith('mutasiKasPettyCash');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -59,13 +67,17 @@ class BuktiPenerimaanPettyCashSearch extends BuktiPenerimaanPettyCash
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'bukti_pengeluaran_petty_cash_cash_advance_id' => $this->bukti_pengeluaran_petty_cash_cash_advance_id,
+            'buku_bank_id' => $this->buku_bank_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'reference_number', $this->reference_number]);
+        $query
+            ->andFilterWhere(['like', 'reference_number', $this->reference_number])
+            ->andFilterWhere(['like', 'mutasi_kas_petty_cash.nomor_voucher', $this->nomorVoucherMutasiKasPettyCash]);
 
         return $dataProvider;
     }

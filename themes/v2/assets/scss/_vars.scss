@@ -31,9 +31,9 @@ $danger: #f20823;*/
 //$warning: #edca28;
 //$danger: #f41534;
 
-$page:#d4d2d1;
+$page: #d4d2d1;
 $body-bg: #eff3f8;
-$light: #fbfbfb;
+$light: #d4d2d1;
 $white: #fff;
 $dark: #090e1e;
 $primary: #2e3a49;
@@ -68,6 +68,8 @@ $theme-colors: (
         "info" : $info,
         "secondary" : $secondary,
         "warning" : $warning,
+        "light": $light,
+        "dark": $dark,
         "gray-100" : $gray-100,
         "gray-200" : $gray-200,
         "gray-300" : $gray-300,

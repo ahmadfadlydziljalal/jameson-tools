@@ -192,20 +192,20 @@ return [
          ],
          'viewOptions' => [
             'label' => '<i class="bi bi-eye-fill"></i>',
-            'role' => 'modal-remote',
+            /*'role' => 'modal-remote',*/
             'title' => 'View',
             'data-toggle' => 'tooltip'
          ],
          'updateOptions' => [
             'label' => '<i class="bi bi-pencil-fill"></i>',
-            'role' => 'modal-remote',
+            /*'role' => 'modal-remote',*/
             'title' => 'Update',
             'data-toggle' => 'tooltip'
          ],
          'deleteOptions' => [
-            'label' => '<i class="bi bi-trash"></i>',
+            'label' => '<i class="bi bi-trash-fill"></i>',
             'class' => 'text-danger',
-            'role' => 'modal-remote',
+            /*'role' => 'modal-remote',*/
             'title' => 'Delete',
             'data-confirm' => false,
             'data-method' => false,// for overide yii data api

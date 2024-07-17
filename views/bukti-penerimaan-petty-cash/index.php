@@ -36,9 +36,10 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <h1 class="text-danger">TODO Tambah melalui Buku Bank Belum ada</h1>
-
-    <?php echo GridView::widget([
+    <?= GridView::widget([
+        'tableOptions' => [
+            'class' => 'table table-gridview table-fixes-last-column'
+        ],
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => require(__DIR__ . '/_columns.php'),

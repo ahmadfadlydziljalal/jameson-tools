@@ -52,42 +52,47 @@ use yii\web\View;
         </div>
     </div>
 
+
     <!-- Kasbon -->
-    <p>Kasbon / Cash Advance</p>
-    <?php
-    $columns =  require __DIR__ . '/cash-advance/_columns.php';
-    array_pop($columns);
-    echo GridView::widget([
-        'tableOptions' => ['class' => 'table table-gridview'],
-        'layout' => "{items}",
-        'dataProvider' => new ActiveDataProvider([
-            'query' => $model->getJobOrderDetailCashAdvances(),
-            'pagination' => false,
-            'sort' => false,
-        ]),
-        'columns' => $columns,
-        'showPageSummary' => true
-    ]);
-    ?>
+    <?php if ($model->jobOrderDetailCashAdvances) : ?>
+        <p>Kasbon / Cash Advance</p>
+        <?php
+        $columns = require __DIR__ . '/cash-advance/_columns.php';
+        array_pop($columns);
+        echo GridView::widget([
+            'tableOptions' => ['class' => 'table table-gridview'],
+            'layout' => "{items}",
+            'dataProvider' => new ActiveDataProvider([
+                'query' => $model->getJobOrderDetailCashAdvances(),
+                'pagination' => false,
+                'sort' => false,
+            ]),
+            'columns' => $columns,
+            'showPageSummary' => true
+        ]);
+        ?>
+    <?php endif; ?>
 
     <!-- Bill -->
-    <p>Tagihan Biaya / Bill</p>
-    <?php
-    $columns =  require __DIR__ . '/bill/_columns.php';
-    array_pop($columns);
-    unset($columns[1]);
-    echo GridView::widget([
-        'tableOptions' => ['class' => 'table table-gridview'],
-        'layout' => "{items}",
-        'dataProvider' => new ActiveDataProvider([
-            'query' => $model->getJobOrderBills(),
-            'pagination' => false,
-            'sort' => false,
-        ]),
-        'columns' => $columns,
-        'showPageSummary' => true
-    ]);
-    ?>
+    <?php if ($model->jobOrderBills) : ?>
+        <p>Tagihan Biaya / Bill</p>
+        <?php
+        $columns = require __DIR__ . '/bill/_columns.php';
+        array_pop($columns);
+        unset($columns[1]);
+        echo GridView::widget([
+            'tableOptions' => ['class' => 'table table-gridview'],
+            'layout' => "{items}",
+            'dataProvider' => new ActiveDataProvider([
+                'query' => $model->getJobOrderBills(),
+                'pagination' => false,
+                'sort' => false,
+            ]),
+            'columns' => $columns,
+            'showPageSummary' => true
+        ]);
+        ?>
+    <?php endif; ?>
 
     <p>Keterangan:</p>
     <span><?= empty($model->keterangan) ? '' : nl2br($model->keterangan) ?></span>

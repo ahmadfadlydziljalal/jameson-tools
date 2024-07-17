@@ -2,9 +2,7 @@
 
 namespace app\models\active_queries;
 
-use app\components\helpers\ArrayHelper;
 use \app\models\JobOrderBillDetail;
-use yii\db\Expression;
 
 /**
  * This is the ActiveQuery class for [[JobOrderBillDetail]].
@@ -15,6 +13,5 @@ use yii\db\Expression;
  */
 class JobOrderBillDetailQuery extends \yii\db\ActiveQuery
 {
-
 
 }

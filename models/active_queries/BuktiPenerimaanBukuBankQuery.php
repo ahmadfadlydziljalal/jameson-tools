@@ -23,6 +23,9 @@ class BuktiPenerimaanBukuBankQuery extends \yii\db\ActiveQuery
             ])
             ->all();
 
-        return ArrayHelper::map($data, 'id', 'reference_number');
+        return ArrayHelper::map($data, 'id', function($model){
+            /** @var BuktiPenerimaanBukuBank $model */
+            return $model->reference_number . ' -  ' . $model->sumberDana . ' - ' . \Yii::$app->formatter->asDecimal($model->jumlah_setor, 2);
+        });
     }
 }

@@ -2,7 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $model app\models\BukuBank */
 /* @see app\controllers\BukuBankController::actionCreate() */
-/* @var $kodeVoucher \app\models\KodeVoucher */
+/* @var $kodeVoucher app\models\KodeVoucher */
 
 use yii\helpers\Html;
 $this->title = 'Tambah Buku Bank '. $kodeVoucher->name;

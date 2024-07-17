@@ -73,7 +73,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
         return parent::beforeSave($insert);
     }
 
-    public function afterFind()
+    public function afterFind(): void
     {
         parent::afterFind();
 
@@ -105,12 +105,23 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
 
         # Pencatatan dari bukti penerimaan
         if($this->bukti_penerimaan_petty_cash_id){
-            if($this->buktiPenerimaanPettyCash){
+
+            # Dari pengembalian kasbon
+            if($this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance){
                 $this->businessProcess =
                     'Pengembalian Kasbon ke ' . $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order. ', '.
                     $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number;
                 $this->nominal = $this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance;
                 $this->cardName =$this->buktiPenerimaanPettyCash->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->vendor->nama;
+            }
+
+            # Dari Buku Bank
+            if($this->buktiPenerimaanPettyCash->bukuBank){
+                $this->businessProcess = 'Mutasi Bank ' . $this->buktiPenerimaanPettyCash->bukuBank->nomor_voucher;
+                foreach ($this->buktiPenerimaanPettyCash->bukuBank->buktiPengeluaranBukuBank->jobOrderBills as $jobOrderBill){
+                    $this->nominal += $jobOrderBill->getTotalPrice();
+                }
+                $this->cardName  =  $this->buktiPenerimaanPettyCash->bukuBank->buktiPengeluaranBukuBank->vendor->nama;
             }
         }
 
@@ -120,6 +131,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
             $this->nominal = $this->transaksiMutasiKasPettyCashLainnya->nominal;
             $this->cardName = $this->transaksiMutasiKasPettyCashLainnya->card->nama;
         }
+
     }
 
     public function saveByBuktiPengeluaranPettyCash(): bool

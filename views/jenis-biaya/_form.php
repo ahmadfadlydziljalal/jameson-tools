@@ -40,6 +40,9 @@ use yii\bootstrap5\ActiveForm;
                     'autofocus'=> 'autofocus'
                 ])?>
            <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+           <?= $form->field($model, 'category')->dropDownList(\app\enums\JenisBiayaCategoryEnum::map(),[
+                   'prompt'=>'...',
+           ]) ?>
 
             <div class="d-flex mt-3 justify-content-between">
                 <?= Html::a(' Tutup', ['index'], [

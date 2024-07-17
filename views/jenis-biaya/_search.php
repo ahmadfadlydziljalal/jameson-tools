@@ -21,9 +21,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description') ?>
 
+    <?= $form->field($model, 'category') ?>
+
     <?= $form->field($model, 'created_at') ?>
 
-    <?= $form->field($model, 'updated_at') ?>
+    <?php // echo $form->field($model, 'updated_at') ?>
 
     <?php // echo $form->field($model, 'created_by') ?>
 

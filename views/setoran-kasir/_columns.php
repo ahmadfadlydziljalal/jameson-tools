@@ -1,8 +1,9 @@
 <?php
 
-/* @var $this \yii\web\View */
-?>
-<?php
+/* @var $this yii\web\View */
+/** @var app\models\SetoranKasir $model */
+
+use yii\bootstrap5\Html;
 
 return [
     [
@@ -34,6 +35,18 @@ return [
         'format'=>'text',
     ],
     [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'buktiPenerimaanBukuBankReferenceNumber',
+        'format' => 'html',
+        'header' => 'BB Ref.',
+        'value' => fn($model) => !$model->buktiPenerimaanBukuBank ? Html::tag('span', 'Belum ada', ['class' => 'badge bg-danger']) :
+            $model->buktiPenerimaanBukuBank->reference_number
+        ,
+        'contentOptions' => [
+            'class' => 'small'
+        ]
+    ],
+    [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'total',
         'format'=>['decimal', 2],
@@ -62,6 +75,6 @@ return [
         // 'format'=>'text',
     // ],
     [
-        'class' => 'yii\grid\ActionColumn',
+        'class' => 'kartik\grid\ActionColumn',
     ],
 ];   

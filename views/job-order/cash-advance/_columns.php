@@ -11,21 +11,17 @@ return [
     [
         'class' => 'kartik\grid\SerialColumn',
         'vAlign'=>'top',
+        'width'=>'10px',
+        'contentOptions' => [
+            'class' => 'text-nowrap'
+        ],
     ],
     [
         'class' => 'kartik\grid\DataColumn',
         'header' => 'Bukti Pengeluaran',
         'value' => function($model) {
             /** @var JobOrderDetailCashAdvance $model */
-            if($model->bukti_pengeluaran_petty_cash_id){
-                return $model->buktiPengeluaranPettyCash?->reference_number;
-            }
-
-            if($model->bukti_pengeluaran_buku_bank_id){
-                return $model->buktiPengeluaranBukuBank?->reference_number;
-            }
-
-            return '';
+            return $model->getBuktiPengeluaranReferenceNumber();
         }
     ],
     [

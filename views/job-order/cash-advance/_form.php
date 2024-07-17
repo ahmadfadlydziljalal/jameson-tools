@@ -1,5 +1,6 @@
 <?php
 
+use app\enums\JenisBiayaCategoryEnum;
 use app\models\Card;
 use app\models\JenisBiaya;
 use app\models\MataUang;
@@ -48,7 +49,7 @@ use yii\widgets\MaskedInput;
                 ]
             ]) ?>
             <?= $form->field($model, 'jenis_biaya_id')->widget(Select2::class, [
-                'data' => JenisBiaya::find()->map(),
+                'data' => JenisBiaya::find()->mapCategory(JenisBiayaCategoryEnum::CASH_ADVANCE),
                 'options' => [
                     'placeholder' => '...'
                 ]

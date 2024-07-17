@@ -4,10 +4,11 @@
 
 namespace app\models\base;
 
-use app\models\active_queries\JobOrderQuery;
+use Yii;
+use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\helpers\ArrayHelper;
+use \app\models\active_queries\JobOrderQuery;
 
 /**
  * This is the base-model class for table "job_order".
@@ -16,6 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property string $reference_number
  * @property integer $main_vendor_id
  * @property integer $main_customer_id
+ * @property integer $is_for_petty_cash
  * @property string $keterangan
  * @property integer $created_at
  * @property integer $updated_at
@@ -49,9 +51,9 @@ abstract class JobOrder extends \yii\db\ActiveRecord
         ];
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
-        ];
-
-        return $behaviors;
+                        ];
+        
+    return $behaviors;
     }
 
     /**
@@ -62,7 +64,7 @@ abstract class JobOrder extends \yii\db\ActiveRecord
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
             [['main_vendor_id', 'main_customer_id'], 'required'],
-            [['main_vendor_id', 'main_customer_id'], 'integer'],
+            [['main_vendor_id', 'main_customer_id', 'is_for_petty_cash'], 'integer'],
             [['keterangan'], 'string'],
             [['reference_number'], 'string', 'max' => 24],
             [['main_customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['main_customer_id' => 'id']],
@@ -80,6 +82,7 @@ abstract class JobOrder extends \yii\db\ActiveRecord
             'reference_number' => 'Reference Number',
             'main_vendor_id' => 'Main Vendor ID',
             'main_customer_id' => 'Main Customer ID',
+            'is_for_petty_cash' => 'Is For Petty Cash',
             'keterangan' => 'Keterangan',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

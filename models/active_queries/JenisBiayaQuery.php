@@ -15,8 +15,22 @@ use \app\models\JenisBiaya;
 class JenisBiayaQuery extends \yii\db\ActiveQuery
 {
 
+    public function mapCategory(mixed $category): array
+    {
+        if (is_array($category)) {
+            return ArrayHelper::map(parent::where([
+                'IN', 'category', $category
+            ])->all(), 'id', 'name');
+        }
+
+        return ArrayHelper::map(parent::where([
+            'category' => $category
+        ])->all(), 'id', 'name');
+    }
+
     public function map(): array
     {
-        return ArrayHelper::map(JenisBiaya::find()->all(), 'id', 'name');
+        return ArrayHelper::map(parent::all(), 'id', 'name');
     }
+
 }

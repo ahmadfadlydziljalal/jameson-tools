@@ -20,6 +20,7 @@ use \app\models\active_queries\BukuBankQuery;
  * @property string $keterangan
  *
  * @property \app\models\BuktiPenerimaanBukuBank $buktiPenerimaanBukuBank
+ * @property \app\models\BuktiPenerimaanPettyCash $buktiPenerimaanPettyCash
  * @property \app\models\BuktiPengeluaranBukuBank $buktiPengeluaranBukuBank
  * @property \app\models\KodeVoucher $kodeVoucher
  * @property \app\models\TransaksiBukuBankLainnya $transaksiBukuBankLainnya
@@ -77,6 +78,14 @@ abstract class BukuBank extends \yii\db\ActiveRecord
     public function getBuktiPenerimaanBukuBank()
     {
         return $this->hasOne(\app\models\BuktiPenerimaanBukuBank::class, ['id' => 'bukti_penerimaan_buku_bank_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBuktiPenerimaanPettyCash()
+    {
+        return $this->hasOne(\app\models\BuktiPenerimaanPettyCash::class, ['buku_bank_id' => 'id']);
     }
 
     /**

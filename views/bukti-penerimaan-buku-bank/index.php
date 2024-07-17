@@ -15,9 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="bukti-penerimaan-buku-bank-index d-flex flex-column gap-3">
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
-        <div class="ms-md-auto ms-lg-auto">
+        <div>
             <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' By Setoran Kasir', ['bukti-penerimaan-buku-bank/create-for-setoran-kasir'], ['class' => 'btn btn-success']) ?>
             <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' By Invoices', ['bukti-penerimaan-buku-bank/create-for-invoices'], ['class' => 'btn btn-success']) ?>
         </div>

@@ -5,7 +5,7 @@
 
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Html;
 
 $this->title = 'Setoran Kasir';
@@ -23,6 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php try {
         echo GridView::widget([
+            'tableOptions' => [
+                'class' => 'table table-gridview table-fixes-last-column'
+            ],
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => require(__DIR__ . '/_columns.php'),

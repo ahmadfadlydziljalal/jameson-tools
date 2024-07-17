@@ -99,6 +99,15 @@ class BukuBank extends BaseBukuBank
         }
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMutasiKasPettyCash()
+    {
+        return $this->hasOne(\app\models\MutasiKasPettyCash::class, ['bukti_penerimaan_petty_cash_id' => 'id'])
+            ->via('buktiPenerimaanPettyCash');
+    }
+
     public function saveTransaksiLainnya(TransaksiBukuBankLainnya $modelTransaksiLainnya): bool
     {
         if (!$this->validate() and !$modelTransaksiLainnya->validate()) {
@@ -117,6 +126,46 @@ class BukuBank extends BaseBukuBank
                     $transaction->rollBack();
                 }
             } else {
+                $transaction->rollBack();
+            }
+        } catch (Exception $e) {
+            Yii::error($e->getMessage());
+            $transaction->rollBack();
+        }
+
+        return false;
+    }
+
+    public function saveWithOrWithoutMutasiKasPettyCash(): bool
+    {
+        if(!$this->validate()){
+            return false;
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+                // kalau bukti pengeluaran untuk penambahan saldo mutasi kas
+                if($this->buktiPengeluaranBukuBank->is_for_petty_cash){
+                    $buktiPenerimaanPettyCash = new BuktiPenerimaanPettyCash();
+                    $buktiPenerimaanPettyCash->buku_bank_id = $this->id;
+                    $flag = $buktiPenerimaanPettyCash->save(false);
+
+                    if($flag){
+                        $mutasiKasPettyCash = new MutasiKasPettyCash();
+                        $mutasiKasPettyCash->kode_voucher_id = KodeVoucherEnum::CR->value;
+                        $mutasiKasPettyCash->bukti_penerimaan_petty_cash_id = $buktiPenerimaanPettyCash->id;
+                        $mutasiKasPettyCash->tanggal_mutasi = $this->tanggal_transaksi;
+                        $flag = $mutasiKasPettyCash->save(false);
+                    }
+                }
+            }
+
+            if($flag){
+                $transaction->commit();
+                return true;
+            }else{
                 $transaction->rollBack();
             }
         } catch (Exception $e) {

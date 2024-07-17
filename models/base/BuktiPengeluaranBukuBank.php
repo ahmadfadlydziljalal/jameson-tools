@@ -22,6 +22,7 @@ use \app\models\active_queries\BuktiPengeluaranBukuBankQuery;
  * @property string $nomor_bukti_transaksi
  * @property string $tanggal_transaksi
  * @property string $keterangan
+ * @property integer $is_for_petty_cash
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $created_by
@@ -69,7 +70,7 @@ abstract class BuktiPengeluaranBukuBank extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['rekening_saya_id', 'jenis_transfer_id', 'vendor_id', 'vendor_rekening_id'], 'integer'],
+            [['rekening_saya_id', 'jenis_transfer_id', 'vendor_id', 'vendor_rekening_id', 'is_for_petty_cash'], 'integer'],
             [['tanggal_transaksi'], 'safe'],
             [['keterangan'], 'string'],
             [['reference_number'], 'string', 'max' => 50],
@@ -96,6 +97,7 @@ abstract class BuktiPengeluaranBukuBank extends \yii\db\ActiveRecord
             'nomor_bukti_transaksi' => 'Nomor Bukti Transaksi',
             'tanggal_transaksi' => 'Tanggal Transaksi',
             'keterangan' => 'Keterangan',
+            'is_for_petty_cash' => 'Is For Petty Cash',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',

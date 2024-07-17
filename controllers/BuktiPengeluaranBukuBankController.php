@@ -6,6 +6,8 @@ use Yii;
 use app\models\BuktiPengeluaranBukuBank;
 use app\models\search\BuktiPengeluaranBukuBankSearch;
 use Throwable;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -135,6 +137,25 @@ class BuktiPengeluaranBukuBankController extends Controller
         }
 
         return $this->render('bill/create', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionCreateByBillForPettyCash(): Response|string
+    {
+        $model = new BuktiPengeluaranBukuBank();
+        $model->scenario = BuktiPengeluaranBukuBank::SCENARIO_PENGELUARAN_BY_BILL_SALDO_PETTY_CASH;
+
+        if (Yii::$app->request->isPost) {
+            if($model->load(Yii::$app->request->post()) && $model->saveForBill()){
+                Yii::$app->session->setFlash('success',  'BuktiPengeluaranBukuBank: ' . $model->reference_number.  ' berhasil ditambahkan.');
+                return $this->redirect(['index']);
+            } else {
+                $model->loadDefaultValues();
+            }
+        }
+
+        return $this->render('bill-for-petty-cash/create', [
             'model' => $model,
         ]);
     }

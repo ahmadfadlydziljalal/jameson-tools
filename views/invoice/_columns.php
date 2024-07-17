@@ -27,7 +27,10 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'customer_id',
         'format' => 'text',
-        'value' => 'customer.nama'
+        'value' => 'customer.nama',
+        'contentOptions' => [
+            'class' => 'text-wrap'
+        ]
     ],
     [
         'class' => '\yii\grid\DataColumn',
@@ -85,6 +88,7 @@ return [
     [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{export-to-pdf} {view} {update} {delete}',
+        'vAlign' => 'top',
         'buttons' => [
             'export-to-pdf' => function ($url, $model) {
                 return Html::a('<i class="bi bi-printer"></i>', $url, [

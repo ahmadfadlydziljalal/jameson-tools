@@ -1,8 +1,8 @@
 <?php
 
 use kartik\bs5dropdown\ButtonDropdown;
-use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\BukuBankSearch */
@@ -61,19 +61,10 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php try { 
-        echo GridView::widget([
-            'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
-            'columns' => require(__DIR__.'/_columns.php'),
-            ]);
-        } catch(Exception $e){
-            echo $e->getMessage();
-        }
-        catch (Throwable $e) {
-            echo $e->getMessage();
-        }
-    
-         ?>
+    <?php echo GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => require(__DIR__ . '/_columns.php'),
+    ]); ?>
 
 </div>

@@ -16,10 +16,16 @@ use \app\models\active_queries\JenisBiayaQuery;
  * @property integer $id
  * @property string $name
  * @property string $description
+ * @property integer $category
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $created_by
  * @property integer $updated_by
+ *
+ * @property \app\models\JobOrderBillDetail[] $jobOrderBillDetails
+ * @property \app\models\JobOrderDetailCashAdvance[] $jobOrderDetailCashAdvances
+ * @property \app\models\TransaksiBukuBankLainnya[] $transaksiBukuBankLainnyas
+ * @property \app\models\TransaksiMutasiKasPettyCashLainnya[] $transaksiMutasiKasPettyCashLainnyas
  */
 abstract class JenisBiaya extends \yii\db\ActiveRecord
 {
@@ -57,6 +63,7 @@ abstract class JenisBiaya extends \yii\db\ActiveRecord
         return ArrayHelper::merge($parentRules, [
             [['name'], 'required'],
             [['description'], 'string'],
+            [['category'], 'integer'],
             [['name'], 'string', 'max' => 50]
         ]);
     }
@@ -70,11 +77,44 @@ abstract class JenisBiaya extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'description' => 'Description',
+            'category' => 'Category',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJobOrderBillDetails()
+    {
+        return $this->hasMany(\app\models\JobOrderBillDetail::class, ['jenis_biaya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJobOrderDetailCashAdvances()
+    {
+        return $this->hasMany(\app\models\JobOrderDetailCashAdvance::class, ['jenis_biaya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransaksiBukuBankLainnyas()
+    {
+        return $this->hasMany(\app\models\TransaksiBukuBankLainnya::class, ['jenis_biaya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransaksiMutasiKasPettyCashLainnyas()
+    {
+        return $this->hasMany(\app\models\TransaksiMutasiKasPettyCashLainnya::class, ['jenis_biaya_id' => 'id']);
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
-use \app\models\BuktiPengeluaranBukuBank;
+use app\models\BuktiPengeluaranBukuBank;
 
 /**
  * This is the ActiveQuery class for [[BuktiPengeluaranBukuBank]].
@@ -15,10 +15,13 @@ use \app\models\BuktiPengeluaranBukuBank;
 class BuktiPengeluaranBukuBankQuery extends \yii\db\ActiveQuery
 {
 
-    public function notYetRegisteredInBukuBank()
+    public function notYetRegisteredInBukuBank(): array
     {
-        $data = parent::joinWith('bukuBank')->where(['buku_bank.id' => null])
-            ->all();
-        return ArrayHelper::map($data, 'id', 'reference_number');
+        return ArrayHelper::map(parent::joinWith('bukuBank')->where(['buku_bank.id' => null])->all(), 'id', function ($model) {
+            if ($model->is_for_petty_cash) {
+                return $model->reference_number . ' - Petty Cash';
+            }
+            return $model->reference_number;
+        });
     }
 }

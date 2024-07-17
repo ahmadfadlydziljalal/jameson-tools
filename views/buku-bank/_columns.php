@@ -24,6 +24,11 @@ return [
     ],*/
     [
         'class'=>'\yii\grid\DataColumn',
+        'attribute'=>'tanggal_transaksi',
+        'format'=>'date',
+    ],
+    [
+        'class'=>'\yii\grid\DataColumn',
         'attribute'=>'bukti_penerimaan_buku_bank_id',
         'value'=>'buktiPenerimaanBukuBank.reference_number',
         'format'=>'text',
@@ -36,9 +41,10 @@ return [
     ],
     [
         'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'tanggal_transaksi',
-        'format'=>'date',
+        'attribute'=>'mutasiKas',
+        'value'=>'buktiPenerimaanPettyCash.mutasiKasPettyCash.nomor_voucher',
     ],
+
     [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'businessProcess',

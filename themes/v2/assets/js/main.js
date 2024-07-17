@@ -53,11 +53,9 @@ jQuery(document).ready(function () {
     let navbar = jQuery('#navbar');
 
     function handleNavbar(response) {
-        navbar.removeClass('navbar-dark');
         navbar.removeClass('bg-dark');
-        navbar.removeClass('navbar-light');
         navbar.removeClass('bg-light');
-        navbar.addClass('navbar-' + response.theme);
+
         navbar.addClass('bg-' + response.theme);
     }
 

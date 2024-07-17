@@ -123,7 +123,7 @@ class BukuBankController extends Controller
         $model->kode_voucher_id = $kodeVoucher->id;
 
         if (Yii::$app->request->post()) {
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if ($model->load(Yii::$app->request->post()) && $model->saveWithOrWithoutMutasiKasPettyCash()) {
                 Yii::$app->session->setFlash('success', 'BukuBank: ' . $model->nomor_voucher . ' berhasil ditambahkan.');
                 return $this->redirect(['index']);
             } else {

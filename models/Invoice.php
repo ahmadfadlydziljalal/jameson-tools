@@ -29,7 +29,7 @@ class Invoice extends BaseInvoice
                 [
                     'class' => 'mdm\autonumber\Behavior',
                     'attribute' => 'reference_number',
-                    'value' => '?' . ' / INV / AI / VI / ' . date('Y'), // format auto number. '?' will be replaced with generated number
+                    'value' => '?' . '/INV/AI/VI/' . date('Y'), // format auto number. '?' will be replaced with generated number
                     'digit' => 3
                 ],
             ]

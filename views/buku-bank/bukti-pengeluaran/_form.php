@@ -40,6 +40,9 @@ use yii\helpers\Html;
 
     <div class="row">
         <div class="col-12 col-lg-8">
+
+            <?= $form->errorSummary($model) ?>
+
             <?php
             $data = [];
 

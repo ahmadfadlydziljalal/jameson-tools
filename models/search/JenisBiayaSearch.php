@@ -18,7 +18,7 @@ class JenisBiayaSearch extends JenisBiaya
     {
         return [
             [['id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'description'], 'safe'],
+            [['name', 'description', 'category'], 'safe'],
         ];
     }
 
@@ -66,7 +66,8 @@ class JenisBiayaSearch extends JenisBiaya
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description]);
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'category', $this->category]);
 
         return $dataProvider;
     }

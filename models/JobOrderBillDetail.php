@@ -9,8 +9,5 @@ use \app\models\base\JobOrderBillDetail as BaseJobOrderBillDetail;
  */
 class JobOrderBillDetail extends BaseJobOrderBillDetail
 {
-    public function getTotal(): float|int
-    {
-        return $this->quantity * $this->price;
-    }
+
 }

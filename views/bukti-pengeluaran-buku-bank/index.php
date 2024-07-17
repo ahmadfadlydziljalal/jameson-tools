@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'items' => [
                         ['label' => 'By Kasbon / Cash Advance', 'url' => ['create-by-cash-advance']],
                         ['label' => 'By Payment Bill', 'url' => ['create-by-bill']],
+                        ['label' => 'By Payment Bill Petty Cash', 'url' => ['create-by-bill-for-petty-cash']],
                     ],
                     'options' => [
                         'class' => 'dropdown-menu-right',

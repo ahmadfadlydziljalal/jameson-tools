@@ -7,7 +7,7 @@ body {
   overflow-x: hidden;
   //background-color: vars.$page;
   background-image: linear-gradient(to right,
-          vars.$success 0%,
-          vars.$dark 50%
+          vars.$dark 0%,
+          vars.$page 50%
   );
 }

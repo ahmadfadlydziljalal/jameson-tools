@@ -1,14 +1,17 @@
 <?php
 
 use app\assets\Bootstrap5VerticalTabs;
+use app\components\helpers\ArrayHelper;
+use app\models\form\PaymentKasbonForm;
 use mdm\admin\components\Helper;
 use yii\bootstrap5\Tabs;
 use yii\helpers\Html;
+use yii\helpers\VarDumper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\JobOrder */
 /* @see app\controllers\JobOrderController::actionView() */
-/* @var $modelPaymentKasbon \app\models\form\PaymentKasbonForm */
+/* @var $modelPaymentKasbon PaymentKasbonForm */
 
 $this->title = $model->reference_number;
 $this->params['breadcrumbs'][] = ['label' => 'Job Order', 'url' => ['index']];
@@ -20,11 +23,14 @@ Bootstrap5VerticalTabs::register($this);
 <div class="job-order-view d-flex flex-column gap-2">
     <div class="job-order-view d-flex flex-column gap-2">
         <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
-            <h1><?= Html::encode($this->title) ?></h1>
+            <div class="d-inline-flex align-items-center gap-2">
+                <?= Html::a('<span class="lead"><i class="bi bi-arrow-left-circle"></i></span>', Yii::$app->request->referrer, ['class' => 'text-decoration-none']) ?>
+                <h1 class="m-0">
+                    <?= Html::encode($this->title) ?>
+                </h1>
+            </div>
             <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
-                <?= Html::a('Kembali', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
-                <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
-                <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
+                <?= Html::a('Buat Job Order Lain', ['create'], ['class' => 'btn btn-success']) ?>
                 <?php
                 if (Helper::checkRoute('delete')) :
                     echo Html::a('Hapus', ['delete', 'id' => $model->id], [
@@ -40,6 +46,37 @@ Bootstrap5VerticalTabs::register($this);
         </div>
         <div class="row flex-row-reverse">
             <?php
+            $items[] = [
+                'label' => 'Master Job Order',
+                'content' => $this->render('master/index', ['model' => $model]),
+                // 'url' => '#quotation-tab-quotation'
+            ];
+
+            if (!$model->is_for_petty_cash) {
+                $items = ArrayHelper::merge($items, [
+                    [
+                        'label' => 'Advance / Kasbon',
+                        'content' => $this->render('cash-advance/index', [
+                            'model' => $model,
+                        ]),
+                        // 'url' => '#quotation-tab-cash-advance'
+                    ],
+                    [
+                        'label' => 'Bill / Tagihan',
+                        'content' => $this->render('bill/index', ['model' => $model]),
+                        // 'url' => '#quotation-tab-bill'
+                    ],
+                ]);
+            } else {
+                $items = ArrayHelper::merge($items, [
+                    [
+                        'label' => 'For Petty Cash',
+                        'content' => $this->render('petty-cash/index', ['model' => $model,]),
+                        // 'url' => '#quotation-tab-for-petty-cash'
+                    ],
+                ]);
+            }
+
             echo Tabs::widget([
                 'options' => [
                     'class' => 'nav nav-pills left-tabs m-0 col-md-3',
@@ -48,7 +85,7 @@ Bootstrap5VerticalTabs::register($this);
                     'role' => 'tablist'
                 ],
                 'tabContentOptions' => [
-                    'class' => 'col-md-9 pt-0'
+                    'class' => 'col-md-9 p-0 px-3'
                 ],
                 'itemOptions' => [
                     'class' => 'p-0 '
@@ -56,29 +93,23 @@ Bootstrap5VerticalTabs::register($this);
                 'headerOptions' => [
                     'class' => 'p-0 text-nowrap text-start '
                 ],
-                'items' => [
-                    [
-                        'label' => 'Master Job Order',
-                        'content' => $this->render('master/index', ['model' => $model]),
-                        // 'url' => '#quotation-tab-quotation'
-                    ],
-                    [
-                        'label' => 'Advance / Kasbon',
-                        'content' => $this->render('cash-advance/index', [
-                            'model' => $model,
-                            'modelPaymentKasbon' => $modelPaymentKasbon,
-                        ]),
-                        // 'url' => '#quotation-tab-barang'
-                    ],
-                    [
-                        'label' => 'Bill / Tagihan',
-                        'content' => $this->render('bill/index', ['model' => $model]),
-                        // 'url' => '#quotation-tab-barang'
-                    ],
-
-                ],
+                'items' => $items,
             ]);
             ?>
         </div>
     </div>
+
+    <div class="d-inline-flex gap-2">
+        <?php
+        if ($model->getPrevious()) {
+            echo Html::a('<< Previous', ['view' , 'id' => $model->getPrevious()->id], ['class' => 'btn btn-outline-primary']);
+        }
+
+        if ($model->getNext()) {
+            echo Html::a('Next >>', ['view' , 'id' => $model->getNext()->id], ['class' => 'btn btn-outline-primary']);
+        }
+        ?>
+    </div>
+
+</div>
 

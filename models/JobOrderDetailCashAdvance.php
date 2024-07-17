@@ -8,6 +8,7 @@ use yii\db\Exception;
 
 /**
  * @property float $cash_advance
+ * @property float $kasbon_request
  * This is the model class for table "job_order_detail_cash_advance".
  */
 class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
@@ -92,6 +93,22 @@ class JobOrderDetailCashAdvance extends BaseJobOrderDetailCashAdvance
         $this->cash_advance = 0;
         $this->bukti_pengeluaran_buku_bank_id = null;
         return $this->save(false);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBuktiPengeluaranReferenceNumber(): ?string
+    {
+        if($this->bukti_pengeluaran_petty_cash_id){
+            return $this->buktiPengeluaranPettyCash->reference_number;
+        }
+
+        if($this->bukti_pengeluaran_buku_bank_id){
+            return $this->buktiPengeluaranBukuBank?->reference_number;
+        }
+
+        return '';
     }
 
 

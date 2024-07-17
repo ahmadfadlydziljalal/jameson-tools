@@ -1,5 +1,7 @@
 <?php
 
+use app\models\User;
+use kartik\dialog\Dialog;
 use mdm\admin\components\Helper;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
@@ -12,17 +14,24 @@ use yii\widgets\DetailView;
 $this->title = $model->reference_number;
 $this->params['breadcrumbs'][] = ['label' => 'Invoices', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+Dialog::widget()
 ?>
-<div class="invoice-view">
+<div class="invoice-view d-flex flex-column gap-3">
 
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
-        <h1><?= Html::encode($this->title) ?></h1>
-        <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
 
-            <?= Html::a('Kembali', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
-            <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
-            <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
+        <div class="d-inline-flex align-items-center gap-2">
+            <?= Html::a('<span class="lead"><i class="bi bi-arrow-left-circle"></i></span>', Yii::$app->request->referrer, ['class' => 'text-decoration-none']) ?>
+            <h1 class="m-0">
+                <?= Html::encode($this->title) ?>
+            </h1>
+        </div>
+
+        <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
+            <?= Html::a('Buat Invoice Lainnya', ['create'], ['class' => 'btn btn-success']) ?>
             <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
+            <?= Html::a('Export PDF', ['export-to-pdf', 'id' => $model->id], ['class' => 'btn btn-outline-primary', 'target' => '_blank']) ?>
             <?php
             if (Helper::checkRoute('delete')) :
                 echo Html::a('Hapus', ['delete', 'id' => $model->id], [
@@ -66,13 +75,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'created_by',
                     'value' => function ($model) {
-                        return \app\models\User::findOne($model->created_by)->username ?? null;
+                        return User::findOne($model->created_by)->username ?? null;
                     }
                 ],
                 [
                     'attribute' => 'updated_by',
                     'value' => function ($model) {
-                        return \app\models\User::findOne($model->updated_by)->username ?? null;
+                        return User::findOne($model->updated_by)->username ?? null;
                     }
                 ],
             ],
