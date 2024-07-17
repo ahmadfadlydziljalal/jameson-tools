@@ -10,11 +10,11 @@ aside {
     z-index: 4;
     height: 100%;
     position: fixed;
-    top: 0;
+    top: 48px;
     bottom: 0;
-    padding: 62px 0 0;
+    padding: 8px 0 0;
 
-    transition: all .25s;
+    transition: all .15s;
     overflow-y: auto;
 
     ul {

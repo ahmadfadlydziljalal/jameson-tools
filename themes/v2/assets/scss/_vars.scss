@@ -1,22 +1,56 @@
-$primary: #540375;
-$success: #FFBF00;
-$info: #10A19D;
-$warning: #FF7000;
-$danger: #CF0A0A;
-
-$pastel-100: #FFF5E1;
-$pastel-200: #DEB6AB;
-$pastel-300: #AC7D88;
-$pastel-400: #85586F;
-
-$teal-100: #3A8891;
-$teal-200: #4FA095;
-$teal-300: #6D9886;
-$teal-400: #0E5E6F;
-
-
-$dark: #252525;
+/*$black: #000;
+$light: #e3e5e7;
 $white: #fff;
+$dark: #275160;
+$primary: #174d5b;
+$secondary: #1b7687;
+$info: #579e96;
+$success: #13a152;
+$warning: #e7c813;
+$danger: #f20823;*/
+
+
+//$light: #d3eaf6;
+//$white: #fff;
+//$dark: #192227;
+//$primary: #3a6fe5;
+//$secondary: #4f8df3;
+//$info: #a4c4ff;
+//$success: #00be6d;
+//$warning: #ead200;
+//$danger: #fe1900;
+
+/* neumorphism */
+//$light: #e0e0e0;
+//$white: #fff;
+//$dark: #282324;
+//$primary: #276063;
+//$secondary: #4fa0c6;
+//$info: #458cbb;
+//$success: #28ab55;
+//$warning: #edca28;
+//$danger: #f41534;
+
+$page:#d4d2d1;
+$body-bg: #eff3f8;
+$light: #fbfbfb;
+$white: #fff;
+$dark: #090e1e;
+$primary: #2e3a49;
+$secondary: #6176fc;
+$info: #d24447;
+$success: #079c56;
+$warning: #e2c807;
+$danger: #f10503;
+
+//$dark: rgba(24, 24, 24, 1);
+$dark-text: #fff;
+$dark-border: rgb(224, 224, 224, .25);
+$dark-primary: #E8C872;
+$dark-success: #F7DCB9;
+$black: #000;
+
+
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
 $gray-300: #dee2e6;
@@ -26,12 +60,56 @@ $gray-600: #6c757d;
 $gray-700: #495057;
 $gray-800: #343a40;
 $gray-900: #212529;
-$black: #000;
-$page: #F4F9F9;
+
+$theme-colors: (
+        "primary": $primary,
+        "danger": $danger,
+        "success": $success,
+        "info" : $info,
+        "secondary" : $secondary,
+        "warning" : $warning,
+        "gray-100" : $gray-100,
+        "gray-200" : $gray-200,
+        "gray-300" : $gray-300,
+        "gray-400" : $gray-400,
+        "gray-500" : $gray-500,
+        "gray-600" : $gray-600,
+        "gray-700" : $gray-700,
+        "gray-800" : $gray-800,
+        "gray-900" : $gray-900,
+);
 
 $h1-font-size: 1.75rem;
-$h2-font-size: 1.25rem;
-$h3-font-size: 1rem;
-$h4-font-size: .75rem;
-$h5-font-size: .50rem;
+$h2-font-size: 1.50rem;
+$h3-font-size: 1.25rem;
+$h4-font-size: 1.1rem;
+$h5-font-size: 1rem;
 $h6-font-size: .25rem;
+
+$enable-gradients: false;
+$table-border-color: rgb(224, 224, 224, 1);
+$enable-caret: false;
+
+/* padding: .5rem 1rem; */
+$navbar-padding-y: .25rem;
+$navbar-padding-x: .5rem;
+
+$hr-margin-y: 0.5em;
+$link-color: $dark;
+
+$nav-pills-link-active-color: $primary;
+$nav-pills-link-active-bg: transparent;
+
+$dropdown-link-hover-color: $white;
+$dropdown-link-hover-bg: $warning;
+
+$border-radius: .75rem;
+$card-border-radius: .75rem;
+
+/*$btn-border-radius: .2rem;
+$btn-border-radius-sm: 1rem;
+$btn-border-radius-lg: 1rem;*/
+
+/*$input-border-radius: 12px;
+$badge-border-radius: 2px;
+$badge-pill-border-radius: 1rem;*/

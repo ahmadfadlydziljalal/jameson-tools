@@ -11,9 +11,7 @@ body.dark {
       &.left-navigation {
         border-right: none;
         background: #343a40;
-        box-shadow: -5px -5px 10px #2f343a,
-        5px 5px 10px #394046;
-
+        border-right: 1px solid vars.$gray-900;
       }
     }
   }
