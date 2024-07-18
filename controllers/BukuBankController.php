@@ -64,28 +64,9 @@ class BukuBankController extends Controller
     }
 
     /**
-     * Creates a new BukuBank model.
-     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return Response|string
+     * @throws Exception
      */
-    public function actionCreate()
-    {
-        $model = new BukuBank();
-
-        if ($this->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                Yii::$app->session->setFlash('success', 'BukuBank: ' . $model->nomor_voucher . ' berhasil ditambahkan.');
-                return $this->redirect(['index']);
-            } else {
-                $model->loadDefaultValues();
-            }
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
     public function actionCreateByBuktiPenerimaanBukuBank(): Response|string
     {
         $kodeVoucher = KodeVoucher::find()->bukuBankIn();
@@ -290,7 +271,6 @@ class BukuBankController extends Controller
         ]);
     }
 
-
     /**
      * Creates a new MutasiKasPettyCash model.
      * If creation is successful, the browser will be redirected to the 'index' page.
@@ -319,27 +299,6 @@ class BukuBankController extends Controller
             'model' => $model,
             'modelTransaksiLainnya' => $modelTransaksiLainnya,
             'kodeVoucher' => $kodeVoucher,
-        ]);
-    }
-
-    /**
-     * Updates an existing BukuBank model.
-     * If update is successful, the browser will be redirected to the 'index' page with pagination URL
-     * @param integer $id
-     * @return Response|string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate(int $id)
-    {
-        $model = $this->findModel($id);
-
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('info', 'BukuBank: ' . $model->nomor_voucher . ' berhasil dirubah.');
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
         ]);
     }
 
@@ -376,4 +335,5 @@ class BukuBankController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }
