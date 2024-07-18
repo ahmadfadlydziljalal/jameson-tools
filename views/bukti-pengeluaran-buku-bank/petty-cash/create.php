@@ -1,7 +1,7 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $model app\models\BuktiPengeluaranBukuBank */
-/* @see app\controllers\BuktiPengeluaranBukuBankController::actionCreateByBillForPettyCash() */
+/* @see app\controllers\BuktiPengeluaranBukuBankController::actionCreateByPettyCash() */
 
 use yii\helpers\Html;
 $this->title = 'Tambah Bukti Pengeluaran Buku Bank By Payment Bill For Petty Cash';

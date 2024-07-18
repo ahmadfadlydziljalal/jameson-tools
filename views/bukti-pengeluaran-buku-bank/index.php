@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
             <?= ButtonDropdown::widget([
-                'label' => '<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah',
+                'label' => '<i class="bi bi-plus-circle-dotted"></i>' . ' Buat',
                 'dropdown' => [
                     'items' => [
                         ['label' => 'By Kasbon / Cash Advance', 'url' => ['create-by-cash-advance']],

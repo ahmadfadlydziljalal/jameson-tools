@@ -8,6 +8,7 @@ use mdm\admin\components\Helper;
 use yii\bootstrap5\Tabs;
 use yii\helpers\Html;
 use yii\helpers\VarDumper;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\JobOrder */
@@ -21,6 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
 Bootstrap5VerticalTabs::register($this);
 ?>
 
+<?php Pjax::begin([
+    'id' => 'pjax-view',
+    'enablePushState' => true
+]) ?>
 <div class="job-order-view d-flex flex-column gap-2">
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
         <div class="d-inline-flex align-items-center gap-2">
@@ -116,14 +121,20 @@ Bootstrap5VerticalTabs::register($this);
     <div class="d-inline-flex gap-2">
         <?php
         if ($model->getPrevious()) {
-            echo Html::a('<< Previous', ['view' , 'id' => $model->getPrevious()->id], ['class' => 'btn btn-outline-primary']);
+            echo Html::a('<< Previous', ['view', 'id' => $model->getPrevious()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => 1,
+                'id' => 'prev-page'
+            ]);
         }
 
         if ($model->getNext()) {
-            echo Html::a('Next >>', ['view' , 'id' => $model->getNext()->id], ['class' => 'btn btn-outline-primary']);
+            echo Html::a('Next >>', ['view', 'id' => $model->getNext()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => "1",
+                'id' => 'next-page'
+            ]);
         }
         ?>
     </div>
 
 </div>
-
+<?php Pjax::end() ?>

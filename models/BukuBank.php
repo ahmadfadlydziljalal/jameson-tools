@@ -61,6 +61,7 @@ class BukuBank extends BaseBukuBank
             'bukti_penerimaan_buku_bank_id' => 'Bukti Penerimaan',
             'bukti_pengeluaran_buku_bank_id' => 'Bukti Pengeluaran',
             'nomor_voucher' => 'Voucher',
+            'tanggal_transaksi' => 'Tgl. Transaksi',
         ]);
     }
 
@@ -69,14 +70,17 @@ class BukuBank extends BaseBukuBank
         parent::afterFind();
 
         if($this->bukti_pengeluaran_buku_bank_id){
+            $this->nominal = $this->buktiPengeluaranBukuBank->totalBayar;
             $this->businessProcess = $this->buktiPengeluaranBukuBank->referensiPembayaran;
         }
 
         if($this->bukti_penerimaan_buku_bank_id){
+            $this->nominal = round($this->buktiPenerimaanBukuBank->jumlah_setor);
             $this->businessProcess = $this->buktiPenerimaanBukuBank->referensiPenerimaan;
         }
 
         if($this->transaksiBukuBankLainnya AND $this->transaksiBukuBankLainnya->jenis_biaya_id){
+            $this->nominal = $this->transaksiBukuBankLainnya->nominal;
             $this->businessProcess = [
                 'businessProcess' => 'Pengeluaran Buku Bank Lainnya',
                 'data' => [
@@ -88,6 +92,7 @@ class BukuBank extends BaseBukuBank
         }
 
         if($this->transaksiBukuBankLainnya AND $this->transaksiBukuBankLainnya->jenis_pendapatan_id){
+            $this->nominal = $this->transaksiBukuBankLainnya->nominal;
             $this->businessProcess = [
                 'businessProcess' => 'Pendapatan Buku Bank Lainnya',
                 'data' => [
@@ -107,6 +112,18 @@ class BukuBank extends BaseBukuBank
     {
         return $this->hasOne(MutasiKasPettyCash::class, ['bukti_penerimaan_petty_cash_id' => 'id'])
             ->via('buktiPenerimaanPettyCash');
+    }
+
+
+    public function getNext(): ?BukuBank
+    {
+        return static::find()->where(['>', 'id', $this->id])->one();
+    }
+
+
+    public function getPrevious(): ?BukuBank
+    {
+        return static::find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
 
     public function saveTransaksiLainnya(TransaksiBukuBankLainnya $modelTransaksiLainnya): bool

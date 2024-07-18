@@ -184,6 +184,12 @@ class BuktiPenerimaanBukuBankController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionFindById($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return BuktiPenerimaanBukuBank::find()->liveSearchById($q, $id);
+    }
+
     /**
      * Finds the BuktiPenerimaanBukuBank model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

@@ -12,14 +12,14 @@ use yii\widgets\Menu;
 class SideMenu extends Menu
 {
 
-    public string $icon = "play-circle";
+    public string $icon = "play";
 
-    public $linkTemplate = '<a href="{url}" class="{class} d-flex flex-row align-items-center gap-2 m-0 ps-1 pe-1">
+    public $linkTemplate = '<a href="{url}" class="{class} d-flex flex-row align-items-center gap-2 m-0 ps-1 pe-0">
         <span>{icon}</span>
         <span>{label}</span>
     </a>';
 
-    public string $linkWithDataTargetTemplate = '<a href="{url}" class="{class} d-flex flex-row align-items-center gap-2 m-0 ps-1 pe-1" data-bs-toggle="{data-bs-toggle}" aria-expanded="{aria-expanded}">
+    public string $linkWithDataTargetTemplate = '<a href="{url}" class="{class} d-flex flex-row align-items-center gap-2 m-0 ps-1 pe-0" data-bs-toggle="{data-bs-toggle}" aria-expanded="{aria-expanded}">
         <span>{icon}</span>
         <span class="flex-grow-1">{label}</span>
     </a>';

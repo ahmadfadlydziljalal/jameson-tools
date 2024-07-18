@@ -26,9 +26,10 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
     const DANA_DARI_INVOICE = 'pembayaran_invoice';
 
     public array $invoiceInvoice = [];
-
     public array $setoranKasirKasir = [];
-    public ?string $nominalSeharusnya = null;
+    public ?string $jumlahSeharusnya = null;
+
+
     public ?string $balance = null;
     public ?string $sumberDana = null;
     public ?array $referensiPenerimaan = null;
@@ -57,7 +58,8 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
                     'customer' => $setoranKasir->staff_name,
                     'total' => $setoranKasir->total,
                 ];
-                $this->nominalSeharusnya = $setoranKasir->total;
+                $this->jumlahSeharusnya += $setoranKasir->total;
+
             }
             $this->setBalance();
         }
@@ -72,10 +74,10 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
                     'invoice' => $invoice->reference_number,
                     'tanggalInvoice' => $invoice->tanggal_invoice,
                     'customer' => $invoice->customer->nama,
-                    'total' =>$invoice->getTotal(),
+                    'total' =>$invoice->total
                 ];
 
-                $this->nominalSeharusnya += $invoice->getTotal();
+                $this->jumlahSeharusnya += $invoice->total;
             }
 
             $this->setBalance();
@@ -228,15 +230,15 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
 
     private function setBalance(): void
     {
-        if ($this->nominalSeharusnya == $this->jumlah_setor) {
+        if ($this->jumlahSeharusnya == $this->jumlah_setor) {
             $this->balance = static::BALANCE_MATCH;
         }
 
-        if ((int)$this->nominalSeharusnya > (int)$this->jumlah_setor) {
+        if ((int)$this->jumlahSeharusnya > (int)$this->jumlah_setor) {
             $this->balance = static::BALANCE_DEBIT;
         }
 
-        if ((int)$this->nominalSeharusnya < (int)$this->jumlah_setor) {
+        if ((int)$this->jumlahSeharusnya < (int)$this->jumlah_setor) {
             $this->balance = static::BALANCE_CREDIT;
         }
     }

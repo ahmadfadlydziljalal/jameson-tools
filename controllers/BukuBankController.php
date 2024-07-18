@@ -6,8 +6,13 @@ use app\models\BukuBank;
 use app\models\KodeVoucher;
 use app\models\search\BukuBankSearch;
 use app\models\TransaksiBukuBankLainnya;
+use Mpdf\MpdfException;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
+use setasign\Fpdi\PdfParser\PdfParserException;
+use setasign\Fpdi\PdfParser\Type\PdfTypeException;
 use Throwable;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
@@ -254,6 +259,7 @@ class BukuBankController extends Controller
 
         $model = $this->findModel($id);
         $modelTransaksiLainnya = $model->transaksiBukuBankLainnya;
+        $modelTransaksiLainnya->scenario = TransaksiBukuBankLainnya::SCENARIO_PENERIMAAN;
 
         if (Yii::$app->request->post()) {
             if ($model->load(Yii::$app->request->post()) && $modelTransaksiLainnya->load(Yii::$app->request->post()) && $model->saveTransaksiLainnya($modelTransaksiLainnya)) {
@@ -271,11 +277,7 @@ class BukuBankController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new MutasiKasPettyCash model.
-     * If creation is successful, the browser will be redirected to the 'index' page.
-     * @return Response|string
-     */
+
     public function actionCreateByPengeluaranLainnya(): Response|string
     {
         $kodeVoucher = KodeVoucher::find()->bukuBankIn();
@@ -302,6 +304,26 @@ class BukuBankController extends Controller
         ]);
     }
 
+    public function actionUpdateByPengeluaranLainnya($id): Response|string
+    {
+        $model = $this->findModel($id);
+        $modelTransaksiLainnya = $model->transaksiBukuBankLainnya;
+        $modelTransaksiLainnya->scenario = TransaksiBukuBankLainnya::SCENARIO_PENGELUARAN;
+
+        if(Yii::$app->request->post()){
+            if($model->load(Yii::$app->request->post()) && $modelTransaksiLainnya->load(Yii::$app->request->post()) && $model->saveTransaksiLainnya($modelTransaksiLainnya)){
+                Yii::$app->session->setFlash('success', 'BukuBank: ' . $model->nomor_voucher . ' berhasil ditambahkan.');
+                return $this->redirect(['index']);
+            }
+            Yii::$app->session->setFlash('danger', 'BukuBank: ' . $model->nomor_voucher . ' gagal ditambahkan.');
+        }
+
+        return $this->render('pengeluaran-lainnya/update', [
+            'model' => $model,
+            'modelTransaksiLainnya' => $modelTransaksiLainnya,
+        ]);
+    }
+
     /**
      * Deletes an existing BukuBank model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -318,6 +340,26 @@ class BukuBankController extends Controller
 
         Yii::$app->session->setFlash('danger', 'BukuBank: ' . $model->nomor_voucher . ' berhasil dihapus.');
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     * @throws MpdfException
+     * @throws CrossReferenceException
+     * @throws PdfParserException
+     * @throws PdfTypeException
+     * @throws InvalidConfigException
+     */
+    public function actionExportToPdf($id): string
+    {
+        $model = $this->findModel($id);
+        $pdf = Yii::$app->pdf;
+        $pdf->content = $this->renderPartial('_pdf', [
+            'model' => $model
+        ]);
+        return $pdf->render();
     }
 
     /**

@@ -97,7 +97,7 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'nominalSeharusnya',
+        'attribute' => 'jumlahSeharusnya',
         'format' => ['decimal', 2],
         'hAlign' => 'right',
         'contentOptions' => [

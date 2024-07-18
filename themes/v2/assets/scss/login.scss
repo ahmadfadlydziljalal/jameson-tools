@@ -6,8 +6,10 @@
 body {
   overflow-x: hidden;
   //background-color: vars.$page;
-  background-image: linear-gradient(to right,
-          vars.$dark 0%,
-          vars.$page 50%
+  background-image: linear-gradient(
+    to bottom,
+    vars.$warning 0%,
+    vars.$page 90%,
+    vars.$white 100%
   );
 }

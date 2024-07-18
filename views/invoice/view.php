@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 Dialog::widget()
 ?>
+
 <div class="invoice-view d-flex flex-column gap-3">
 
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">

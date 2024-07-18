@@ -59,7 +59,7 @@
             <?php if(count($model->invoiceDetails) < 23): ?>
                 <?php for ($i = 0; $i < (23 - count($model->invoiceDetails)); $i++) : ?>
                     <tr>
-                        <td style="height:1.5em"></td>
+                        <td style="height:2em"></td>
                         <td></td>
                         <td></td>
                         <td></td>

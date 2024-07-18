@@ -6,8 +6,8 @@ jQuery(document).ready(function () {
     jQuery('#btn-toggle-sidebar').on('click', function () {
         let width = leftNavigation.css('width');
         if (width === '0px') {
-            content.css('margin-left', '206px');
-            leftNavigation.css('width', '206px');
+            content.css('margin-left', '236px');
+            leftNavigation.css('width', '236px');
             leftNavigation.css('border-right', '1px solid #e9ecef');
         } else {
             content.css('margin-left', 0);

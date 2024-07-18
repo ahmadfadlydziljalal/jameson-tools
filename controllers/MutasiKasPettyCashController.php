@@ -280,7 +280,6 @@ class MutasiKasPettyCashController extends Controller
         ]);
     }
 
-
     /**
      * @param $id
      * @return string
@@ -299,8 +298,6 @@ class MutasiKasPettyCashController extends Controller
         ]);
         return $pdf->render();
     }
-
-
 
     /**
      * Updates an existing MutasiKasPettyCash model.
@@ -339,6 +336,12 @@ class MutasiKasPettyCashController extends Controller
 
         Yii::$app->session->setFlash('danger', 'MutasiKasPettyCash: ' . $model->nomor_voucher . ' berhasil dihapus.');
         return $this->redirect(['index']);
+    }
+
+    public function actionFindById($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return MutasiKasPettyCash::find()->liveSearchById($q, $id);
     }
 
     /**

@@ -38,11 +38,7 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
         }
 
         if($this->buku_bank_id){
-
-            foreach ($this->bukuBank->buktiPengeluaranBukuBank->jobOrderBills as $jobOrderBill){
-                $this->nominal +=  $jobOrderBill->getTotalPrice();
-            }
-
+            $this->nominal +=  $this->bukuBank->buktiPengeluaranBukuBank->totalBayar;
             $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_MUTASI_KAS_BANK));
             $this->referensiPenerimaan['data'] = [
                 'jobOrder' => $this->bukuBank->buktiPengeluaranBukuBank->jobOrderDetailPettyCash->jobOrder->reference_number,

@@ -108,6 +108,12 @@ class BuktiPengeluaranBukuBankController extends Controller
         ]);
     }
 
+    /**
+     * @param int $id
+     * @return Response|string
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
     public function actionDeleteByCashAdvance(int $id): Response|string{
         $model = $this->findModel($id);
         if($model->deleteByCashAdvance()){
@@ -141,6 +147,9 @@ class BuktiPengeluaranBukuBankController extends Controller
         ]);
     }
 
+    /**
+     * @return Response|string
+     */
     public function actionCreateByPettyCash(): Response|string
     {
         $model = new BuktiPengeluaranBukuBank();
@@ -160,6 +169,11 @@ class BuktiPengeluaranBukuBankController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return Response|string
+     * @throws NotFoundHttpException
+     */
     public function actionUpdateByPettyCash($id): Response|string
     {
         $model =$this->findModel($id);
@@ -199,6 +213,12 @@ class BuktiPengeluaranBukuBankController extends Controller
         return $this->render('bill/update', [
             'model' => $model,
         ]);
+    }
+
+    public function actionFindById($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return BuktiPengeluaranBukuBank::find()->liveSearchById($q, $id);
     }
 
     /**

@@ -14,20 +14,19 @@ $body-bg: #eff3f8;
 $light: #d4d2d1;
 $white: #fff;
 $dark: #090e1e;
-$primary: #2e3a49;
+$primary: #322c2b;
 $secondary: #6176fc;
-$info: #d24447;
-$success: #079c56;
-$warning: #e2c807;
+$info: #e4c59e;
+$success: #803d3b;
+$warning: #af8260;
 $danger: #f10503;
 
 //$dark: rgba(24, 24, 24, 1);
 $dark-text: #fff;
-$dark-border: rgb(224, 224, 224, .25);
-$dark-primary: #E8C872;
-$dark-success: #F7DCB9;
+$dark-border: rgb(224, 224, 224, 0.25);
+$dark-primary: #e8c872;
+$dark-success: #f7dcb9;
 $black: #000;
-
 
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
@@ -40,39 +39,39 @@ $gray-800: #343a40;
 $gray-900: #212529;
 
 $theme-colors: (
-        "primary": $primary,
-        "danger": $danger,
-        "success": $success,
-        "info" : $info,
-        "secondary" : $secondary,
-        "warning" : $warning,
-        "light": $light,
-        "dark": $dark,
-        "gray-100" : $gray-100,
-        "gray-200" : $gray-200,
-        "gray-300" : $gray-300,
-        "gray-400" : $gray-400,
-        "gray-500" : $gray-500,
-        "gray-600" : $gray-600,
-        "gray-700" : $gray-700,
-        "gray-800" : $gray-800,
-        "gray-900" : $gray-900,
+  "primary": $primary,
+  "danger": $danger,
+  "success": $success,
+  "info": $info,
+  "secondary": $secondary,
+  "warning": $warning,
+  "light": $light,
+  "dark": $dark,
+  "gray-100": $gray-100,
+  "gray-200": $gray-200,
+  "gray-300": $gray-300,
+  "gray-400": $gray-400,
+  "gray-500": $gray-500,
+  "gray-600": $gray-600,
+  "gray-700": $gray-700,
+  "gray-800": $gray-800,
+  "gray-900": $gray-900,
 );
 
 $h1-font-size: 1.75rem;
-$h2-font-size: 1.50rem;
+$h2-font-size: 1.5rem;
 $h3-font-size: 1.25rem;
 $h4-font-size: 1.1rem;
 $h5-font-size: 1rem;
-$h6-font-size: .25rem;
+$h6-font-size: 0.25rem;
 
 $enable-gradients: false;
 $table-border-color: rgb(224, 224, 224, 1);
 $enable-caret: false;
 
 /* padding: .5rem 1rem; */
-$navbar-padding-y: .25rem;
-$navbar-padding-x: .5rem;
+/*$navbar-padding-y: .25rem;
+$navbar-padding-x: .5rem;*/
 
 $hr-margin-y: 0.5em;
 $link-color: $dark;
@@ -83,8 +82,10 @@ $nav-pills-link-active-bg: transparent;
 $dropdown-link-hover-color: $white;
 $dropdown-link-hover-bg: $warning;
 
-$border-radius: .75rem;
-$card-border-radius: .75rem;
+$card-bg: transparent;
+
+// $border-radius: 0.75rem;
+// $card-border-radius: 0.75rem;
 
 /*$btn-border-radius: .2rem;
 $btn-border-radius-sm: 1rem;

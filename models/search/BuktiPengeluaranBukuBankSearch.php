@@ -11,6 +11,9 @@ use app\models\BuktiPengeluaranBukuBank;
  */
 class BuktiPengeluaranBukuBankSearch extends BuktiPengeluaranBukuBank
 {
+
+    public ?string $nomorVoucher = null;
+
     /**
      * @inheritdoc
      */
@@ -18,7 +21,7 @@ class BuktiPengeluaranBukuBankSearch extends BuktiPengeluaranBukuBank
     {
         return [
             [['id', 'rekening_saya_id', 'jenis_transfer_id', 'vendor_id', 'vendor_rekening_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['reference_number', 'nomor_bukti_transaksi', 'tanggal_transaksi', 'keterangan'], 'safe'],
+            [['reference_number', 'nomor_bukti_transaksi', 'tanggal_transaksi', 'keterangan','nomorVoucher'], 'safe'],
         ];
     }
 
@@ -38,7 +41,7 @@ class BuktiPengeluaranBukuBankSearch extends BuktiPengeluaranBukuBank
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = BuktiPengeluaranBukuBank::find();
+        $query = BuktiPengeluaranBukuBank::find()->joinWith('bukuBank');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -72,7 +75,9 @@ class BuktiPengeluaranBukuBankSearch extends BuktiPengeluaranBukuBank
 
         $query->andFilterWhere(['like', 'reference_number', $this->reference_number])
             ->andFilterWhere(['like', 'nomor_bukti_transaksi', $this->nomor_bukti_transaksi])
-            ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
+            ->andFilterWhere(['like', 'keterangan', $this->keterangan])
+            ->andFilterWhere(['like', 'buku_bank.nomor_voucher', $this->nomorVoucher])
+        ;
 
         return $dataProvider;
     }

@@ -47,7 +47,7 @@ table {
     }
 
     th, td {
-      padding: 1pt 2pt;
+      padding: 4pt;
 
       &.border-0 {
         border: 0 !important;
@@ -98,6 +98,9 @@ table {
 
     &.table-detail-view {
       width: 50%;
+      th{
+        text-align: left;
+      }
     }
 
     &.table-borderless {

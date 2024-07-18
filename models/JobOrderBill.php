@@ -5,7 +5,8 @@ namespace app\models;
 use \app\models\base\JobOrderBill as BaseJobOrderBill;
 
 /**
- * This is the model class for table "job_order_bill".
+ * This is the model class for table "job_order_bill".*
+ * @property-read float|int $totalPrice
  */
 class JobOrderBill extends BaseJobOrderBill
 {

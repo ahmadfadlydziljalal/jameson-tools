@@ -17,8 +17,8 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
     const SCENARIO_PENGELUARAN_BY_BILL = 'scenario_pengeluaran_by_bill';
     const SCENARIO_PENGELUARAN_BY_PETTY_CASH = 'scenario_pengeluaran_by_bill_saldo_petty_cash';
     const PEMBAYARAN_CASH_ADVANCE_OR_KASBON = 'Cash Advance / Kasbon';
-    const PEMBAYARAN_BILL_JOB_ORDER = 'Bill Job Order';
-    const PEMBAYARAN_MUTASI_KAS_PETTY_CASH = 'Mutasi Kas Petty Cash';
+    const PEMBAYARAN_BILL_JOB_ORDER = 'Pembayaran Bill Tagihan';
+    const PEMBAYARAN_MUTASI_KAS_PETTY_CASH = 'Mutasi Kas';
 
     public ?array $cashAdvances = [];
     public ?string $pettyCash = null;
@@ -53,12 +53,12 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_BILL_JOB_ORDER;
 
             foreach ($this->jobOrderBills as $jobOrderBill) {
-                $this->totalBayar += $jobOrderBill->getTotalPrice();
+                $this->totalBayar += $jobOrderBill->totalPrice;
                 $this->referensiPembayaran['data'][] = [
                     'jobOrder' => $jobOrderBill->jobOrder->reference_number,
                     'vendor' => $jobOrderBill->vendor->nama,
                     'reference_number' => $jobOrderBill->reference_number,
-                    'total' => round($jobOrderBill->getTotalPrice(), 2),
+                    'total' => round( $this->totalBayar, 2),
                 ];
             }
 

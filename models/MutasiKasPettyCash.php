@@ -21,7 +21,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
     public ?string $nominal = null;
     public ?string $cardName = null;
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'bukti_pengeluaran_petty_cash_id' => 'Bukti Pengeluaran',
@@ -32,7 +32,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
         ]);
     }
 
-    public function rules()
+    public function rules(): array
     {
         return ArrayHelper::merge(parent::rules(), [
             ['bukti_pengeluaran_petty_cash_id', 'required', 'on' => self::SCENARIO_BUKTI_PENGELUARAN_PETTY_CASH],
@@ -40,7 +40,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
         ]);
     }
 
-    public function scenarios()
+    public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_BUKTI_PENGELUARAN_PETTY_CASH] = [
@@ -118,9 +118,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
             # Dari Buku Bank
             if($this->buktiPenerimaanPettyCash->bukuBank){
                 $this->businessProcess = 'Mutasi Bank ' . $this->buktiPenerimaanPettyCash->bukuBank->nomor_voucher;
-                foreach ($this->buktiPenerimaanPettyCash->bukuBank->buktiPengeluaranBukuBank->jobOrderBills as $jobOrderBill){
-                    $this->nominal += $jobOrderBill->getTotalPrice();
-                }
+                $this->nominal = $this->buktiPenerimaanPettyCash->bukuBank->buktiPengeluaranBukuBank->jobOrderDetailPettyCash->nominal;
                 $this->cardName  =  $this->buktiPenerimaanPettyCash->bukuBank->buktiPengeluaranBukuBank->vendor->nama;
             }
         }
@@ -132,6 +130,22 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
             $this->cardName = $this->transaksiMutasiKasPettyCashLainnya->card->nama;
         }
 
+    }
+
+    /**
+     * @return $this
+     */
+    public function getNext()
+    {
+        return $this->find()->where(['>', 'id', $this->id])->one();
+    }
+
+    /**
+     * @return $this
+     */
+    public function getPrevious()
+    {
+        return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
 
     public function saveByBuktiPengeluaranPettyCash(): bool

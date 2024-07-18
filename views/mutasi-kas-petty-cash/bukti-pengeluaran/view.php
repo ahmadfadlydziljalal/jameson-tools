@@ -26,7 +26,7 @@ use yii\widgets\DetailView;
             ],
             [
                 'attribute' => 'job_order',
-                'value' => $model->buktiPengeluaranPettyCash->jobOrderDetailCashAdvance->jobOrder->reference_number,
+                'value' => $model->buktiPengeluaranPettyCash?->jobOrderDetailCashAdvance?->jobOrder?->reference_number,
                 'captionOptions' => [
                     'style' => 'text-align:left',
                 ],

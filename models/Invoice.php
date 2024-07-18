@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\components\helpers\ArrayHelper;
-use \app\models\base\Invoice as BaseInvoice;
+use app\models\base\Invoice as BaseInvoice;
 use Yii;
 
 /**
@@ -53,7 +53,7 @@ class Invoice extends BaseInvoice
 
     public function getTotal(bool $format= false): mixed
     {
-        return $format ? \Yii::$app->formatter->asDecimal($this->total, 2) : $this->total;
+        return $format ? Yii::$app->formatter->asDecimal($this->total, 2) : $this->total;
     }
 
     public function spellOutTotal()

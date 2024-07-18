@@ -1,7 +1,7 @@
 <?php
 
 use kartik\bs5dropdown\ButtonDropdown;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */

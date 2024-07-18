@@ -42,7 +42,7 @@ $this->title = $title . ' - Log In';
         <?php ActiveForm::end(); ?>
 
     </div>
-    <div class="about-section d-none d-md-block d-lg-block" style="max-width: 32rem">
+    <div class="about-section d-none d-md-block d-lg-block" style="max-width: 32rem; overflow-y: auto">
         <?= $this->render('about', [
             'withBreadcrumb' => false
         ]) ?>

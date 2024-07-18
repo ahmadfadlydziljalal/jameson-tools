@@ -21,6 +21,12 @@ return [
     ],
     [
         'class' => '\yii\grid\DataColumn',
+        'attribute' => 'nomorVoucher',
+        'format' => 'text',
+        'value' => 'bukuBank.nomor_voucher'
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
         'attribute' => 'vendor_id',
         'format' => 'text',
         'value' => 'vendor.nama',
@@ -49,7 +55,7 @@ return [
             'class' => 'd-none d-lg-table-cell',
         ]
     ],*/
-    /*[
+    [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'tujuanBayar',
         'format' => 'text',
@@ -62,7 +68,7 @@ return [
         'filterOptions' => [
             'class' => 'd-none d-lg-table-cell',
         ]
-    ],*/
+    ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'referensiPembayaran',
@@ -88,7 +94,7 @@ return [
             'class' => 'd-none d-lg-table-cell',
         ]
     ],
-    [
+    /*[
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'referensiPembayaran',
         'format' => 'raw',
@@ -104,7 +110,7 @@ return [
         'filterOptions' => [
             'class' => 'd-none d-lg-table-cell',
         ]
-    ],
+    ],*/
     /*[
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'referensiPembayaran',
