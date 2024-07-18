@@ -2,6 +2,7 @@
 
 use app\components\helpers\ArrayHelper;
 use app\models\BuktiPenerimaanBukuBank;
+use app\models\BuktiPengeluaranBukuBank;
 use kartik\datecontrol\DateControl;
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
@@ -39,16 +40,23 @@ use yii\helpers\Html;
 
     <div class="row">
         <div class="col-12 col-lg-8">
+
+            <?= $form->errorSummary($model) ?>
+
             <?php
+
             $data = [];
             if (!$model->isNewRecord) {
-                $data[$model->bukti_penerimaan_buku_bank_id] = $model->buktiPenerimaanBukuBank->reference_number;
+                $data[$model->bukti_pengeluaran_buku_bank_id] = $model->buktiPengeluaranBukuBank->reference_number;
             }
 
-            $data = ArrayHelper::merge($data, BuktiPenerimaanBukuBank::find()->notYetRegisteredInBukuBank());
-            echo $form->field($model, 'bukti_penerimaan_buku_bank_id')->widget(Select2::class, [
+            $data = ArrayHelper::merge($data, BuktiPengeluaranBukuBank::find()
+                ->notYetRegisteredAsMutasiKasPettyCashInBukuBank()
+            );
+
+            echo $form->field($model, 'bukti_pengeluaran_buku_bank_id')->widget(Select2::class, [
                 'data' => $data,
-                'options' => ['placeholder' => 'Pilih Bukti Penerimaan Buku Bank'],
+                'options' => ['placeholder' => 'Pilih Bukti Pengeluaran Buku Bank'],
             ]) ?>
             <?= $form->field($model, 'tanggal_transaksi')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
             <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
@@ -59,11 +67,10 @@ use yii\helpers\Html;
                     'type' => 'button'
                 ]) ?>
                 <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
-
             </div>
+
         </div>
     </div>
-
 
     <?php ActiveForm::end(); ?>
 

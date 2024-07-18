@@ -7,6 +7,7 @@ use app\enums\KodeVoucherEnum;
 use app\models\base\BukuBank as BaseBukuBank;
 use mdm\autonumber\AutoNumber;
 use Yii;
+use yii\db\ActiveQuery;
 use yii\db\Exception;
 use yii\helpers\Html;
 
@@ -15,7 +16,6 @@ use yii\helpers\Html;
  */
 class BukuBank extends BaseBukuBank
 {
-
     const SCENARIO_BUKTI_PENERIMAAN_BUKU_BANK = 'scenario_buku_penerimaan_buku_bank';
     const SCENARIO_BUKTI_PENGELUARAN_BUKU_BANK = 'scenario_buku_pengeluaran_buku_bank';
 
@@ -82,7 +82,7 @@ class BukuBank extends BaseBukuBank
                 'data' => [
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisBiaya->name,
-                    'nominal' => $this->transaksiBukuBankLainnya->nominal,
+                    'nominal' => round($this->transaksiBukuBankLainnya->nominal, 2),
                 ]
             ];
         }
@@ -93,18 +93,19 @@ class BukuBank extends BaseBukuBank
                 'data' => [
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisPendapatan->name,
-                    'nominal' => $this->transaksiBukuBankLainnya->nominal,
+                    'nominal' =>round($this->transaksiBukuBankLainnya->nominal,2),
+
                 ]
             ];
         }
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getMutasiKasPettyCash()
+    public function getMutasiKasPettyCash(): ActiveQuery
     {
-        return $this->hasOne(\app\models\MutasiKasPettyCash::class, ['bukti_penerimaan_petty_cash_id' => 'id'])
+        return $this->hasOne(MutasiKasPettyCash::class, ['bukti_penerimaan_petty_cash_id' => 'id'])
             ->via('buktiPenerimaanPettyCash');
     }
 
@@ -136,30 +137,65 @@ class BukuBank extends BaseBukuBank
         return false;
     }
 
+
+
     public function saveWithOrWithoutMutasiKasPettyCash(): bool
+    {
+
+    }
+
+    public function saveWithoutMutasiKasPettyCash(): bool
     {
         if(!$this->validate()){
             return false;
+        }
+        return $this->save(false);
+    }
+
+    public function saveWithMutasiKasPettyCash() : bool
+    {
+        if(!$this->validate()){
+            return false;
+        }
+
+        # set state for create | update
+        $oldBuktiPenerimaanPettyCash = null;
+        if(!$this->isNewRecord){
+            # update
+            $oldBuktiPenerimaanPettyCash = $this->buktiPenerimaanPettyCash;
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
 
             if ($flag = $this->save(false)) {
-                // kalau bukti pengeluaran untuk penambahan saldo mutasi kas
-                if($this->buktiPengeluaranBukuBank->jobOrderDetailPettyCash){
-                    $buktiPenerimaanPettyCash = new BuktiPenerimaanPettyCash();
-                    $buktiPenerimaanPettyCash->buku_bank_id = $this->id;
-                    $flag = $buktiPenerimaanPettyCash->save(false);
 
-                    if($flag){
-                        $mutasiKasPettyCash = new MutasiKasPettyCash();
-                        $mutasiKasPettyCash->kode_voucher_id = KodeVoucherEnum::CR->value;
-                        $mutasiKasPettyCash->bukti_penerimaan_petty_cash_id = $buktiPenerimaanPettyCash->id;
-                        $mutasiKasPettyCash->tanggal_mutasi = $this->tanggal_transaksi;
-                        $flag = $mutasiKasPettyCash->save(false);
+                // update case
+                if($oldBuktiPenerimaanPettyCash){
+                    $flag = $oldBuktiPenerimaanPettyCash->mutasiKasPettyCash->delete() &&
+                        $oldBuktiPenerimaanPettyCash->delete();
+                }
+
+                // pengecekan flag untuk meng-support update case
+                if($flag){
+
+                    // kalau bukti pengeluaran untuk penambahan saldo mutasi kas
+                    if($this->buktiPengeluaranBukuBank->jobOrderDetailPettyCash){
+                        $buktiPenerimaanPettyCash = new BuktiPenerimaanPettyCash();
+                        $buktiPenerimaanPettyCash->buku_bank_id = $this->id;
+                        $flag = $buktiPenerimaanPettyCash->save(false);
+
+                        if($flag){
+                            $mutasiKasPettyCash = new MutasiKasPettyCash();
+                            $mutasiKasPettyCash->kode_voucher_id = KodeVoucherEnum::CR->value;
+                            $mutasiKasPettyCash->bukti_penerimaan_petty_cash_id = $buktiPenerimaanPettyCash->id;
+                            $mutasiKasPettyCash->tanggal_mutasi = $this->tanggal_transaksi;
+                            $flag = $mutasiKasPettyCash->save(false);
+                        }
                     }
                 }
+
+
             }
 
             if($flag){
@@ -172,7 +208,6 @@ class BukuBank extends BaseBukuBank
             Yii::error($e->getMessage());
             $transaction->rollBack();
         }
-
         return false;
     }
 

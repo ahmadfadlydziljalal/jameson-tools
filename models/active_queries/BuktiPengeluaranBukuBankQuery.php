@@ -17,11 +17,28 @@ class BuktiPengeluaranBukuBankQuery extends \yii\db\ActiveQuery
 
     public function notYetRegisteredInBukuBank(): array
     {
-        return ArrayHelper::map(parent::joinWith('bukuBank')->where(['buku_bank.id' => null])->all(), 'id', function ($model) {
-            /** @var BuktiPengeluaranBukuBank $model */
-            if ($model->jobOrderDetailPettyCash) {
-                return $model->reference_number . ' - Petty Cash';
-            }
+        $data = parent::joinWith('bukuBank')
+            ->joinWith('jobOrderDetailPettyCash')
+            ->where(['buku_bank.id' => null])
+            ->andWhere([
+                'IS','job_order_detail_petty_cash.id', NULL
+            ])
+            ->all();
+        return ArrayHelper::map($data, 'id', function ($model) {
+            return $model->reference_number;
+        });
+    }
+
+    public function notYetRegisteredAsMutasiKasPettyCashInBukuBank(): array
+    {
+        $data = parent::joinWith('bukuBank')
+            ->joinWith('jobOrderDetailPettyCash')
+            ->where(['buku_bank.id' => null])
+            ->andWhere([
+                'IS NOT','job_order_detail_petty_cash.id', NULL
+            ])
+            ->all();
+        return ArrayHelper::map($data, 'id', function ($model) {
             return $model->reference_number;
         });
     }

@@ -3,8 +3,8 @@
 /* @var $this yii\web\View */
 /* @var $kodeVoucher app\models\KodeVoucher */
 /* @var $model app\models\BukuBank */
+/* @var $modelTransaksiLainnya app\models\TransaksiBukuBankLainnya */
 /* @see \app\controllers\BukuBankController::actionCreateByPengeluaranLainnya() */
-/* @var $modelTransaksiLainnya \app\models\TransaksiBukuBankLainnya */
 
 use yii\helpers\Html;
 

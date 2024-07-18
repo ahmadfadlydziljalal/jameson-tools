@@ -1,6 +1,11 @@
 <?php
 
-/* @var $this \yii\web\View */
+/* @var $this View */
+
+use yii\bootstrap5\Html;
+use yii\helpers\VarDumper;
+use yii\web\View;
+
 ?>
 <?php
 return [
@@ -53,7 +58,7 @@ return [
         ],
         'format'=>'raw',
         'value' => function ($model, $key, $index, $column) {
-            return \yii\helpers\Html::tag('pre', \yii\helpers\VarDumper::dumpAsString($model->businessProcess));
+            return \yii\helpers\Html::tag('pre', VarDumper::dumpAsString($model->businessProcess));
         }
     ],
 
@@ -65,5 +70,41 @@ return [
     // ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'template' => '{export-to-pdf} {view} {update} {delete}',
+        'buttons' => [
+            'export-to-pdf' => function ($url, $model) {
+                return Html::a('<i class="bi bi-printer"></i>', $url,[
+                   'target'=>'_blank',
+                ]);
+            },
+            'update' => function ($url, $model) {
+                /** @var app\models\BukuBank $model */
+
+                # Dengan bukti penerimaan buku bank
+                if($model->bukti_penerimaan_buku_bank_id){
+                    return Html::a('<i class="bi bi-pencil"></i>', ['buku-bank/update-by-bukti-penerimaan-buku-bank', 'id' => $model->id]);
+                }
+
+                # Dengan penerimaan lainnya
+                if($model->transaksiBukuBankLainnya and $model->transaksiBukuBankLainnya->jenis_pendapatan_id){
+                    return Html::a('<i class="bi bi-pencil"></i>', ['buku-bank/update-by-penerimaan-lainnya', 'id' => $model->id]);
+                }
+
+                # Dengan bukti pengeluaran buku bank
+                if($model->bukti_pengeluaran_buku_bank_id){
+
+                    # With mutasi kas
+                    if($model->buktiPengeluaranBukuBank->jobOrderDetailPettyCash){
+                        return Html::a('<i class="bi bi-pencil"></i>', ['buku-bank/update-by-bukti-pengeluaran-buku-bank-to-mutasi-kas', 'id' => $model->id]);
+                    }
+                    # otherwise Without mutasi kas
+                    return Html::a('<i class="bi bi-pencil"></i>', ['buku-bank/update-by-bukti-pengeluaran-buku-bank', 'id' => $model->id]);
+                }
+
+                # TODO dengan pengeluaran lainnya
+
+                return '';
+            }
+        ]
     ],
 ];   

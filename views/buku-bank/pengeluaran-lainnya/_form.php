@@ -2,6 +2,7 @@
 
 use app\models\Card;
 use app\models\JenisBiaya;
+use app\models\Rekening;
 use kartik\datecontrol\DateControl;
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
@@ -43,8 +44,11 @@ use yii\widgets\MaskedInput;
     <div class="row">
         <div class="col-12 col-lg-8">
             <?= $form->errorSummary($model) ?>
+            <?= $form->field($modelTransaksiLainnya, 'rekening_id')->widget(Select2::class,[
+                'data' => Rekening::find()->mapOnlyTokoSaya()
+            ]) ?>
             <?= $form->field($model, 'tanggal_transaksi')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-            <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
+
             <?= $form->field($modelTransaksiLainnya, 'card_id')->widget(Select2::class, [
                 'data' => Card::find()->map(),
                 'options' => [
@@ -71,6 +75,7 @@ use yii\widgets\MaskedInput;
                     'class' => 'form-control harga'
                 ]
             ]); ?>
+            <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
             <div class="d-flex mt-3 justify-content-between">
                 <?= Html::a('Tutup', ['index'], [
                     'class' => 'btn btn-secondary',

@@ -47,7 +47,7 @@ use yii\helpers\Html;
             $data = [];
 
             if (!$model->isNewRecord) {
-                // TODO
+                $data[$model->bukti_pengeluaran_buku_bank_id] = $model->buktiPengeluaranBukuBank->reference_number;
             }
 
             $data = ArrayHelper::merge($data, BuktiPengeluaranBukuBank::find()->notYetRegisteredInBukuBank());

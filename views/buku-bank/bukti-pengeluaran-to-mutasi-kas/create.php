@@ -1,11 +1,11 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $model app\models\BukuBank */
-/* @see app\controllers\BukuBankController::actionCreateByBuktiPengeluaranBukuBank() */
+/* @see app\controllers\BukuBankController::actionCreateByBuktiPengeluaranBukuBankToMutasiKas() */
 /* @var $kodeVoucher app\models\KodeVoucher */
 
 use yii\helpers\Html;
-$this->title = 'Tambah Buku Bank '. $kodeVoucher->name;
+$this->title = 'Tambah Buku Bank With Mutasi Kas '. $kodeVoucher->name;
 $this->params['breadcrumbs'][] = ['label' => 'Buku Bank', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

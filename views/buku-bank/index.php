@@ -47,6 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             'url' => ['create-by-bukti-pengeluaran-buku-bank']
                         ],
                         [
+                            'label' => '<span class="bi bi-dot"></span> Bukti Pengeluaran | Mutasi Kas',
+                            'url' => ['create-by-bukti-pengeluaran-buku-bank-to-mutasi-kas']
+                        ],
+                        [
                             'label' => '<span class="bi bi-dot"></span> Lainnya (Other)',
                             'url' => ['create-by-pengeluaran-lainnya']
                         ],
