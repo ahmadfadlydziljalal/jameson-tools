@@ -7,9 +7,7 @@
 /* @see \app\controllers\JobOrderController::actionViewBillDetail() */
 
 use app\models\JobOrderBillDetail;
-use kartik\grid\DataColumn;
 use kartik\grid\GridView;
-use kartik\grid\SerialColumn;
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 

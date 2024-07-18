@@ -1,9 +1,9 @@
 <?php
 
 /* @var $this yii\web\View */
+
 /* @var $model \app\models\JobOrderDetailCashAdvance */
 
-use app\enums\TextLinkEnum;
 use yii\bootstrap5\Html;
 
 ?>
@@ -22,7 +22,10 @@ use yii\bootstrap5\Html;
 
             <div class="col">
                 <h2 class="card-title"><?= $model->jenisBiaya->name ?></h2>
-                <?= $model->getBuktiPengeluaranReferenceNumber() ?>
+                <?php
+                if ($buktiPengeluaranReferenceNumber = $model->getBuktiPengeluaranReferenceNumber()) {
+                    echo Html::tag('span', '<i class="bi bi-hand-thumbs-up"></i> Paid', ['class' => 'badge bg-info']) . ' ' . $buktiPengeluaranReferenceNumber;
+                } ?>
             </div>
 
             <div class="col">
@@ -51,21 +54,21 @@ use yii\bootstrap5\Html;
             'class' => 'btn btn-outline-primary'
         ]) ?>
 
-        <?php if(!$model->isPanjar()): ?>
-        <div>
-            <?= Html::a('<i class="bi bi-pencil"></i> Update', ['update-cash-advance', 'id' => $model->id], [
-                'class' => 'btn btn-outline-primary'
-            ]) ?>
+        <?php if (!$model->isPanjar()): ?>
+            <div>
+                <?= Html::a('<i class="bi bi-pencil"></i> Update', ['update-cash-advance', 'id' => $model->id], [
+                    'class' => 'btn btn-outline-primary'
+                ]) ?>
 
-            <?= Html::a('<i class="bi bi-trash"></i>', ['delete-cash-advance', 'id' => $model->id], [
-                'data' => [
-                    'confirm' => 'Are you sure you want to delete this item?',
-                    'method' => 'post',
-                    'pjax' => '0',
-                ],
-                'class' => 'btn btn-outline-danger'
-            ]) ?>
-        </div>
+                <?= Html::a('<i class="bi bi-trash"></i>', ['delete-cash-advance', 'id' => $model->id], [
+                    'data' => [
+                        'confirm' => 'Are you sure you want to delete this item?',
+                        'method' => 'post',
+                        'pjax' => '0',
+                    ],
+                    'class' => 'btn btn-outline-danger'
+                ]) ?>
+            </div>
 
         <?php endif ?>
 

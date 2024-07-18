@@ -6,6 +6,8 @@ use app\components\helpers\ArrayHelper;
 use app\models\base\JobOrder as BaseJobOrder;
 use Yii;
 use yii\db\Exception;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "job_order".
@@ -15,21 +17,11 @@ class JobOrder extends BaseJobOrder
 
     const SCENARIO_FOR_PETTY_CASH = 'scenario_for_petty_cash';
 
-    public ?string $jenisBiayaPettyCash = null;
-    public ?string $vendorPettyCash = null;
-    public ?string $nominalPettyCash = null;
 
     public mixed $totalBill = 0;
     public mixed $totalKasbonRequest = 0;
     public mixed $totalPanjarCashAdvance = 0;
-
-    public function rules()
-    {
-        return ArrayHelper::merge(parent::rules(), [
-            [['jenisBiayaPettyCash', 'vendorPettyCash', 'nominalPettyCash'], 'required', 'on' => self::SCENARIO_FOR_PETTY_CASH],
-            ['is_for_petty_cash', 'default', 'value' => 1, 'on' => self::SCENARIO_FOR_PETTY_CASH],
-        ]);
-    }
+    public mixed $totalPettyCash = 0;
 
     public function behaviors(): array
     {
@@ -55,6 +47,10 @@ class JobOrder extends BaseJobOrder
         foreach ($this->jobOrderBills as $jobOrderBill) {
             $this->totalBill += $jobOrderBill->getTotalPrice();
         }
+
+        if($this->jobOrderDetailPettyCash){
+            $this->totalPettyCash = $this->jobOrderDetailPettyCash->nominal;
+        }
     }
 
     public function attributeLabels(): array
@@ -63,96 +59,8 @@ class JobOrder extends BaseJobOrder
             'totalKasbonRequest' => 'Kasbon',
             'totalPanjarCashAdvance' => 'Panjar',
             'totalBill' => 'Bill',
+            'totalPettyCash' => 'Petty Cash',
         ]);
-    }
-
-    public function saveForPettyCash()
-    {
-        if (!$this->validate()) {
-            return false;
-        }
-
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            if ($flag = $this->save(false)) {
-                $jobOrderBill = new JobOrderBill([
-                    'job_order_id' => $this->id,
-                    'reference_number' => '-',
-                    'vendor_id' => $this->vendorPettyCash,
-                ]);
-
-                if ($flag = $jobOrderBill->save(false)) {
-                    $jobOrderBillDetail = new JobOrderBillDetail([
-                        'job_order_bill_id' => $jobOrderBill->id,
-                        'jenis_biaya_id' => $this->jenisBiayaPettyCash,
-                        'quantity' => 1,
-                        'satuan_id' => 1,
-                        'name' => 'Penambahan Saldo Petty Cash',
-                        'price' => $this->nominalPettyCash
-                    ]);
-
-                    $flag = $jobOrderBillDetail->save(false);
-                }
-            }
-
-            if ($flag) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-            }
-        } catch (Exception $e) {
-            Yii::error($e->getMessage());
-            $transaction->rollBack();
-        }
-
-
-        return false;
-    }
-
-    public function updateForPettyCash()
-    {
-        if (!$this->validate()) {
-            return false;
-        }
-
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            if ($flag = $this->save(false)) {
-               /* $jobOrderBill = new JobOrderBill([
-                    'job_order_id' => $this->id,
-                    'reference_number' => '-',
-                    'vendor_id' => $this->vendorPettyCash,
-                ]);*/
-
-                $jobOrderBill = $this->jobOrderBills[0];
-                $jobOrderBill->job_order_id = $this->id;
-                $jobOrderBill->reference_number = '-';
-                $jobOrderBill->vendor_id = $this->vendorPettyCash;
-
-                if ($flag = $jobOrderBill->save(false)) {
-
-                    $jobOrderBillDetail = $jobOrderBill->jobOrderBillDetails[0];
-                    $jobOrderBillDetail->job_order_bill_id = $jobOrderBill->id;
-                    $jobOrderBillDetail->jenis_biaya_id = $this->jenisBiayaPettyCash;
-                    $jobOrderBillDetail->price = $this->nominalPettyCash;
-                    $flag = $jobOrderBillDetail->save(false);
-                }
-            }
-
-            if ($flag) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-            }
-        } catch (Exception $e) {
-            Yii::error($e->getMessage());
-            $transaction->rollBack();
-        }
-
-
-        return false;
     }
 
     /**
@@ -169,6 +77,34 @@ class JobOrder extends BaseJobOrder
     public function getPrevious()
     {
         return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
+    }
+
+    public function saveForPettyCash(JobOrderDetailPettyCash $modelDetail) :bool
+    {
+
+        if(!$this->validate() and !$modelDetail->validate()) {
+            return false;
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if($flag = $this->save(false)) {
+                $modelDetail->job_order_id = $this->id;
+                $flag = $modelDetail->save(false);
+            }
+
+            if($flag){
+                $transaction->commit();
+                return true;
+            }else{
+                $transaction->rollBack();
+            }
+        }catch (Exception $e){
+            Yii::error($e->getMessage());
+            $transaction->rollBack();
+        }
+
+        return false;
     }
 
 }

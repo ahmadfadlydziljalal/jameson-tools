@@ -3,6 +3,7 @@
 use app\assets\Bootstrap5VerticalTabs;
 use app\components\helpers\ArrayHelper;
 use app\models\form\PaymentKasbonForm;
+use kartik\bs5dropdown\ButtonDropdown;
 use mdm\admin\components\Helper;
 use yii\bootstrap5\Tabs;
 use yii\helpers\Html;
@@ -30,7 +31,22 @@ Bootstrap5VerticalTabs::register($this);
                 </h1>
             </div>
             <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
-                <?= Html::a('Buat Job Order Lain', ['create'], ['class' => 'btn btn-success']) ?>
+                <?= ButtonDropdown::widget([
+                    'label' => '<i class="bi bi-plus-circle-dotted"></i>' . ' Buat Job Order Lain',
+                    'dropdown' => [
+                        'items' => [
+                            ['label' => 'Job Order', 'url' => ['create']],
+                            ['label' => 'Job Order | Petty Cash', 'url' => ['create-for-petty-cash']],
+                        ],
+                        'options' => [
+                            'class' => 'dropdown-menu-right',
+                        ],
+                    ],
+                    'buttonOptions' => [
+                        'class' => 'btn btn-primary',
+                    ],
+                    'encodeLabel' => false
+                ]); ?>
                 <?php
                 if (Helper::checkRoute('delete')) :
                     echo Html::a('Hapus', ['delete', 'id' => $model->id], [
@@ -52,7 +68,7 @@ Bootstrap5VerticalTabs::register($this);
                 // 'url' => '#quotation-tab-quotation'
             ];
 
-            if (!$model->is_for_petty_cash) {
+            if (!$model->jobOrderDetailPettyCash) {
                 $items = ArrayHelper::merge($items, [
                     [
                         'label' => 'Advance / Kasbon',

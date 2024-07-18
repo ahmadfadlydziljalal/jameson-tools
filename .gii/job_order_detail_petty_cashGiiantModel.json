@@ -1,6 +1,6 @@
 {
     "tablename": {
-        "value": "mata_uang",
+        "value": "job_order_detail_petty_cash",
         "name": "tableName"
     },
     "tableprefix": {
@@ -8,7 +8,7 @@
         "name": "tablePrefix"
     },
     "modelclass": {
-        "value": "MataUang",
+        "value": "JobOrderDetailPettyCash",
         "name": "modelClass"
     },
     "ns": {

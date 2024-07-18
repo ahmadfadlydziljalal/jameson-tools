@@ -45,10 +45,10 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
 
             $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_MUTASI_KAS_BANK));
             $this->referensiPenerimaan['data'] = [
-                'jobOrder' => $this->bukuBank->buktiPengeluaranBukuBank->jobOrderBills[0]->jobOrder->reference_number,
+                'jobOrder' => $this->bukuBank->buktiPengeluaranBukuBank->jobOrderDetailPettyCash->jobOrder->reference_number,
                 'buktiPengeluaran' => $this->bukuBank->buktiPengeluaranBukuBank->reference_number,
-                'jenisBiaya' => $this->bukuBank->buktiPengeluaranBukuBank->jobOrderBills[0]->jobOrderBillDetails[0]->jenisBiaya->name,
-                'vendor' => $this->bukuBank->buktiPengeluaranBukuBank->jobOrderBills[0]->vendor->nama,
+                'jenisBiaya' => $this->bukuBank->buktiPengeluaranBukuBank->jobOrderDetailPettyCash->jenisBiaya->name,
+                'vendor' => $this->bukuBank->buktiPengeluaranBukuBank->jobOrderDetailPettyCash->vendor->nama,
                 'nominal' => $this->nominal,
             ];
         }

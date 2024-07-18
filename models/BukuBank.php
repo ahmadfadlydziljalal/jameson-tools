@@ -147,7 +147,7 @@ class BukuBank extends BaseBukuBank
 
             if ($flag = $this->save(false)) {
                 // kalau bukti pengeluaran untuk penambahan saldo mutasi kas
-                if($this->buktiPengeluaranBukuBank->is_for_petty_cash){
+                if($this->buktiPengeluaranBukuBank->jobOrderDetailPettyCash){
                     $buktiPenerimaanPettyCash = new BuktiPenerimaanPettyCash();
                     $buktiPenerimaanPettyCash->buku_bank_id = $this->id;
                     $flag = $buktiPenerimaanPettyCash->save(false);

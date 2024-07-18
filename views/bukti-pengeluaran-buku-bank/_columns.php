@@ -70,15 +70,9 @@ return [
         'value' => function ($model) {
             $map = array_map(function($element){
                 $string = $element['jobOrder'];
-
-                if($element['reference_number']){
+                if(isset($element['reference_number']) AND $element['reference_number']){
                     $string .= ' / ' . $element['reference_number'];
                 }
-
-                if(isset($element['forPettyCash']) AND $element['forPettyCash'] == 1){
-                    $string .= ' / PC';
-                }
-
                 return Html::tag('span', $string, ['class' => 'badge rounded-pill text-bg-primary']);
             } , $model->referensiPembayaran['data']);
 
@@ -94,7 +88,7 @@ return [
             'class' => 'd-none d-lg-table-cell',
         ]
     ],
-    /*[
+    [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'referensiPembayaran',
         'format' => 'raw',
@@ -110,7 +104,7 @@ return [
         'filterOptions' => [
             'class' => 'd-none d-lg-table-cell',
         ]
-    ],*/
+    ],
     /*[
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'referensiPembayaran',
@@ -202,12 +196,13 @@ return [
                 }
 
                 if ($model->jobOrderBills) {
-                    if($model->is_for_petty_cash){
-                        return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-bill-for-petty-cash', 'id' => $model->id]);
-                    }
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-bill', 'id' => $model->id]);
                 }
-                return $model->id;
+
+                if($model->jobOrderDetailPettyCash){
+                    return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-petty-cash', 'id' => $model->id]);
+                }
+                return '';
             },
             'delete' => function ($url, $model) {
                 if ($model->jobOrderDetailCashAdvances) {

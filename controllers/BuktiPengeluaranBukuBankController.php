@@ -141,13 +141,13 @@ class BuktiPengeluaranBukuBankController extends Controller
         ]);
     }
 
-    public function actionCreateByBillForPettyCash(): Response|string
+    public function actionCreateByPettyCash(): Response|string
     {
         $model = new BuktiPengeluaranBukuBank();
-        $model->scenario = BuktiPengeluaranBukuBank::SCENARIO_PENGELUARAN_BY_BILL_SALDO_PETTY_CASH;
+        $model->scenario = BuktiPengeluaranBukuBank::SCENARIO_PENGELUARAN_BY_PETTY_CASH;
 
         if (Yii::$app->request->isPost) {
-            if($model->load(Yii::$app->request->post()) && $model->saveForBill()){
+            if($model->load(Yii::$app->request->post()) && $model->saveForPettyCash()){
                 Yii::$app->session->setFlash('success',  'BuktiPengeluaranBukuBank: ' . $model->reference_number.  ' berhasil ditambahkan.');
                 return $this->redirect(['index']);
             } else {
@@ -155,7 +155,25 @@ class BuktiPengeluaranBukuBankController extends Controller
             }
         }
 
-        return $this->render('bill-for-petty-cash/create', [
+        return $this->render('petty-cash/create', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionUpdateByPettyCash($id): Response|string
+    {
+        $model =$this->findModel($id);
+        $model->scenario = BuktiPengeluaranBukuBank::SCENARIO_PENGELUARAN_BY_PETTY_CASH;
+
+        if (Yii::$app->request->isPost) {
+            if($model->load(Yii::$app->request->post()) && $model->saveForPettyCash()){
+                Yii::$app->session->setFlash('success',  'BuktiPengeluaranBukuBank: ' . $model->reference_number.  ' berhasil di-update.');
+                return $this->redirect(['index']);
+            }
+            Yii::$app->session->setFlash('danger', 'Failed');
+        }
+
+        return $this->render('petty-cash/update', [
             'model' => $model,
         ]);
     }

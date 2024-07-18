@@ -18,7 +18,7 @@ use yii\widgets\DetailView;
             'rel' => 'noopener noreferrer'
         ]) ?>
 
-        <?php if(!$model->is_for_petty_cash) {
+        <?php if(!$model->jobOrderDetailPettyCash) {
             echo Html::a(TextLinkEnum::UPDATE->value, ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
         }else{
             echo Html::a(TextLinkEnum::UPDATE->value, ['update-for-petty-cash', 'id' => $model->id], ['class' => 'btn btn-primary']);

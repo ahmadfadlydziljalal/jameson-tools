@@ -24,6 +24,7 @@ use \app\models\active_queries\JenisBiayaQuery;
  *
  * @property \app\models\JobOrderBillDetail[] $jobOrderBillDetails
  * @property \app\models\JobOrderDetailCashAdvance[] $jobOrderDetailCashAdvances
+ * @property \app\models\JobOrderDetailPettyCash[] $jobOrderDetailPettyCashes
  * @property \app\models\TransaksiBukuBankLainnya[] $transaksiBukuBankLainnyas
  * @property \app\models\TransaksiMutasiKasPettyCashLainnya[] $transaksiMutasiKasPettyCashLainnyas
  */
@@ -99,6 +100,14 @@ abstract class JenisBiaya extends \yii\db\ActiveRecord
     public function getJobOrderDetailCashAdvances()
     {
         return $this->hasMany(\app\models\JobOrderDetailCashAdvance::class, ['jenis_biaya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJobOrderDetailPettyCashes()
+    {
+        return $this->hasMany(\app\models\JobOrderDetailPettyCash::class, ['jenis_biaya_id' => 'id']);
     }
 
     /**

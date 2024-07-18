@@ -20,8 +20,9 @@ return [
         'attribute' => 'reference_number',
         'format' => 'raw',
         'value' => function ($model) {
+            /** @var \app\models\JobOrder $model */
             $string = Html::tag('span', $model->reference_number);
-            if ($model->is_for_petty_cash) {
+            if ($model->jobOrderDetailPettyCash) {
                 $string .=  ' ' . Html::tag('span', 'PC', ['class' => 'badge rounded-pill text-bg-info']);
             }
             return $string;
@@ -57,31 +58,12 @@ return [
         'format' => ['decimal', 2],
         'contentOptions' => ['class' => 'text-end'],
     ],
-    /*[
-        'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'keterangan',
-        'format'=>'ntext',
-    ],*/
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'created_at',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'updated_at',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'created_by',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'updated_by',
-    // 'format'=>'text',
-    // ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'totalPettyCash',
+        'format' => ['decimal', 2],
+        'contentOptions' => ['class' => 'text-end'],
+    ],
     [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{export-to-pdf} {view} {update} {delete}',

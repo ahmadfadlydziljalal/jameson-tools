@@ -79,15 +79,14 @@ use yii\helpers\Url;
 
             $data = [];
             if (!$model->isNewRecord) {
-                $data = ArrayHelper::map($model->jobOrderBills, 'id', function($model){
-                    /** @var JobOrderBill $model */
-                    return $model->jobOrder->reference_number . ' - ' . $model->vendor->nama . ' - ' . Yii::$app->formatter->asDecimal($model->getTotalPrice(), 2);
-                });
-                $model->bills = array_keys($data);
+                $data[$model->jobOrderDetailPettyCash->id] =
+                    $model->jobOrderDetailPettyCash->jobOrder->reference_number . ' - ' . $model->jobOrderDetailPettyCash->vendor->nama . ' - ' . \Yii::$app->formatter->asDecimal($model->jobOrderDetailPettyCash->nominal,2)
+                ;
+                $model->pettyCash = $model->jobOrderDetailPettyCash->id;
             }
 
-            $data = ArrayHelper::merge($data, JobOrderBill::find()->notYetRegisteredToPenambahanSaldoPettyCash());
-            echo $form->field($model, 'bill')->widget(Select2::class, [
+            $data = ArrayHelper::merge($data, \app\models\JobOrderDetailPettyCash::find()->notYetRegistered());
+            echo $form->field($model, 'pettyCash')->widget(Select2::class, [
                 'data' => $data,
                 'options' => [
                     'placeholder' => '...'

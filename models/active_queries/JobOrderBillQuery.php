@@ -43,9 +43,6 @@ class JobOrderBillQuery extends ActiveQuery
             ->andWhere([
                 'is', 'job_order_bill.bukti_pengeluaran_buku_bank_id', NULL
             ])
-            ->andWhere([
-                'job_order.is_for_petty_cash' => 0
-            ])
             ->all();
 
         $data = [];
@@ -55,27 +52,4 @@ class JobOrderBillQuery extends ActiveQuery
         return $data;
     }
 
-    public function notYetRegisteredToPenambahanSaldoPettyCash(): array
-    {
-        $bills = parent::joinWith('jobOrder')
-            ->joinWith(['vendor' => function ($vendor) {
-                $vendor->from(['vendor' => 'card']);
-            }])
-            ->where([
-                'is', 'job_order_bill.bukti_pengeluaran_petty_cash_id', NULL
-            ])
-            ->andWhere([
-                'is', 'job_order_bill.bukti_pengeluaran_buku_bank_id', NULL
-            ])
-            ->andWhere([
-                'job_order.is_for_petty_cash' => 1
-            ])
-            ->all();
-
-        $data = [];
-        foreach ($bills as $bill) {
-            $data[$bill->id] = $bill->jobOrder->reference_number . ' - ' . $bill->vendor->nama . ' - ' . Yii::$app->formatter->asDecimal($bill->getTotalPrice(),2);
-        }
-        return $data;
-    }
 }

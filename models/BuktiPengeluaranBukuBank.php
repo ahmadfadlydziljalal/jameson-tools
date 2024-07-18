@@ -15,12 +15,13 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 {
     const SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON = 'scenario_pengeluaran_by_cash_advance_or_kasbon';
     const SCENARIO_PENGELUARAN_BY_BILL = 'scenario_pengeluaran_by_bill';
-    const SCENARIO_PENGELUARAN_BY_BILL_SALDO_PETTY_CASH = 'scenario_pengeluaran_by_bill_saldo_petty_cash';
+    const SCENARIO_PENGELUARAN_BY_PETTY_CASH = 'scenario_pengeluaran_by_bill_saldo_petty_cash';
     const PEMBAYARAN_CASH_ADVANCE_OR_KASBON = 'Cash Advance / Kasbon';
     const PEMBAYARAN_BILL_JOB_ORDER = 'Bill Job Order';
+    const PEMBAYARAN_MUTASI_KAS_PETTY_CASH = 'Mutasi Kas Petty Cash';
 
     public ?array $cashAdvances = [];
-    public ?string $bill = null;
+    public ?string $pettyCash = null;
     public ?array $bills = [];
     public ?string $tujuanBayar = null;
     public ?array $referensiPembayaran = null;
@@ -33,7 +34,6 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         // Bayar untuk kasbon
         if ($this->jobOrderDetailCashAdvances) {
             $this->tujuanBayar = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
-
             $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
             foreach ($this->jobOrderDetailCashAdvances as $cashAdvance) {
                 $this->totalBayar += $cashAdvance->cash_advance;
@@ -56,12 +56,26 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
                 $this->totalBayar += $jobOrderBill->getTotalPrice();
                 $this->referensiPembayaran['data'][] = [
                     'jobOrder' => $jobOrderBill->jobOrder->reference_number,
-                    'forPettyCash' => $jobOrderBill->jobOrder->is_for_petty_cash,
                     'vendor' => $jobOrderBill->vendor->nama,
                     'reference_number' => $jobOrderBill->reference_number,
                     'total' => round($jobOrderBill->getTotalPrice(), 2),
                 ];
             }
+
+        }
+
+        // Bayar untuk penambahan saldo Petty Cash
+        if ($this->jobOrderDetailPettyCash) {
+
+            $this->tujuanBayar = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
+            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
+
+            $this->totalBayar = $this->jobOrderDetailPettyCash->nominal;
+            $this->referensiPembayaran['data'][] = [
+                'jobOrder' => $this->jobOrderDetailPettyCash->jobOrder->reference_number,
+                'vendor' => $this->jobOrderDetailPettyCash->vendor->nama,
+                'total' => $this->totalBayar,
+            ];
 
         }
     }
@@ -104,14 +118,13 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
                 'tanggal_transaksi',
                 'bills'
             ], 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_BILL],
-            ['is_for_petty_cash', 'default', 'value' => 1, 'on' => self::SCENARIO_PENGELUARAN_BY_BILL_SALDO_PETTY_CASH],
             [[
                 'vendor_id',
                 'rekening_saya_id',
                 'nomor_bukti_transaksi',
                 'tanggal_transaksi',
-                'bill'                     # only 1 JO is allowed
-            ], 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_BILL_SALDO_PETTY_CASH],
+                'pettyCash'
+            ], 'required', 'on' => self::SCENARIO_PENGELUARAN_BY_PETTY_CASH],
         ]);
     }
 
@@ -141,16 +154,15 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             'bills',
             'keterangan',
         ];
-        $scenarios[self::SCENARIO_PENGELUARAN_BY_BILL_SALDO_PETTY_CASH] = [
+        $scenarios[self::SCENARIO_PENGELUARAN_BY_PETTY_CASH] = [
             'vendor_id',
             'vendor_rekening_id',
             'rekening_saya_id',
             'jenis_transfer_id',
             'nomor_bukti_transaksi',
             'tanggal_transaksi',
-            'bill',
+            'pettyCash',
             'keterangan',
-            'is_for_petty_cash'
         ];
         return $scenarios;
     }
@@ -284,12 +296,12 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 
             /* Kasbon / Cash advance di reverse dari panjar ke kasbon field */
             foreach ($this->jobOrderDetailCashAdvances as $jobOrderDetailCashAdvance) {
-                if(!$flag) break;
+                if (!$flag) break;
                 $flag = $jobOrderDetailCashAdvance->reverseMarkAsPaidFromBuktiPengeluaranBukuBank();
             }
 
             if ($flag) {
-                if($this->delete()){
+                if ($this->delete()) {
                     $transaction->commit();
                     return true;
                 }
@@ -305,42 +317,46 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         return false;
     }
 
-    public function saveForBill(): bool
+    public function saveForPettyCash(): bool
     {
-        if (!$this->validate()) return false;
+        if(!$this->validate()){
+            return false;
+        }
 
-        // update case
-        /*$setNull = [];
-        if (!$this->isNewRecord) {
-            $oldBills = ArrayHelper::map($this->jobOrderBills, 'id', 'id');
-            $setNull = array_diff($oldBills, $this->bills);
-        }*/
+        // Dalam kasus update, cek kalau ada perubahan pilihan petty cash
+        $oldJobOrderDetailPettyCashID = null;
+        if(!$this->isNewRecord AND $oldJobOrderDetailPettyCashID != $this->pettyCash){
+            $oldJobOrderDetailPettyCashID= $this->jobOrderDetailPettyCash->id;
+        }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            if($flag = $this->save(false)){
 
-            if ($flag = $this->save(false)) {
+                if(!is_null($oldJobOrderDetailPettyCashID)){
+                    $existingPettyCash = JobOrderDetailPettyCash::findOne($oldJobOrderDetailPettyCashID);
+                    $existingPettyCash->bukti_pengeluaran_buku_bank_id = null;
+                    $flag = $existingPettyCash->save(false);
+                }
 
-                /*if (!empty($setNull)) {
-                    JobOrderBill::updateAll(
-                        ['job_order_bill.bukti_pengeluaran_buku_bank_id' => null],
-                        ['id' => $setNull]
-                    );
-                }*/
-
-                if ($jobOrderBill = JobOrderBill::findOne($this->bill)) {
-                    $jobOrderBill->bukti_pengeluaran_buku_bank_id = $this->id;
-                    $flag = $jobOrderBill->save(false);
+                if($flag){
+                    if($pettyCash = JobOrderDetailPettyCash::findOne($this->pettyCash)){
+                        $pettyCash->bukti_pengeluaran_buku_bank_id = $this->id;
+                        $flag = $pettyCash->save(false);
+                    }else{
+                        $flag = false;
+                    }
                 }
             }
 
-            if ($flag) {
+            if($flag){
                 $transaction->commit();
                 return true;
-            } else {
+            }else{
                 $transaction->rollBack();
             }
-        } catch (Exception $e) {
+
+        }catch (Exception $e){
             Yii::error($e->getMessage());
             $transaction->rollBack();
         }

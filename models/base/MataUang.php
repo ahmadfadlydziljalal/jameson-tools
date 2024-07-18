@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\MataUangQuery;
 
 /**
  * This is the base-model class for table "mata_uang".
@@ -17,13 +18,13 @@ use yii\helpers\ArrayHelper;
  * @property string $singkatan
  *
  * @property \app\models\Card[] $cards
+ * @property \app\models\JobOrderDetailCashAdvance[] $jobOrderDetailCashAdvances
+ * @property \app\models\JobOrderDetailPettyCash[] $jobOrderDetailPettyCashes
  * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
- * @property string $aliasModel
+ * @property \app\models\Quotation[] $quotations
  */
 abstract class MataUang extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -38,7 +39,8 @@ abstract class MataUang extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
             [['negara', 'nama'], 'string', 'max' => 255],
             [['kode', 'singkatan'], 'string', 'max' => 16],
             [['nama'], 'unique']
@@ -50,13 +52,13 @@ abstract class MataUang extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'negara' => 'Negara',
             'nama' => 'Nama',
             'kode' => 'Kode',
             'singkatan' => 'Singkatan',
-        ];
+        ]);
     }
 
     /**
@@ -64,7 +66,7 @@ abstract class MataUang extends \yii\db\ActiveRecord
      */
     public function attributeHints()
     {
-        return array_merge(parent::attributeHints(), [
+        return ArrayHelper::merge(parent::attributeHints(), [
             'nama' => 'eg, Rupiah, Dollar Amerika, Dollar Singapore',
             'kode' => 'eg. IDR, USD',
             'singkatan' => 'eg. `Rp.` , USD. ',
@@ -82,21 +84,41 @@ abstract class MataUang extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getJobOrderDetailCashAdvances()
+    {
+        return $this->hasMany(\app\models\JobOrderDetailCashAdvance::class, ['mata_uang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJobOrderDetailPettyCashes()
+    {
+        return $this->hasMany(\app\models\JobOrderDetailPettyCash::class, ['mata_uang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getMaterialRequisitionDetailPenawarans()
     {
         return $this->hasMany(\app\models\MaterialRequisitionDetailPenawaran::class, ['mata_uang_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotations()
+    {
+        return $this->hasMany(\app\models\Quotation::class, ['mata_uang_id' => 'id']);
+    }
 
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\MataUangQuery the active query used by this AR class.
+     * @return MataUangQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\MataUangQuery(get_called_class());
+        return new MataUangQuery(static::class);
     }
-
-
 }

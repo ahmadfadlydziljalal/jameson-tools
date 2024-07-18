@@ -10,4 +10,8 @@ use \app\models\base\JobOrderBillDetail as BaseJobOrderBillDetail;
 class JobOrderBillDetail extends BaseJobOrderBillDetail
 {
 
+    public function getTotal()
+    {
+        return $this->quantity * $this->price;
+    }
 }

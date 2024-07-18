@@ -18,7 +18,8 @@ class BuktiPengeluaranBukuBankQuery extends \yii\db\ActiveQuery
     public function notYetRegisteredInBukuBank(): array
     {
         return ArrayHelper::map(parent::joinWith('bukuBank')->where(['buku_bank.id' => null])->all(), 'id', function ($model) {
-            if ($model->is_for_petty_cash) {
+            /** @var BuktiPengeluaranBukuBank $model */
+            if ($model->jobOrderDetailPettyCash) {
                 return $model->reference_number . ' - Petty Cash';
             }
             return $model->reference_number;

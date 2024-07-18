@@ -94,6 +94,24 @@ use yii\web\View;
         ?>
     <?php endif; ?>
 
+    <!-- Petty Cash -->
+    <?php if ($model->jobOrderDetailPettyCash) : ?>
+        <p>Request Petty Cash</p>
+        <?php
+        $columns = require __DIR__ . '/petty-cash/_columns.php';
+        echo GridView::widget([
+            'tableOptions' => ['class' => 'table table-gridview'],
+            'layout' => "{items}",
+            'dataProvider' => new ActiveDataProvider([
+                'query' => $model->getJobOrderDetailPettyCash(),
+                'pagination' => false,
+                'sort' => false,
+            ]),
+            'columns' => $columns,
+        ]);
+        ?>
+    <?php endif; ?>
+
     <p>Keterangan:</p>
     <span><?= empty($model->keterangan) ? '' : nl2br($model->keterangan) ?></span>
 

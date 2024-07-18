@@ -24,13 +24,10 @@ return [
             if($model->bukti_pengeluaran_petty_cash_id){
                 return $model->buktiPengeluaranPettyCash?->reference_number;
             }
-
             if($model->bukti_pengeluaran_buku_bank_id){
                 return $model->buktiPengeluaranBukuBank?->reference_number;
             }
-
             return '';
-
         }
     ],
     [

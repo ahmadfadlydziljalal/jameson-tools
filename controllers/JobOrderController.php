@@ -8,6 +8,7 @@ use app\models\JobOrder;
 use app\models\JobOrderBill;
 use app\models\JobOrderBillDetail;
 use app\models\JobOrderDetailCashAdvance;
+use app\models\JobOrderDetailPettyCash;
 use app\models\search\JobOrderSearch;
 use app\models\Tabular;
 use kartik\mpdf\Pdf;
@@ -23,6 +24,7 @@ use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\StringHelper;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -416,10 +418,11 @@ class JobOrderController extends Controller
     public function actionCreateForPettyCash(): Response|string
     {
         $model = new JobOrder();
-        $model->scenario = JobOrder::SCENARIO_FOR_PETTY_CASH;
+        $modelDetail = new JobOrderDetailPettyCash();
 
         if ($this->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->saveForPettyCash()) {
+
+            if ($model->load(Yii::$app->request->post()) && $modelDetail->load(Yii::$app->request->post()) && $model->saveForPettyCash($modelDetail)) {
                 Yii::$app->session->setFlash('success', 'JobOrder: ' . $model->reference_number . ' berhasil ditambahkan.');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -429,22 +432,21 @@ class JobOrderController extends Controller
 
         return $this->render('petty-cash/create', [
             'model' => $model,
+            'modelDetail' => $modelDetail,
         ]);
     }
 
+    /**
+     * @param $id
+     * @return Response|string
+     */
     public function actionUpdateForPettyCash($id): Response|string
     {
         $model = JobOrder::findOne($id);
-        $model->scenario = JobOrder::SCENARIO_FOR_PETTY_CASH;
-        $jobOrderBill = $model->jobOrderBills[0];
-        $jobOrderBillDetail = $jobOrderBill->jobOrderBillDetails[0];
-
-        $model->jenisBiayaPettyCash = $jobOrderBillDetail->jenis_biaya_id;
-        $model->vendorPettyCash = $jobOrderBill->vendor_id;
-        $model->nominalPettyCash = $jobOrderBillDetail->price;
+        $modelDetail = $model->jobOrderDetailPettyCash ;
 
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->updateForPettyCash()) {
+            if ($model->load(Yii::$app->request->post()) && $modelDetail->load(Yii::$app->request->post()) && $model->saveForPettyCash($modelDetail)) {
                 Yii::$app->session->setFlash('success', 'JobOrder: ' . $model->reference_number . ' berhasil di-update.');
                 return $this->redirect(['view', 'id' => $model->id, '#' => 'quotation-tab-tab1']);
             }
@@ -453,6 +455,7 @@ class JobOrderController extends Controller
 
         return $this->render('petty-cash/update', [
             'model' => $model,
+            'modelDetail' => $modelDetail,
         ]);
     }
 

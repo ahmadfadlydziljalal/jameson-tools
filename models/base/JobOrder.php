@@ -17,7 +17,6 @@ use \app\models\active_queries\JobOrderQuery;
  * @property string $reference_number
  * @property integer $main_vendor_id
  * @property integer $main_customer_id
- * @property integer $is_for_petty_cash
  * @property string $keterangan
  * @property integer $created_at
  * @property integer $updated_at
@@ -26,6 +25,7 @@ use \app\models\active_queries\JobOrderQuery;
  *
  * @property \app\models\JobOrderBill[] $jobOrderBills
  * @property \app\models\JobOrderDetailCashAdvance[] $jobOrderDetailCashAdvances
+ * @property \app\models\JobOrderDetailPettyCash $jobOrderDetailPettyCash
  * @property \app\models\Card $mainCustomer
  * @property \app\models\Card $mainVendor
  */
@@ -64,7 +64,7 @@ abstract class JobOrder extends \yii\db\ActiveRecord
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
             [['main_vendor_id', 'main_customer_id'], 'required'],
-            [['main_vendor_id', 'main_customer_id', 'is_for_petty_cash'], 'integer'],
+            [['main_vendor_id', 'main_customer_id'], 'integer'],
             [['keterangan'], 'string'],
             [['reference_number'], 'string', 'max' => 24],
             [['main_customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['main_customer_id' => 'id']],
@@ -82,7 +82,6 @@ abstract class JobOrder extends \yii\db\ActiveRecord
             'reference_number' => 'Reference Number',
             'main_vendor_id' => 'Main Vendor ID',
             'main_customer_id' => 'Main Customer ID',
-            'is_for_petty_cash' => 'Is For Petty Cash',
             'keterangan' => 'Keterangan',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -116,6 +115,14 @@ abstract class JobOrder extends \yii\db\ActiveRecord
     public function getJobOrderDetailCashAdvances()
     {
         return $this->hasMany(\app\models\JobOrderDetailCashAdvance::class, ['job_order_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJobOrderDetailPettyCash()
+    {
+        return $this->hasOne(\app\models\JobOrderDetailPettyCash::class, ['job_order_id' => 'id']);
     }
 
     /**
