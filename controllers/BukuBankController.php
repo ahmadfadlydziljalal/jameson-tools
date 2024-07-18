@@ -153,9 +153,7 @@ class BukuBankController extends Controller
         ]);
 
         if (Yii::$app->request->post()) {
-            if ($model->load(Yii::$app->request->post()) &&
-                $modelTransaksiLainnya->load(Yii::$app->request->post()) &&
-                $model->saveTransaksiLainnya($modelTransaksiLainnya)) {
+            if ($model->load(Yii::$app->request->post()) && $modelTransaksiLainnya->load(Yii::$app->request->post()) && $model->saveTransaksiLainnya($modelTransaksiLainnya)) {
                 Yii::$app->session->setFlash('success', 'Buku Bank: ' . $model->nomor_voucher . ' berhasil ditambahkan.');
                 return $this->redirect(['index']);
             } else {

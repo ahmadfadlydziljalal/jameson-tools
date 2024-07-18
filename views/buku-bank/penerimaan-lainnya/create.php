@@ -4,10 +4,9 @@
 /* @var $kodeVoucher app\models\KodeVoucher */
 /* @var $model app\models\MutasiKasPettyCash */
 /* @see \app\controllers\BukuBankController::actionCreateByPenerimaanLainnya() */
-/* @var $modelTransaksiLainnya \app\models\TransaksiBukuBankLainnya */
+/* @var $modelTransaksiLainnya app\models\TransaksiBukuBankLainnya */
 
 use yii\helpers\Html;
-use yii\helpers\VarDumper;
 
 $this->title = 'Tambah Buku Bank Penerimaan Lainnya: ' . $kodeVoucher->singkatan;
 $this->params['breadcrumbs'][] = ['label' => 'Buku Bank', 'url' => ['index']];

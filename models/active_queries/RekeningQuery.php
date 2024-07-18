@@ -29,7 +29,7 @@ class RekeningQuery extends ActiveQuery
         return parent::one($db);
     }
 
-    public function mapOnlyTokoSaya($all = false)
+    public function mapOnlyTokoSaya()
     {
         $card = Card::find()->map(Card::GET_ONLY_TOKO_SAYA);
         return ArrayHelper::map(parent::where([

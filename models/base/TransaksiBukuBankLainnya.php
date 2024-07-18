@@ -13,6 +13,7 @@ use \app\models\active_queries\TransaksiBukuBankLainnyaQuery;
  *
  * @property integer $id
  * @property integer $buku_bank_id
+ * @property integer $rekening_id
  * @property integer $card_id
  * @property integer $jenis_pendapatan_id
  * @property integer $jenis_biaya_id
@@ -23,6 +24,7 @@ use \app\models\active_queries\TransaksiBukuBankLainnyaQuery;
  * @property \app\models\Card $card
  * @property \app\models\JenisBiaya $jenisBiaya
  * @property \app\models\JenisPendapatan $jenisPendapatan
+ * @property \app\models\Rekening $rekening
  */
 abstract class TransaksiBukuBankLainnya extends \yii\db\ActiveRecord
 {
@@ -42,11 +44,12 @@ abstract class TransaksiBukuBankLainnya extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['buku_bank_id', 'card_id', 'jenis_pendapatan_id', 'jenis_biaya_id'], 'integer'],
-            [['card_id'], 'required'],
+            [['buku_bank_id', 'rekening_id', 'card_id', 'jenis_pendapatan_id', 'jenis_biaya_id'], 'integer'],
+            [['rekening_id', 'card_id'], 'required'],
             [['nominal'], 'number'],
             [['keterangan'], 'string'],
             [['buku_bank_id'], 'unique'],
+            [['rekening_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Rekening::class, 'targetAttribute' => ['rekening_id' => 'id']],
             [['buku_bank_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BukuBank::class, 'targetAttribute' => ['buku_bank_id' => 'id']],
             [['card_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['card_id' => 'id']],
             [['jenis_pendapatan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\JenisPendapatan::class, 'targetAttribute' => ['jenis_pendapatan_id' => 'id']],
@@ -62,6 +65,7 @@ abstract class TransaksiBukuBankLainnya extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'buku_bank_id' => 'Buku Bank ID',
+            'rekening_id' => 'Rekening ID',
             'card_id' => 'Card ID',
             'jenis_pendapatan_id' => 'Jenis Pendapatan ID',
             'jenis_biaya_id' => 'Jenis Biaya ID',
@@ -100,6 +104,14 @@ abstract class TransaksiBukuBankLainnya extends \yii\db\ActiveRecord
     public function getJenisPendapatan()
     {
         return $this->hasOne(\app\models\JenisPendapatan::class, ['id' => 'jenis_pendapatan_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRekening()
+    {
+        return $this->hasOne(\app\models\Rekening::class, ['id' => 'rekening_id']);
     }
 
     /**

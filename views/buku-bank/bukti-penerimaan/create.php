@@ -1,7 +1,7 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $model app\models\BukuBank */
-/* @see app\controllers\BukuBankController::actionCreate() */
+/* @see app\controllers\BukuBankController::actionCreateByBuktiPenerimaanBukuBank() */
 /* @var $kodeVoucher app\models\KodeVoucher */
 
 use yii\helpers\Html;

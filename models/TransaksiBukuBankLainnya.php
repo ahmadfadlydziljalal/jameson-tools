@@ -18,8 +18,8 @@ class TransaksiBukuBankLainnya extends BaseTransaksiBukuBankLainnya
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['jenis_pendapatan_id', 'nominal'], 'required', 'on' => self::SCENARIO_PENERIMAAN],
-            [['jenis_biaya_id', 'nominal'], 'required', 'on' => self::SCENARIO_PENGELUARAN],
+            [['rekening_id','jenis_pendapatan_id', 'nominal'], 'required', 'on' => self::SCENARIO_PENERIMAAN],
+            [['rekening_id','jenis_biaya_id', 'nominal'], 'required', 'on' => self::SCENARIO_PENGELUARAN],
         ]);
     }
 
@@ -27,11 +27,13 @@ class TransaksiBukuBankLainnya extends BaseTransaksiBukuBankLainnya
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_PENERIMAAN] = [
+            'rekening_id',
             'card_id',
             'jenis_pendapatan_id',
             'nominal',
         ];
         $scenarios[self::SCENARIO_PENGELUARAN] = [
+            'rekening_id',
             'card_id',
             'jenis_biaya_id',
             'nominal',
