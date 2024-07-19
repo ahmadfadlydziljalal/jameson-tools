@@ -24,14 +24,19 @@ return [
         'attribute' => 'reference_number',
         'format' => 'text',
     ],
-
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'nomorVoucher',
+        'format' => 'text',
+        'value' => 'bukuBank.nomor_voucher'
+    ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'customer_id',
         'value' => 'customer.nama',
         'format' => 'text',
         'contentOptions' => [
-            'class' => 'd-none d-lg-table-cell',
+            'class' => 'd-none d-lg-table-cell text-wrap',
         ],
         'headerOptions' => [
             'class' => 'd-none d-lg-table-cell',
@@ -44,7 +49,7 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'rekening_saya_id',
         'format' => 'text',
-        'value' => fn($model) => StringHelper::truncate($model->rekeningSaya?->atas_nama, 20),
+        'value' => fn($model) => $model->rekeningSaya?->nama_bank,
         'contentOptions' => [
             'class' => 'd-none d-lg-table-cell',
         ],
@@ -86,7 +91,7 @@ return [
         'attribute' => 'sumberDana',
         'format' => 'text',
         'contentOptions' => [
-            'class' => 'd-none d-lg-table-cell',
+            'class' => 'd-none d-lg-table-cell text-wrap',
         ],
         'headerOptions' => [
             'class' => 'd-none d-lg-table-cell',

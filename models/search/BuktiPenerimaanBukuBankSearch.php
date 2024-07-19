@@ -11,6 +11,8 @@ use app\models\BuktiPenerimaanBukuBank;
  */
 class BuktiPenerimaanBukuBankSearch extends BuktiPenerimaanBukuBank
 {
+    public ?string $nomorVoucher = null;
+
     /**
      * @inheritdoc
      */
@@ -18,7 +20,7 @@ class BuktiPenerimaanBukuBankSearch extends BuktiPenerimaanBukuBank
     {
         return [
             [['id', 'customer_id', 'rekening_saya_id', 'jenis_transfer_id', 'nomor_transaksi_transfer', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['reference_number', 'tanggal_transaksi_transfer', 'tanggal_jatuh_tempo', 'keterangan'], 'safe'],
+            [['reference_number', 'tanggal_transaksi_transfer', 'tanggal_jatuh_tempo', 'keterangan', 'nomorVoucher'], 'safe'],
             //[['jumlah_setor'], 'number'],
         ];
     }
@@ -42,6 +44,7 @@ class BuktiPenerimaanBukuBankSearch extends BuktiPenerimaanBukuBank
         $query = BuktiPenerimaanBukuBank::find()
             ->joinWith('customer')
             ->joinWith('rekeningSaya')
+            ->joinWith('bukuBank')
         ;
 
         $dataProvider = new ActiveDataProvider([
@@ -81,7 +84,9 @@ class BuktiPenerimaanBukuBankSearch extends BuktiPenerimaanBukuBank
         ]);
 
         $query->andFilterWhere(['like', 'reference_number', $this->reference_number])
-            ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
+            ->andFilterWhere(['like', 'keterangan', $this->keterangan])
+            ->andFilterWhere(['like', 'buku_bank.nomor_voucher', $this->nomorVoucher])
+        ;
 
         return $dataProvider;
     }

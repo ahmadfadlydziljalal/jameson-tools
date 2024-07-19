@@ -39,7 +39,19 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul>
                 <li>Pada halaman index. lakukan hal berikut:
                     <ol>
-                        <li>Munculkan Kolom voucher buku bank</li>
+                        <li>Munculkan Kolom voucher buku bank <span class="badge text-bg-success">DONE</span></li>
+                        <li>Ganti informasi bank, hanya `nama` saja, bukan `atas nama` field <span class="badge text-bg-success">DONE</span></li>
+                    </ol>
+                </li>
+                <li>Pada halaman view. lakukan hal berikut:
+                    <ol>
+                        <li>Samakan dengan gaya umum yang sudah di custom, seperti pada page lainnya <span class="badge text-bg-success">DONE</span></li>
+                        <li>Button update, pastikan url yang digunakan sesuai dengan karakteristik record
+                            tersebut <span class="badge text-bg-success">DONE</span>
+                        </li>
+                        <li>Button Buat Record lainnya <span class="badge text-bg-success">DONE</span></li>
+                        <li>Button Export To PDF <span class="badge text-bg-success">DONE</span></li>
+                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
                     </ol>
                 </li>
             </ul>

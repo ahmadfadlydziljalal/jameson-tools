@@ -85,6 +85,15 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
 
     }
 
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+           'jumlah_setor' => 'Setor',
+           'jumlahSeharusnya' => 'Seharusnya',
+           'rekening_saya_id' => 'Rekening Saya',
+        ]);
+    }
+
     public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(), [
@@ -216,7 +225,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
         if ($asHtml) {
             switch ($this->balance) {
                 case static::BALANCE_MATCH:
-                    return Html::tag('span', ucfirst($this->balance));
+                    return Html::tag('span', ucfirst($this->balance), ['class' => 'badge bg-primary']);
                 case static::BALANCE_DEBIT:
                     return Html::tag('span', ucfirst($this->balance), ['class' => 'badge bg-success']);
                 case static::BALANCE_CREDIT:
@@ -241,6 +250,33 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
         if ((int)$this->jumlahSeharusnya < (int)$this->jumlah_setor) {
             $this->balance = static::BALANCE_CREDIT;
         }
+    }
+
+    public function getUpdateUrl(): array|string
+    {
+        if ($this->invoices) {
+            return ['bukti-penerimaan-buku-bank/update-for-invoices', 'id' => $this->id];
+        }
+        if ($this->setoranKasirs) {
+            return  ['bukti-penerimaan-buku-bank/update-for-setoran-kasir', 'id' => $this->id];
+        }
+        return '';
+    }
+
+    /**
+     * @return $this
+     */
+    public function getNext()
+    {
+        return $this->find()->where(['>', 'id', $this->id])->one();
+    }
+
+    /**
+     * @return $this
+     */
+    public function getPrevious()
+    {
+        return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
 
 }
