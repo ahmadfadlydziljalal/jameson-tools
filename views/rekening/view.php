@@ -1,25 +1,27 @@
 <?php
 
 use mdm\admin\components\Helper;
-use yii\data\ArrayDataProvider;
-use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Rekening */
 
-$this->title = $model->atas_nama;
+$this->title = $model->nama_bank;
 $this->params['breadcrumbs'][] = ['label' => 'Rekenings', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="rekening-view">
+<div class="rekening-view d-flex flex-column gap-3">
 
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
-        <h1><?= Html::encode($this->title) ?></h1>
+        <div class="d-inline-flex align-items-center gap-2">
+            <?= Html::a('<span class="lead"><i class="bi bi-arrow-left-circle"></i></span>', Yii::$app->request->referrer, ['class' => 'text-decoration-none']) ?>
+            <h1 class="m-0">
+                <?= Html::encode($this->title) ?>
+            </h1>
+        </div>
         <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
 
-            <?= Html::a('Kembali', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
             <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
             <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
             <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
@@ -44,6 +46,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'table table-bordered table-detail-view'
             ],
             'attributes' => [
+                'nama_bank',
+                'nomor_rekening',
+                [
+                    'attribute' => 'saldo_awal',
+                    'format' => ['decimal',2]
+                ],
                 'atas_nama',
                 [
                     'attribute' => 'created_at',

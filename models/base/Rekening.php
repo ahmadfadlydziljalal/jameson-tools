@@ -8,6 +8,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use \app\models\active_queries\RekeningQuery;
 
 /**
  * This is the base-model class for table "rekening".
@@ -15,20 +16,26 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $id
  * @property integer $card_id
  * @property string $atas_nama
+ * @property string $nama_bank
+ * @property string $nomor_rekening
+ * @property string $saldo_awal
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
  * @property string $updated_by
  *
+ * @property \app\models\BuktiPenerimaanBukuBank[] $buktiPenerimaanBukuBanks
+ * @property \app\models\BuktiPengeluaranBukuBank[] $buktiPengeluaranBukuBanks
+ * @property \app\models\BuktiPengeluaranBukuBank[] $buktiPengeluaranBukuBanks0
  * @property \app\models\Card $card
  * @property \app\models\Faktur[] $fakturs
+ * @property \app\models\Invoice[] $invoices
+ * @property \app\models\Quotation[] $quotations
  * @property \app\models\RekeningDetail[] $rekeningDetails
- * @property string $aliasModel
+ * @property \app\models\TransaksiBukuBankLainnya[] $transaksiBukuBankLainnyas
  */
 abstract class Rekening extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -43,14 +50,15 @@ abstract class Rekening extends \yii\db\ActiveRecord
      */
     public function behaviors()
     {
-        return [
-            [
-                'class' => BlameableBehavior::className(),
-            ],
-            [
-                'class' => TimestampBehavior::className(),
-            ],
+        $behaviors = parent::behaviors();
+        $behaviors['blameable'] = [
+            'class' => BlameableBehavior::class,
         ];
+        $behaviors['timestamp'] = [
+            'class' => TimestampBehavior::class,
+                        ];
+        
+    return $behaviors;
     }
 
     /**
@@ -58,10 +66,13 @@ abstract class Rekening extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
-            [['card_id', 'atas_nama'], 'required'],
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
+            [['card_id', 'atas_nama', 'nama_bank', 'nomor_rekening'], 'required'],
             [['card_id'], 'integer'],
             [['atas_nama'], 'string'],
+            [['saldo_awal'], 'number'],
+            [['nama_bank', 'nomor_rekening'], 'string', 'max' => 255],
             [['card_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['card_id' => 'id']]
         ]);
     }
@@ -71,7 +82,7 @@ abstract class Rekening extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'card_id' => 'Card ID',
             'atas_nama' => 'Atas Nama',
@@ -79,7 +90,34 @@ abstract class Rekening extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
-        ];
+            'nama_bank' => 'Nama Bank',
+            'nomor_rekening' => 'Nomor Rekening',
+            'saldo_awal' => 'Saldo Awal',
+        ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBuktiPenerimaanBukuBanks()
+    {
+        return $this->hasMany(\app\models\BuktiPenerimaanBukuBank::class, ['rekening_saya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBuktiPengeluaranBukuBanks()
+    {
+        return $this->hasMany(\app\models\BuktiPengeluaranBukuBank::class, ['rekening_saya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBuktiPengeluaranBukuBanks0()
+    {
+        return $this->hasMany(\app\models\BuktiPengeluaranBukuBank::class, ['vendor_rekening_id' => 'id']);
     }
 
     /**
@@ -101,21 +139,41 @@ abstract class Rekening extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getInvoices()
+    {
+        return $this->hasMany(\app\models\Invoice::class, ['nomor_rekening_tagihan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotations()
+    {
+        return $this->hasMany(\app\models\Quotation::class, ['rekening_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getRekeningDetails()
     {
         return $this->hasMany(\app\models\RekeningDetail::class, ['rekening_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransaksiBukuBankLainnyas()
+    {
+        return $this->hasMany(\app\models\TransaksiBukuBankLainnya::class, ['rekening_id' => 'id']);
+    }
 
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\RekeningQuery the active query used by this AR class.
+     * @return RekeningQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\RekeningQuery(get_called_class());
+        return new RekeningQuery(static::class);
     }
-
-
 }

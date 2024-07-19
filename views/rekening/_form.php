@@ -47,6 +47,11 @@ use yii\helpers\Html;
                             'placeholder' => '= Pilih salah satu ='
                         ]
                     ]) ?>
+
+                    <?= $form->field($model, 'nama_bank')->textInput() ?>
+                    <?= $form->field($model, 'nomor_rekening')->textInput() ?>
+                    <?= $form->field($model, 'saldo_awal')->widget(\kartik\number\NumberControl::class) ?>
+
                     <?= $form->field($model, 'atas_nama')->textarea([
                         'rows' => 6,
                         'autofocus' => 'autofocus'
@@ -56,7 +61,7 @@ use yii\helpers\Html;
         </div>
 
         <div class="d-flex justify-content-between">
-            <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
+            <?= Html::a('Close', ['index'], ['class' => 'btn btn-secondary']) ?>
             <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
         </div>
     </div>

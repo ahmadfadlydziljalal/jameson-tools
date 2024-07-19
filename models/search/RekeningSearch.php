@@ -21,7 +21,7 @@ class RekeningSearch extends Rekening
     {
         return [
             [['id', 'created_at', 'updated_at', 'card_id'], 'integer'],
-            [['atas_nama', 'created_by', 'updated_by', 'cardNama'], 'safe'],
+            [['nama_bank', 'nomor_rekening', 'saldo_awal','atas_nama', 'created_by', 'updated_by', 'cardNama'], 'safe'],
         ];
     }
 
@@ -42,23 +42,7 @@ class RekeningSearch extends Rekening
     public function search(array $params): ActiveDataProvider
     {
         $query = Rekening::find()
-            ->select([
-                'id' => 'rekening.id',
-                'card_id' => 'card.id',
-                'cardNama' => 'card.nama',
-                'atas_nama' => 'rekening.atas_nama',
-                'nomorNomorRekeningBank' => new Expression("
-                     JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'bank', rekening_detail.bank,
-                            'nomor_rekening',rekening_detail.nomor_rekening
-                        )
-                    )
-                ")
-            ])
-            ->joinWith('card', false)
-            ->joinWith('rekeningDetails', false)
-            ->groupBy('rekening.id');
+            ->joinWith('card', false);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -83,7 +67,9 @@ class RekeningSearch extends Rekening
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'atas_nama', $this->atas_nama])
+        $query
+            ->andFilterWhere(['like', 'atas_nama', $this->atas_nama])
+            ->andFilterWhere(['like', 'nama_bank', $this->nama_bank])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by]);
 

@@ -23,15 +23,35 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'card_id',
         'format' => 'raw',
-        'value' => function ($model) {
-            return $model->cardNama;
-        },
-
+        'value' => 'card.nama',
+        'filter' => \app\models\Card::find()->map()
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'nama_bank',
+        'contentOptions' => [
+            'class' => 'text-wrap'
+        ]
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'nomor_rekening',
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'saldo_awal',
+        'format' => ['decimal', 2],
+        'contentOptions' => [
+            'class' => 'text-end'
+        ]
     ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'atas_nama',
         'format' => 'nText',
+        'contentOptions' => [
+            'class' => 'text-wrap'
+        ]
     ],
     // [
     // 'class'=>'\yii\grid\DataColumn',

@@ -17,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <p class="lead">Rekening Page</p>
             <ul>
-                <li>Tambahkan field nama_bank, nomor_account, saldo_awal</li>
-                <li>Sesuaikan kolom-kolom tersebut pada UI</li>
+                <li>Tambahkan field nama_bank, nomor_account, saldo_awal, <span class="badge text-bg-success">DONE</span></li>
+                <li>Sesuaikan kolom-kolom tersebut pada UI <span class="badge text-bg-success">DONE</span></li>
             </ul>
 
             <p class="lead">Bukti Pengeluaran Buku Bank</p>
