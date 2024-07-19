@@ -43,6 +43,7 @@ class BukuBankController extends Controller
     /**
      * Lists all BukuBank models.
      * @return string
+     * @throws InvalidConfigException
      */
     public function actionIndex(): string
     {
@@ -277,7 +278,6 @@ class BukuBankController extends Controller
         ]);
     }
 
-
     public function actionCreateByPengeluaranLainnya(): Response|string
     {
         $kodeVoucher = KodeVoucher::find()->bukuBankIn();
@@ -338,6 +338,19 @@ class BukuBankController extends Controller
         $model = $this->findModel($id);
         $model->delete();
 
+        Yii::$app->session->setFlash('danger', 'BukuBank: ' . $model->nomor_voucher . ' berhasil dihapus.');
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionDeleteWithMutasiKas(int $id): Response{
+        $model = $this->findModel($id);
+        $model->deleteWithMutasiKas();
         Yii::$app->session->setFlash('danger', 'BukuBank: ' . $model->nomor_voucher . ' berhasil dihapus.');
         return $this->redirect(['index']);
     }

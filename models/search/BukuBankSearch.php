@@ -2,7 +2,10 @@
 
 namespace app\models\search;
 
+use app\models\BuktiPenerimaanBukuBank;
+use app\models\BuktiPengeluaranBukuBank;
 use app\models\BukuBank;
+use app\models\TransaksiBukuBankLainnya;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -12,8 +15,8 @@ use yii\data\ActiveDataProvider;
  */
 class BukuBankSearch extends BukuBank
 {
-
     public ?string $mutasiKas = null;
+    public ?string $bankId = null;
 
     /**
      * @inheritdoc
@@ -21,7 +24,7 @@ class BukuBankSearch extends BukuBank
     public function rules(): array
     {
         return [
-            [['id', 'kode_voucher_id', 'bukti_penerimaan_buku_bank_id', 'bukti_pengeluaran_buku_bank_id'], 'integer'],
+            [['id', 'kode_voucher_id', 'bukti_penerimaan_buku_bank_id', 'bukti_pengeluaran_buku_bank_id', 'bankId'], 'integer'],
             [['nomor_voucher', 'tanggal_transaksi', 'keterangan', 'mutasiKas'], 'safe'],
         ];
     }
@@ -44,13 +47,28 @@ class BukuBankSearch extends BukuBank
     public function search(array $params): ActiveDataProvider
     {
         $query = BukuBank::find()
-            ->joinWith([
-                'buktiPenerimaanBukuBank',
-                'mutasiKasPettyCash',
-                'buktiPenerimaanPettyCash',
-                'buktiPengeluaranBukuBank',
-                'transaksiBukuBankLainnya',
-            ]);
+            ->joinWith(['buktiPenerimaanBukuBank' => function ($buktiPenerimaanBukuBank) {
+                /** @var BuktiPenerimaanBukuBank $buktiPenerimaanBukuBank */
+                $buktiPenerimaanBukuBank->joinWith(['rekeningSaya' => function ($rekeningSaya) {
+                    $rekeningSaya->from(['rekening1' => 'rekening']);
+                }]);
+            }])
+            ->joinWith(['buktiPengeluaranBukuBank' => function ($buktiPengeluaranBukuBank) {
+                /** @var BuktiPengeluaranBukuBank $buktiPengeluaranBukuBank */
+                $buktiPengeluaranBukuBank->joinWith(['rekeningSaya' => function ($rekeningSaya) {
+                    $rekeningSaya->from(['rekening2' => 'rekening']);
+                }]);
+            }])
+            ->joinWith(['transaksiBukuBankLainnya' => function ($transaksiBukuBankLainnya) {
+                /** @var TransaksiBukuBankLainnya $transaksiBukuBankLainnya */
+                $transaksiBukuBankLainnya->joinWith(['rekening' => function ($rekeningSaya) {
+                    $rekeningSaya->from(['rekening3' => 'rekening']);
+                }]);
+            }])
+            ->joinWith(['mutasiKasPettyCash' => function ($mutasiKasPettyCash) {
+
+            }])
+        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -75,6 +93,16 @@ class BukuBankSearch extends BukuBank
             'bukti_penerimaan_buku_bank_id' => $this->bukti_penerimaan_buku_bank_id,
             'bukti_pengeluaran_buku_bank_id' => $this->bukti_pengeluaran_buku_bank_id,
             'mutasi_kas_petty_cash.id' => $this->mutasiKas,
+        ]);
+
+        $query->orFilterWhere([
+            'rekening1.id' => $this->bankId,
+        ]);
+        $query->orFilterWhere([
+            'rekening2.id' => $this->bankId,
+        ]);
+        $query->orFilterWhere([
+            'rekening3.id' => $this->bankId,
         ]);
 
         if (isset($this->tanggal_transaksi) and !empty($this->tanggal_transaksi)) {

@@ -41,7 +41,7 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomor_rekening_tagihan_id',
         'format' => 'text',
-        'value' => fn($model) => StringHelper::truncate($model->nomorRekeningTagihan->atas_nama, 20)
+        'value' => fn($model) => StringHelper::truncate($model->nomorRekeningTagihan->nama_bank, 20)
     ],
     [
         'class' => '\kartik\grid\DataColumn',

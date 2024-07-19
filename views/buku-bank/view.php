@@ -32,10 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= Html::a('<i class="bi bi-printer"></i> Export PDF', ['buku-bank/export-to-pdf', 'id' => $model->id], [
                 'class' => 'btn btn-primary',
                 'target' => '_blank',
+                'data-pjax' => '0',
             ]) ?>
 
             <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
-            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
+            <?php Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
+            <?= Html::a('Update', $model->getUpdateUrl(), ['class' => 'btn btn-outline-primary']) ?>
             <?php
             if (Helper::checkRoute('delete')) :
                 echo Html::a('Hapus', ['delete', 'id' => $model->id], [

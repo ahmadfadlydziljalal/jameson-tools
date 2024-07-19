@@ -2,9 +2,10 @@
 
 /* @var $form yii\bootstrap5\ActiveForm */
 /* @var $this yii\web\View */
-/* @var $model \app\models\Invoice */
+/* @var $model Invoice */
 
 use app\models\Card;
+use app\models\Invoice;
 use app\models\Rekening;
 use kartik\datecontrol\DateControl;
 use kartik\select2\Select2;
@@ -21,7 +22,7 @@ use kartik\select2\Select2;
                 ]
             ]) ?>
             <?= $form->field($model, 'tanggal_invoice')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-            <?= $form->field($model, 'nomor_rekening_tagihan_id')->dropDownList(\app\models\Rekening::find()->mapOnlyTokoSaya(),[
+            <?= $form->field($model, 'nomor_rekening_tagihan_id')->dropDownList(Rekening::find()->mapOnlyTokoSaya('nama_bank'),[
                 'prompt' => '...'
             ]) ?>
         </div>

@@ -49,7 +49,7 @@ use yii\web\JsExpression;
                 'options' => ['placeholder' => 'Select Customer ...'],
             ]) ?>
             <?= $form->field($model, 'rekening_saya_id')->widget(Select2::class, [
-                'data' => Rekening::find()->map(),
+                'data' => Rekening::find()->mapOnlyTokoSaya('nama_bank'),
                 'options' => ['placeholder' => 'Select Rekening ...'],
             ]) ?>
 

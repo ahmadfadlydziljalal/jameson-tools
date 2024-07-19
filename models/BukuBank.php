@@ -6,10 +6,11 @@ use app\components\helpers\ArrayHelper;
 use app\enums\KodeVoucherEnum;
 use app\models\base\BukuBank as BaseBukuBank;
 use mdm\autonumber\AutoNumber;
+use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Exception;
-use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "buku_bank".
@@ -18,6 +19,7 @@ class BukuBank extends BaseBukuBank
 {
     const SCENARIO_BUKTI_PENERIMAAN_BUKU_BANK = 'scenario_buku_penerimaan_buku_bank';
     const SCENARIO_BUKTI_PENGELUARAN_BUKU_BANK = 'scenario_buku_pengeluaran_buku_bank';
+    const SCENARIO_RESTORE = 'scenario_restore';
 
     public string|array|null $businessProcess = null;
     public ?string $nominal = null;
@@ -44,13 +46,17 @@ class BukuBank extends BaseBukuBank
             'tanggal_transaksi',
             'keterangan',
         ];
+        $scenarios[self::SCENARIO_RESTORE] = array_keys($this->attributes);
         return $scenarios;
     }
 
     public function beforeSave($insert): bool
     {
         if ($insert) {
-            $this->nomor_voucher = AutoNumber::generate(KodeVoucherEnum::JP->name . "?", false, 4, [date('Y')]); // Reset setiap ganti tahun
+            if($this->scenario != self::SCENARIO_RESTORE) {
+                $this->nomor_voucher = AutoNumber::generate(KodeVoucherEnum::JP->name . "?", false, 4, [date('Y')]); // Reset setiap ganti tahun
+            }
+
         }
         return parent::beforeSave($insert);
     }
@@ -61,7 +67,7 @@ class BukuBank extends BaseBukuBank
             'bukti_penerimaan_buku_bank_id' => 'Bukti Penerimaan',
             'bukti_pengeluaran_buku_bank_id' => 'Bukti Pengeluaran',
             'nomor_voucher' => 'Voucher',
-            'tanggal_transaksi' => 'Tgl. Transaksi',
+            'tanggal_transaksi' => 'Tgl.Transaksi',
         ]);
     }
 
@@ -69,20 +75,21 @@ class BukuBank extends BaseBukuBank
     {
         parent::afterFind();
 
-        if($this->bukti_pengeluaran_buku_bank_id){
+        if ($this->bukti_pengeluaran_buku_bank_id) {
             $this->nominal = $this->buktiPengeluaranBukuBank->totalBayar;
             $this->businessProcess = $this->buktiPengeluaranBukuBank->referensiPembayaran;
         }
 
-        if($this->bukti_penerimaan_buku_bank_id){
+        if ($this->bukti_penerimaan_buku_bank_id) {
             $this->nominal = round($this->buktiPenerimaanBukuBank->jumlah_setor);
             $this->businessProcess = $this->buktiPenerimaanBukuBank->referensiPenerimaan;
         }
 
-        if($this->transaksiBukuBankLainnya AND $this->transaksiBukuBankLainnya->jenis_biaya_id){
+        if ($this->transaksiBukuBankLainnya and $this->transaksiBukuBankLainnya->jenis_biaya_id) {
             $this->nominal = $this->transaksiBukuBankLainnya->nominal;
             $this->businessProcess = [
                 'businessProcess' => 'Pengeluaran Buku Bank Lainnya',
+                'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
                 'data' => [
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisBiaya->name,
@@ -91,14 +98,15 @@ class BukuBank extends BaseBukuBank
             ];
         }
 
-        if($this->transaksiBukuBankLainnya AND $this->transaksiBukuBankLainnya->jenis_pendapatan_id){
+        if ($this->transaksiBukuBankLainnya and $this->transaksiBukuBankLainnya->jenis_pendapatan_id) {
             $this->nominal = $this->transaksiBukuBankLainnya->nominal;
             $this->businessProcess = [
                 'businessProcess' => 'Pendapatan Buku Bank Lainnya',
+                'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
                 'data' => [
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisPendapatan->name,
-                    'nominal' =>round($this->transaksiBukuBankLainnya->nominal,2),
+                    'nominal' => round($this->transaksiBukuBankLainnya->nominal, 2),
 
                 ]
             ];
@@ -113,19 +121,14 @@ class BukuBank extends BaseBukuBank
         return $this->hasOne(MutasiKasPettyCash::class, ['bukti_penerimaan_petty_cash_id' => 'id'])
             ->via('buktiPenerimaanPettyCash');
     }
-
-
     public function getNext(): ?BukuBank
     {
         return static::find()->where(['>', 'id', $this->id])->one();
     }
-
-
     public function getPrevious(): ?BukuBank
     {
         return static::find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
-
     public function saveTransaksiLainnya(TransaksiBukuBankLainnya $modelTransaksiLainnya): bool
     {
         if (!$this->validate() and !$modelTransaksiLainnya->validate()) {
@@ -154,30 +157,23 @@ class BukuBank extends BaseBukuBank
         return false;
     }
 
-
-
-    public function saveWithOrWithoutMutasiKasPettyCash(): bool
-    {
-
-    }
-
     public function saveWithoutMutasiKasPettyCash(): bool
     {
-        if(!$this->validate()){
+        if (!$this->validate()) {
             return false;
         }
         return $this->save(false);
     }
 
-    public function saveWithMutasiKasPettyCash() : bool
+    public function saveWithMutasiKasPettyCash(): bool
     {
-        if(!$this->validate()){
+        if (!$this->validate()) {
             return false;
         }
 
         # set state for create | update
         $oldBuktiPenerimaanPettyCash = null;
-        if(!$this->isNewRecord){
+        if (!$this->isNewRecord) {
             # update
             $oldBuktiPenerimaanPettyCash = $this->buktiPenerimaanPettyCash;
         }
@@ -188,21 +184,21 @@ class BukuBank extends BaseBukuBank
             if ($flag = $this->save(false)) {
 
                 // update case
-                if($oldBuktiPenerimaanPettyCash){
+                if ($oldBuktiPenerimaanPettyCash) {
                     $flag = $oldBuktiPenerimaanPettyCash->mutasiKasPettyCash->delete() &&
                         $oldBuktiPenerimaanPettyCash->delete();
                 }
 
                 // pengecekan flag untuk meng-support update case
-                if($flag){
+                if ($flag) {
 
                     // kalau bukti pengeluaran untuk penambahan saldo mutasi kas
-                    if($this->buktiPengeluaranBukuBank->jobOrderDetailPettyCash){
+                    if ($this->buktiPengeluaranBukuBank->jobOrderDetailPettyCash) {
                         $buktiPenerimaanPettyCash = new BuktiPenerimaanPettyCash();
                         $buktiPenerimaanPettyCash->buku_bank_id = $this->id;
                         $flag = $buktiPenerimaanPettyCash->save(false);
 
-                        if($flag){
+                        if ($flag) {
                             $mutasiKasPettyCash = new MutasiKasPettyCash();
                             $mutasiKasPettyCash->kode_voucher_id = KodeVoucherEnum::CR->value;
                             $mutasiKasPettyCash->bukti_penerimaan_petty_cash_id = $buktiPenerimaanPettyCash->id;
@@ -215,10 +211,10 @@ class BukuBank extends BaseBukuBank
 
             }
 
-            if($flag){
+            if ($flag) {
                 $transaction->commit();
                 return true;
-            }else{
+            } else {
                 $transaction->rollBack();
             }
         } catch (Exception $e) {
@@ -226,6 +222,81 @@ class BukuBank extends BaseBukuBank
             $transaction->rollBack();
         }
         return false;
+    }
+
+    /**
+     * @return bool
+     * @throws Throwable
+     */
+    public function deleteWithMutasiKas(): bool
+    {
+        $data = [
+            BukuBank::class => ArrayHelper::toArray($this),
+            BuktiPenerimaanPettyCash::class => ArrayHelper::toArray($this->buktiPenerimaanPettyCash),
+            MutasiKasPettyCash::class => ArrayHelper::toArray($this->buktiPenerimaanPettyCash->mutasiKasPettyCash),
+        ];
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            # Save as data trash
+            $model = new Trash([
+                'name' => BukuBank::tableName(),
+                'key' => $this->id,
+                'data' => Json::encode($data)
+            ]);
+
+            if($flag = $model->save()){
+                if ($flag = $this->buktiPenerimaanPettyCash->mutasiKasPettyCash->delete()) {
+                    if ($flag = $this->buktiPenerimaanPettyCash->delete()) {
+                        $flag = $this->delete();
+                    };
+                }
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+        } catch (Exception $e) {
+            Yii::error($e->getMessage());
+            $transaction->rollBack();
+        }
+
+        return false;
+    }
+
+    public function getUpdateUrl(): array|string
+    {
+        # Dengan bukti penerimaan buku bank
+        if ($this->bukti_penerimaan_buku_bank_id) {
+            return ['buku-bank/update-by-bukti-penerimaan-buku-bank', 'id' => $this->id];
+        }
+
+        # Dengan penerimaan lainnya
+        if ($this->transaksiBukuBankLainnya and $this->transaksiBukuBankLainnya->jenis_pendapatan_id) {
+            return ['buku-bank/update-by-penerimaan-lainnya', 'id' => $this->id];
+        }
+
+        # Dengan bukti pengeluaran buku bank
+        if ($this->bukti_pengeluaran_buku_bank_id) {
+
+            # With mutasi kas
+            if ($this->buktiPengeluaranBukuBank->jobOrderDetailPettyCash) {
+                return ['buku-bank/update-by-bukti-pengeluaran-buku-bank-to-mutasi-kas', 'id' => $this->id];
+            }
+            # Without mutasi kas
+            return ['buku-bank/update-by-bukti-pengeluaran-buku-bank', 'id' => $this->id];
+        }
+
+        # Dengan pengeluaran lainnya
+        if ($this->transaksiBukuBankLainnya and $this->transaksiBukuBankLainnya->jenis_biaya_id) {
+            return ['buku-bank/update-by-pengeluaran-lainnya', 'id' => $this->id];
+        }
+
+        return '';
     }
 
 }

@@ -60,14 +60,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul>
                 <li>Pada halaman index. lakukan hal berikut:
                     <ol>
-                        <li>Nama Bank belum ada</li>
-                        <li><span class="badge text-bg-danger">Bug</span> DELETE VOUCHER BUKU BANK YANG BERELASI DENGAN MUTASI KAS!</li>
+                        <li>Nama Bank belum ada, juga kemampuan melakukan search bank ini pada gridview <span class="badge text-bg-success">DONE</span></li>
+                        <li><span class="badge text-bg-danger">Bug</span> DELETE VOUCHER BUKU BANK YANG BERELASI DENGAN MUTASI KAS!  <span class="badge text-bg-success">DONE</span></li>
                     </ol>
                 </li>
                 <li>Pada halaman view, lakukan hal berikut:
                     <ol>
                         <li>Tambah button update, pastikan url yang digunakan sesuai dengan karakteristik record
-                            tersebut
+                            tersebut <span class="badge text-bg-success">DONE</span>
                         </li>
                     </ol>
                 </li>

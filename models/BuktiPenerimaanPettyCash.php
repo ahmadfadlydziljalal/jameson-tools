@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\helpers\ArrayHelper;
 use \app\models\base\BuktiPenerimaanPettyCash as BaseBuktiPenerimaanPettyCash;
+use mdm\autonumber\AutoNumber;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Inflector;
@@ -14,6 +15,7 @@ use yii\helpers\Inflector;
 class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
 {
     const SCENARIO_REALISASI_KASBON = 'scenario_realisasi_kasbon';
+    const SCENARIO_RESTORE = 'scenario_restore';
     const DANA_DARI_MUTASI_KAS_BANK = 'mutasi_kas_bank';
     const DANA_DARI_REALISASI_PENGEMBALIAN_KASBON = 'realisasi_pengembalian_kasbon';
 
@@ -52,7 +54,7 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
 
     }
 
-    public function behaviors()
+    /*public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(), [
             # custom behaviors,
@@ -63,7 +65,7 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
                 'digit' => 4
             ],
         ]);
-    }
+    }*/
 
     public function rules()
     {
@@ -74,12 +76,12 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
 
     public function scenarios()
     {
-        $parent = parent::scenarios();
-        $parent[self::SCENARIO_REALISASI_KASBON] = [
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_REALISASI_KASBON] = [
             'bukti_pengeluaran_petty_cash_cash_advance_id',
         ];
-
-        return $parent;
+        $scenarios[self::SCENARIO_RESTORE] = array_keys($this->attributes);
+        return $scenarios;
     }
 
     public function attributeLabels()
@@ -113,5 +115,16 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
         }
 
         return $this->save(false);
+    }
+
+    public function beforeSave($insert)
+    {
+        if($insert){
+            if($this->scenario != self::SCENARIO_RESTORE){
+                $this->reference_number = AutoNumber::generate('?' . '/BP-IN-PC/' . date('Y'), false, 4);
+            }
+
+        }
+        return parent::beforeSave($insert);
     }
 }

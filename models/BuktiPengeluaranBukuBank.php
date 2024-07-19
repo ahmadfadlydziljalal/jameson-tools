@@ -35,6 +35,9 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         if ($this->jobOrderDetailCashAdvances) {
             $this->tujuanBayar = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
             $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
+            $this->referensiPembayaran['bank'] = ArrayHelper::toArray(
+                $this->rekeningSaya
+            );
             foreach ($this->jobOrderDetailCashAdvances as $cashAdvance) {
                 $this->totalBayar += $cashAdvance->cash_advance;
                 $this->referensiPembayaran['data'][] = [
@@ -51,7 +54,9 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 
             $this->tujuanBayar = static::PEMBAYARAN_BILL_JOB_ORDER;
             $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_BILL_JOB_ORDER;
-
+            $this->referensiPembayaran['bank'] = ArrayHelper::toArray(
+                $this->rekeningSaya
+            );
             foreach ($this->jobOrderBills as $jobOrderBill) {
                 $this->totalBayar += $jobOrderBill->totalPrice;
                 $this->referensiPembayaran['data'][] = [
@@ -69,7 +74,9 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 
             $this->tujuanBayar = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
             $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
-
+            $this->referensiPembayaran['bank'] = ArrayHelper::toArray(
+                $this->rekeningSaya
+            );
             $this->totalBayar = $this->jobOrderDetailPettyCash->nominal;
             $this->referensiPembayaran['data'][] = [
                 'jobOrder' => $this->jobOrderDetailPettyCash->jobOrder->reference_number,

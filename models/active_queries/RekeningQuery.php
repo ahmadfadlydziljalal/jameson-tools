@@ -29,12 +29,13 @@ class RekeningQuery extends ActiveQuery
         return parent::one($db);
     }
 
-    public function mapOnlyTokoSaya()
+    public function mapOnlyTokoSaya($label = null): array
     {
         $card = Card::find()->map(Card::GET_ONLY_TOKO_SAYA);
-        return ArrayHelper::map(parent::where([
-            'IN', 'card_id', array_keys($card)
-        ])->all(), 'id', 'atas_nama');
+        return ArrayHelper::map(parent::where(['IN', 'card_id', array_keys($card)])->orderBy('nama_bank')->all(),
+            'id',
+            fn($model)=> is_null($label) ? $model->nama_bank : $model->$label
+        );
     }
 
     public function map()

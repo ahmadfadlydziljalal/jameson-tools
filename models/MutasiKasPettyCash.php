@@ -16,6 +16,7 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
 {
     const SCENARIO_BUKTI_PENGELUARAN_PETTY_CASH = 'scenario_bukti_pengeluaran_petty_cash';
     const SCENARIO_BUKTI_PENERIMAAN_PETTY_CASH = 'scenario_bukti_penerimaan_petty_cash';
+    const SCENARIO_RESTORE = 'scenario_restore';
 
     public ?string $businessProcess = null;
     public ?string $nominal = null;
@@ -53,21 +54,24 @@ class MutasiKasPettyCash extends BaseMutasiKasPettyCash
             'tanggal_mutasi',
             'keterangan',
         ];
+        $scenarios[self::SCENARIO_RESTORE] = array_keys($this->attributes);
         return $scenarios;
     }
 
     public function beforeSave($insert): bool
     {
         if($insert){
-            switch ($this->kode_voucher_id){
-                case KodeVoucherEnum::CR->value:
-                    $this->nomor_voucher = AutoNumber::generate(KodeVoucherEnum::CR->name ."?", false, 4,[date('Y')]); // Reset setiap ganti tahun
-                    break;
-                case KodeVoucherEnum::CP->value;
-                    $this->nomor_voucher = AutoNumber::generate(KodeVoucherEnum::CP->name ."?", false, 4,[date('Y')]); // Reset setiap ganti tahun
-                    break;
-                default:
-                    break;
+            if($this->scenario != self::SCENARIO_RESTORE){
+                switch ($this->kode_voucher_id){
+                    case KodeVoucherEnum::CR->value:
+                        $this->nomor_voucher = AutoNumber::generate(KodeVoucherEnum::CR->name ."?", false, 4,[date('Y')]); // Reset setiap ganti tahun
+                        break;
+                    case KodeVoucherEnum::CP->value;
+                        $this->nomor_voucher = AutoNumber::generate(KodeVoucherEnum::CP->name ."?", false, 4,[date('Y')]); // Reset setiap ganti tahun
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         return parent::beforeSave($insert);

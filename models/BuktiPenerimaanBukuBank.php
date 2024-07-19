@@ -23,7 +23,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
     const BALANCE_CREDIT = 'credit';
 
     const DANA_DARI_SETORAN_KASIR = 'setoran_kasir';
-    const DANA_DARI_INVOICE = 'pembayaran_invoice';
+    const DANA_DARI_INVOICE = 'penerimaan_invoice';
 
     public array $invoiceInvoice = [];
     public array $setoranKasirKasir = [];
@@ -51,6 +51,9 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
 
             $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
             $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
+            $this->referensiPenerimaan['bank'] = ArrayHelper::toArray(
+                $this->rekeningSaya
+            );
             foreach ($this->setoranKasirs as $setoranKasir) {
                 $this->referensiPenerimaan['data'][] = [
                     'setoranKasir' => $setoranKasir->reference_number,
@@ -68,7 +71,9 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
 
             $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
             $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
-
+            $this->referensiPenerimaan['bank'] = ArrayHelper::toArray(
+                $this->rekeningSaya
+            );
             foreach ($this->invoices as $invoice) {
                 $this->referensiPenerimaan['data'][] = [
                     'invoice' => $invoice->reference_number,

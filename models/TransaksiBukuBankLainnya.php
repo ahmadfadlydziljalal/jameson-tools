@@ -10,12 +10,9 @@ use \app\models\base\TransaksiBukuBankLainnya as BaseTransaksiBukuBankLainnya;
  */
 class TransaksiBukuBankLainnya extends BaseTransaksiBukuBankLainnya
 {
-
     const SCENARIO_PENERIMAAN = 'scenario-penerimaan';
     const SCENARIO_PENGELUARAN = 'scenario-pengeluaran';
-
-
-    public function rules()
+    public function rules(): array
     {
         return ArrayHelper::merge(parent::rules(), [
             [['rekening_id','jenis_pendapatan_id', 'nominal'], 'required', 'on' => self::SCENARIO_PENERIMAAN],
@@ -23,7 +20,7 @@ class TransaksiBukuBankLainnya extends BaseTransaksiBukuBankLainnya
         ]);
     }
 
-    public function scenarios()
+    public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_PENERIMAAN] = [
