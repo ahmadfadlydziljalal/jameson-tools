@@ -51,6 +51,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'target' => '_blank',
             ]) ?>
 
+            <?php if (!$model->isFromMutasiKas()) : ?>
+                <?= Html::a('Update', $model->updateUrl, ['class' => 'btn btn-outline-primary']) ?>
+            <?php endif; ?>
+
             <?php
             if (Helper::checkRoute('delete')) :
                 echo Html::a('Hapus', ['delete', 'id' => $model->id], [
@@ -106,11 +110,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="d-inline-flex gap-2">
         <?php
         if ($model->getPrevious()) {
-            echo Html::a('<< Previous', ['view' , 'id' => $model->getPrevious()->id], ['class' => 'btn btn-outline-primary']);
+            echo Html::a('<< Previous', ['view', 'id' => $model->getPrevious()->id], ['class' => 'btn btn-outline-primary']);
         }
 
         if ($model->getNext()) {
-            echo Html::a('Next >>', ['view' , 'id' => $model->getNext()->id], ['class' => 'btn btn-outline-primary']);
+            echo Html::a('Next >>', ['view', 'id' => $model->getNext()->id], ['class' => 'btn btn-outline-primary']);
         }
         ?>
     </div>

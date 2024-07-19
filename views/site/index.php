@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="card">
         <div class="card-header">Jumat, 19 July 2024</div>
         <div class="card-body">
-            <h2>Todo</h2>
 
             <p class="lead">Rekening Page</p>
             <ul>
@@ -77,15 +76,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul>
                 <li>Pada halaman index. lakukan hal berikut:
                     <ol>
-                        <li>Nomor voucher buku bank belum ada</li>
+                        <li>Nomor voucher buku bank belum ada <span class="badge text-bg-success">DONE</span></li>
                     </ol>
                 </li>
                 <li>Pada halaman view, lakukan hal berikut:
                     <ol>
                         <li>Tambah button update, pastikan url yang digunakan sesuai dengan karakteristik record
-                            tersebut
+                            tersebut <span class="badge text-bg-success">DONE</span>
                         </li>
-                        <li>Next | Prev button</li>
+                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
                     </ol>
                 </li>
             </ul>

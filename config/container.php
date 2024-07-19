@@ -191,7 +191,7 @@ return [
                 'class' => 'text-nowrap'
             ],
             'viewOptions' => [
-                'label' => '<i class="bi bi-eye-fill"></i>',
+                'label' => '<i class="bi bi-eye"></i>',
                 /*'role' => 'modal-remote',*/
                 'title' => 'View',
                 'data-toggle' => 'tooltip'

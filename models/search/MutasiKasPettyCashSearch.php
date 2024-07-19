@@ -2,6 +2,7 @@
 
 namespace app\models\search;
 
+use app\components\helpers\ArrayHelper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\MutasiKasPettyCash;
@@ -11,6 +12,17 @@ use app\models\MutasiKasPettyCash;
  */
 class MutasiKasPettyCashSearch extends MutasiKasPettyCash
 {
+
+    public ?string $voucherBukuBank = null;
+
+
+    public function attributeLabels(): array
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'voucherBukuBank' => 'Voucher BB',
+        ]);
+    }
+
     /**
      * @inheritdoc
      */
@@ -18,7 +30,7 @@ class MutasiKasPettyCashSearch extends MutasiKasPettyCash
     {
         return [
             [['id', 'kode_voucher_id', 'bukti_penerimaan_petty_cash_id', 'bukti_pengeluaran_petty_cash_id'], 'integer'],
-            [['nomor_voucher', 'tanggal_mutasi', 'keterangan'], 'safe'],
+            [['nomor_voucher', 'tanggal_mutasi', 'keterangan', 'voucherBukuBank'], 'safe'],
         ];
     }
 
@@ -38,7 +50,8 @@ class MutasiKasPettyCashSearch extends MutasiKasPettyCash
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = MutasiKasPettyCash::find();
+        $query = MutasiKasPettyCash::find()
+        ->joinWith('bukuBank');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -66,7 +79,9 @@ class MutasiKasPettyCashSearch extends MutasiKasPettyCash
         ]);
 
         $query->andFilterWhere(['like', 'nomor_voucher', $this->nomor_voucher])
-            ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
+            ->andFilterWhere(['like', 'keterangan', $this->keterangan])
+            ->andFilterWhere(['like', 'buku_bank.nomor_voucher', $this->voucherBukuBank])
+        ;
 
         return $dataProvider;
     }

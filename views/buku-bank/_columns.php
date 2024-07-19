@@ -15,11 +15,11 @@ return [
     [
         'class' => 'yii\grid\SerialColumn',
     ],
-    [
+/*    [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'id',
         'format' => 'text',
-    ],
+    ],*/
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'bankId',
@@ -158,15 +158,15 @@ return [
 //            return '';
 //        }
 //    ],
-//    [
-//        'class' => '\kartik\grid\DataColumn',
-//        'attribute' => 'nominal',
-//        'contentOptions' => [
-//            'class' => 'small text-end'
-//        ],
-//        'format' => ['decimal', 2],
-//
-//    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'nominal',
+        'contentOptions' => [
+            'class' => 'text-end'
+        ],
+        'format' => ['decimal', 2],
+
+    ],
     // [
     // 'class'=>'\kartik\grid\DataColumn',
     // 'attribute'=>'keterangan',
