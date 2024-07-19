@@ -40,6 +40,13 @@ return [
             'class' => 'd-none d-lg-table-cell',
         ]
     ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'jenis_transfer_id',
+        'format' => 'text',
+        'value' => 'jenisTransfer.name',
+        'filter' => \app\models\JenisTransfer::find()->map()
+    ],
     /*[
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'rekening_saya_id',
@@ -141,17 +148,13 @@ return [
             'class' => 'd-none d-lg-table-cell',
         ]
     ],
-    /*[
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'jenis_transfer_id',
-        'format' => 'text',
-    ],
 
-    [
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'vendor_rekening_id',
-        'format' => 'text',
-    ],*/
+    /*
+        [
+            'class' => '\yii\grid\DataColumn',
+            'attribute' => 'vendor_rekening_id',
+            'format' => 'text',
+        ],*/
     // [
     // 'class'=>'\yii\grid\DataColumn',
     // 'attribute'=>'nomor_bukti_transaksi',
@@ -192,7 +195,10 @@ return [
         'template' => '{export-to-pdf} {view} {update} {delete}',
         'buttons' => [
             'export-to-pdf' => function ($url, $model) {
-                return '';
+                return Html::a('<i class="bi bi-printer"></i>', $url, [
+                    'data-pjax' => '0',
+                    'target' => '_blank',
+                ]);
             },
             'update' => function ($url, $model) {
 

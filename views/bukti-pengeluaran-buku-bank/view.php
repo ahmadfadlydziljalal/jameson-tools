@@ -37,10 +37,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'buttonOptions' => [
-                    'class' => 'btn btn-success',
+                    'class' => 'btn btn-primary',
                 ],
                 'encodeLabel' => false
             ]); ?>
+
+            <?= Html::a('<i class="bi bi-printer"></i> Export to PDF', ['bukti-pengeluaran-buku-bank/export-to-pdf', 'id' => $model->id], [
+                'class' => 'btn btn-success',
+                'target' => '_blank'
+            ]) ?>
+
+            <?= Html::a('<i class="bi bi-pencil"></i> Update', $model->getUpdateUrl(), [
+                'class' => 'btn btn-outline-primary',
+            ]) ?>
+
             <?php
             if (Helper::checkRoute('delete')) :
                 echo Html::a('Hapus', ['delete', 'id' => $model->id], [
@@ -55,46 +65,79 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php try {
-        echo DetailView::widget([
-            'model' => $model,
-            'options' => [
-                'class' => 'table table-bordered table-detail-view'
+    <?php echo DetailView::widget([
+        'model' => $model,
+        'options' => [
+            'class' => 'table table-bordered table-detail-view'
+        ],
+        'attributes' => [
+            'reference_number',
+            [
+                'attribute' => 'rekening_saya_id',
+                'value' => $model->rekeningSaya->atas_nama,
+                'format' => 'nText',
             ],
-            'attributes' => [
-                'reference_number',
-                'rekening_saya_id',
-                'jenis_transaksi_id',
-                'vendor_id',
-                'vendor_rekening_id',
-                'nomor_bukti_transaksi',
-                'tanggal_transaksi:date',
-                'keterangan:ntext',
-                [
-                    'attribute' => 'created_at',
-                    'format' => 'datetime',
-                ],
-                [
-                    'attribute' => 'updated_at',
-                    'format' => 'datetime',
-                ],
-                [
-                    'attribute' => 'created_by',
-                    'value' => function ($model) {
-                        return app\models\User::findOne($model->created_by)->username;
-                    }
-                ],
-                [
-                    'attribute' => 'updated_by',
-                    'value' => function ($model) {
-                        return app\models\User::findOne($model->updated_by)->username;
-                    }
-                ],
+            [
+                'attribute' => 'jenis_transfer_id',
+                'value' => $model->jenisTransfer->name,
             ],
-        ]);
-    } catch (Throwable $e) {
-        echo $e->getMessage();
-    }
-    ?>
+            [
+                'attribute' => 'vendor_id',
+                'value' => $model->vendor->nama,
+            ],
+            [
+                'attribute' => 'vendor_rekening_id',
+                'value' => $model->vendorRekening?->nama_bank,
+            ],
+            'nomor_bukti_transaksi',
+            'tanggal_transaksi:date',
+            'keterangan:ntext',
+            [
+                'attribute' => 'nomorVoucher',
+                'value' => $model->bukuBank?->nomor_voucher,
+            ],
+            [
+                'attribute' => 'created_at',
+                'format' => 'datetime',
+            ],
+            [
+                'attribute' => 'updated_at',
+                'format' => 'datetime',
+            ],
+            [
+                'attribute' => 'created_by',
+                'value' => function ($model) {
+                    return app\models\User::findOne($model->created_by)->username;
+                }
+            ],
+            [
+                'attribute' => 'updated_by',
+                'value' => function ($model) {
+                    return app\models\User::findOne($model->updated_by)->username;
+                }
+            ],
+        ],
+    ]); ?>
+    <?php echo $this->render('_view_2', [
+        'model' => $model,
+    ]); ?>
+
+    <div class="d-inline-flex gap-2">
+        <?php
+        if ($model->getPrevious()) {
+            echo Html::a('<< Previous', ['view', 'id' => $model->getPrevious()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => 1,
+                'id' => 'prev-page'
+            ]);
+        }
+
+        if ($model->getNext()) {
+            echo Html::a('Next >>', ['view', 'id' => $model->getNext()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => "1",
+                'id' => 'next-page'
+            ]);
+        }
+        ?>
+    </div>
 
 </div>

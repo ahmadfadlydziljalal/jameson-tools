@@ -23,14 +23,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <p class="lead">Bukti Pengeluaran Buku Bank</p>
             <ul>
-                <li>Belum ada fitur export to PDF, buat!</li>
+                <li>Belum ada fitur export to PDF, buat! <span class="badge text-bg-success">DONE</span></li>
                 <li>Pada halaman view, lakukan hal berikut:
                     <ol>
-                        <li>Attribute-attribute FK (_id) masih plain, sesuaikan!</li>
+                        <li>Attribute-attribute FK (_id) masih plain, sesuaikan! <span class="badge text-bg-success">DONE</span></li>
                         <li>Tambah button update, pastikan url yang digunakan sesuai dengan karakteristik record
-                            tersebut
+                            tersebut <span class="badge text-bg-success">DONE</span>
                         </li>
-                        <li>Next | Prev button</li>
+                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
                     </ol>
                 </li>
             </ul>

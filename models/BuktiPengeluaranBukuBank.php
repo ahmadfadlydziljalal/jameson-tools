@@ -174,7 +174,26 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'cashAdvances' => 'Kasbon-kasbon / Cash Advance',
+            'jenis_transfer_id' => 'Transfer',
+            'nomorVoucher' => 'Voucher'
         ]);
+    }
+
+
+    /**
+     * @return $this
+     */
+    public function getNext()
+    {
+        return $this->find()->where(['>', 'id', $this->id])->one();
+    }
+
+    /**
+     * @return $this
+     */
+    public function getPrevious()
+    {
+        return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
 
     /**
@@ -362,6 +381,20 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         }
 
         return false;
+    }
+
+    public function getUpdateUrl(): array|string
+    {
+        if ($this->jobOrderDetailCashAdvances) {
+            return ['bukti-pengeluaran-buku-bank/update-by-cash-advance', 'id' => $this->id];
+        }
+        if ($this->jobOrderBills) {
+            return ['bukti-pengeluaran-buku-bank/update-by-bill', 'id' => $this->id];
+        }
+        if($this->jobOrderDetailPettyCash){
+            return  ['bukti-pengeluaran-buku-bank/update-by-petty-cash', 'id' => $this->id];
+        }
+        return '';
     }
 
 

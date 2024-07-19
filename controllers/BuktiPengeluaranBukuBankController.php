@@ -238,6 +238,17 @@ class BuktiPengeluaranBukuBankController extends Controller
         return $this->redirect(['index']);
     }
 
+
+    public function actionExportToPdf($id){
+        $model = $this->findModel($id);
+        $pdf = Yii::$app->pdf;
+        $pdf->content = $this->renderPartial('_pdf', [
+            'model' => $model,
+        ]);
+
+        return $pdf->render();
+    }
+
     /**
     * Finds the BuktiPengeluaranBukuBank model based on its primary key value.
     * If the model is not found, a 404 HTTP exception will be thrown.
