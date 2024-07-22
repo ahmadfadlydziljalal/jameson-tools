@@ -10,6 +10,66 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="site-index d-flex flex-column gap-3">
+
+    <div class="card">
+        <div class="card-header">Senin-Selasa, 21-22 July 2024</div>
+        <div class="card-body">
+            <p class="lead">Reporting</p>
+            <ul>
+                <li>Laporan harian penerimaan dan pengeluaran toko</li>
+                <li>Invoice belum lunas</li>
+                <li>Invoice per customer</li>
+                <li>Invoice per periode</li>
+                <li>Buku Bank Per Specific Date</li>
+                <li>Petty Cash Per Specific Data</li>
+            </ul>
+
+            <p class="lead">Barang</p>
+            <ul>
+                <li>Mulai rapikan data barang, bisa lihat backup-an data dari tahun 2022</li>
+            </ul>
+
+            <p class="lead">Fungsi fungsi search pada setiap gridview</p>
+            <ul>
+                <li>Invoice</li>
+                <li>Job Order</li>
+                <li>Setoran Kasir</li>
+                <li>dst.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Senis, 22 July 2024</div>
+        <div class="card-body">
+            <p class="lead">Bukti Pengeluaran Petty Cash</p>
+            <ul>
+                <li>Pada halaman index, lakukan hal berikut:
+                    <ol>
+                        <li>Bisa search By Nomor JO <span class="badge text-bg-success">DONE</span></li>
+                    </ol>
+                </li>
+                <li>Pada halaman view, lakukan hal berikut:
+                    <ol>
+                        <li>Style dan functionalitas button-button harus sama seperti page lainnya <span class="badge text-bg-success">DONE</span></li>
+                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
+                    </ol>
+                </li>
+            </ul>
+
+            <p class="lead">Bukti Penerimaan Petty Cash</p>
+            <ul>
+                <li>Pada halaman view, lakukan hal berikut:
+                    <ol>
+                        <li>Style dan functionalitas button-button harus sama seperti page lainnya <span class="badge text-bg-success">DONE</span></li>
+                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
+                    </ol>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
     <div class="card">
         <div class="card-header">Jumat, 19 July 2024</div>
         <div class="card-body">
@@ -94,4 +154,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
     </div>
+
 </div>

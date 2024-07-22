@@ -34,7 +34,7 @@ class RekeningQuery extends ActiveQuery
         $card = Card::find()->map(Card::GET_ONLY_TOKO_SAYA);
         return ArrayHelper::map(parent::where(['IN', 'card_id', array_keys($card)])->orderBy('nama_bank')->all(),
             'id',
-            fn($model)=> is_null($label) ? $model->nama_bank : $model->$label
+            fn($model)=> is_null($label) ? $model->nama_bank . ' ' . $model->nomor_rekening : $model->$label
         );
     }
 

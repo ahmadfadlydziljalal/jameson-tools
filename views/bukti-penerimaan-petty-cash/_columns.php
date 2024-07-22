@@ -23,11 +23,7 @@ return [
         'attribute'=>'reference_number',
         'format'=>'text',
     ],
-    [
-        'class'=>'\yii\grid\DataColumn',
-        'attribute'=>'nomorVoucherMutasiKasPettyCash',
-        'value'=> fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
-    ],
+
     [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'bukti_pengeluaran_petty_cash_cash_advance_id',
@@ -37,6 +33,11 @@ return [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'buku_bank_id',
         'value'=> fn($model) => $model->bukuBank?->nomor_voucher
+    ],
+    [
+        'class'=>'\yii\grid\DataColumn',
+        'attribute'=>'nomorVoucherMutasiKasPettyCash',
+        'value'=> fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
     ],
     [
         'class'=>'\yii\grid\DataColumn',

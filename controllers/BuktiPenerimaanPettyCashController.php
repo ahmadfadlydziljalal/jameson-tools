@@ -128,7 +128,8 @@ class BuktiPenerimaanPettyCashController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionExportToPdf($id){
+    public function actionExportToPdf($id): string
+    {
         /** @var Pdf $pdf */
         $pdf = Yii::$app->pdf;
         $pdf->content = $this->renderPartial('_pdf', [

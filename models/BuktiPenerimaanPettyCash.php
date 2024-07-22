@@ -127,4 +127,29 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
         }
         return parent::beforeSave($insert);
     }
+
+    public function getUpdateUrl(): array|string
+    {
+        if($this->buktiPengeluaranPettyCashCashAdvance){
+            return ['bukti-penerimaan-petty-cash/update-by-realisasi-kasbon', 'id' => $this->id];
+        }
+        return '';
+    }
+
+    /**
+     * @return $this
+     */
+    public function getNext()
+    {
+        return $this->find()->where(['>', 'id', $this->id])->one();
+    }
+
+    /**
+     * @return $this
+     */
+    public function getPrevious()
+    {
+        return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
+    }
+
 }

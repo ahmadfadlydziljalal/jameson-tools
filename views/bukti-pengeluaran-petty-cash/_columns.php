@@ -23,6 +23,18 @@ return [
     ],
     [
         'class' => '\yii\grid\DataColumn',
+        'attribute' => 'nomorJobOrder',
+        'header' => 'Jon Order',
+        'value' => function ($model) {
+            /** @var app\models\BuktiPengeluaranPettyCash $model */
+            if($model->jobOrderDetailCashAdvance){
+                return $model->jobOrderDetailCashAdvance?->jobOrder?->reference_number;
+            }
+            return $model->jobOrderBill?->jobOrder->reference_number;
+        }
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
         'header' => 'Kasbon',
         'format' => 'raw',
         'value' => function ($model) {
@@ -46,18 +58,7 @@ return [
         'attribute' => 'voucher',
         'value' => fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
     ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'header' => 'Nomor JO',
-        'value' => function ($model) {
-            /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->jobOrderDetailCashAdvance){
-                return $model->jobOrderDetailCashAdvance?->jobOrder?->reference_number;
-            }
-            return $model->jobOrderBill?->jobOrder->reference_number;
 
-        }
-    ],
     [
         'class' => '\yii\grid\DataColumn',
         'header' => 'Vendor',

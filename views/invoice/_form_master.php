@@ -22,7 +22,7 @@ use kartik\select2\Select2;
                 ]
             ]) ?>
             <?= $form->field($model, 'tanggal_invoice')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-            <?= $form->field($model, 'nomor_rekening_tagihan_id')->dropDownList(Rekening::find()->mapOnlyTokoSaya('nama_bank'),[
+            <?= $form->field($model, 'nomor_rekening_tagihan_id')->dropDownList(Rekening::find()->mapOnlyTokoSaya(),[
                 'prompt' => '...'
             ]) ?>
         </div>

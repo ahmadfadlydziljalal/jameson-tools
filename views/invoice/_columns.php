@@ -33,13 +33,16 @@ return [
         ]
     ],
     [
-        'class' => '\yii\grid\DataColumn',
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'tanggal_invoice',
+        'width' => '100px',
         'format' => 'date',
     ],
     [
-        'class' => '\yii\grid\DataColumn',
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'nomor_rekening_tagihan_id',
+        'header' => 'Rekening',
+        'width' => '100px',
         'format' => 'text',
         'value' => fn($model) => StringHelper::truncate($model->nomorRekeningTagihan->nama_bank, 20)
     ],
@@ -47,7 +50,7 @@ return [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'buktiPenerimaanBukuBankReferenceNumber',
         'format' => 'html',
-        'header' => 'BB Ref.',
+        'header' => 'Bukti Penerimaan',
         'value' => fn($model) => !$model->buktiPenerimaanBukuBank ? Html::tag('span', 'Belum ada', ['class' => 'badge bg-danger']) :
             $model->buktiPenerimaanBukuBank->reference_number
         ,

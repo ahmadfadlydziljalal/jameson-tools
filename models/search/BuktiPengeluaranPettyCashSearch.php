@@ -11,6 +11,9 @@ use app\models\BuktiPengeluaranPettyCash;
  */
 class BuktiPengeluaranPettyCashSearch extends BuktiPengeluaranPettyCash
 {
+
+    public ?string $nomorJobOrder = null;
+
     /**
      * @inheritdoc
      */
@@ -18,7 +21,7 @@ class BuktiPengeluaranPettyCashSearch extends BuktiPengeluaranPettyCash
     {
         return [
             [['id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['reference_number'], 'safe'],
+            [['reference_number', 'nomorJobOrder'], 'safe'],
         ];
     }
 
@@ -38,7 +41,18 @@ class BuktiPengeluaranPettyCashSearch extends BuktiPengeluaranPettyCash
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = BuktiPengeluaranPettyCash::find();
+        $query = BuktiPengeluaranPettyCash::find()
+            ->joinWith(['jobOrderBill' => function ($jobOrderBill) {
+                return $jobOrderBill->joinWith(['jobOrder' => function($jo1){
+                    $jo1->from(['jo1' => 'job_order']);
+                }]);
+            }])
+            ->joinWith(['jobOrderDetailCashAdvance' => function ($jobOrderDetailCashAdvance) {
+                return $jobOrderDetailCashAdvance->joinWith(['jobOrder' => function($jo1){
+                    $jo1->from(['jo2' => 'job_order']);
+                }]);
+            }])
+        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -66,6 +80,9 @@ class BuktiPengeluaranPettyCashSearch extends BuktiPengeluaranPettyCash
         ]);
 
         $query->andFilterWhere(['like', 'reference_number', $this->reference_number]);
+
+        $query->orFilterWhere(['like', 'jo1.reference_number', $this->nomorJobOrder]);
+        $query->orFilterWhere(['like', 'jo2.reference_number', $this->nomorJobOrder]);
 
         return $dataProvider;
     }

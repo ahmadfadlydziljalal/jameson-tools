@@ -1,5 +1,6 @@
 <?php
 
+use kartik\bs5dropdown\ButtonDropdown;
 use mdm\admin\components\Helper;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -13,14 +14,45 @@ $this->params['breadcrumbs'][] = ['label' => 'Bukti Penerimaan Petty Cash', 'url
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="bukti-penerimaan-petty-cash-view">
+<div class="bukti-penerimaan-petty-cash-view d-flex flex-column gap-3">
 
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
-        <h1><?= Html::encode($this->title) ?></h1>
+        <div class="d-inline-flex align-items-center gap-2">
+            <?= Html::a('<span class="lead"><i class="bi bi-arrow-left-circle"></i></span>', Yii::$app->request->referrer, ['class' => 'text-decoration-none']) ?>
+            <h1 class="m-0">
+                <?= Html::encode($this->title) ?>
+            </h1>
+        </div>
         <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
 
-            <?= Html::a('Kembali', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
-            <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
+            <?= ButtonDropdown::widget([
+                'label' => '<i class="bi bi-plus-circle-dotted"></i>' . ' Buat lainnya',
+                'dropdown' => [
+                    'items' => [
+                        ['label' => 'By Pengembalian / Realisasi Kasbon', 'url' => ['create-by-realisasi-kasbon']],
+                    ],
+                    'options' => [
+                        'class' => 'dropdown-menu-right',
+                    ],
+                ],
+                'buttonOptions' => [
+                    'class' => 'btn btn-primary',
+                ],
+                'encodeLabel' => false
+            ]); ?>
+
+            <?= Html::a('<i class="bi bi-printer"></i> Export to PDF', ['export-to-pdf', 'id' => $model->id], [
+                'class' => 'btn btn-success',
+                'target' => '_blank',
+                'data-pjax' => '0',
+            ]) ?>
+
+            <?= Html::a('<i class="bi bi-pencil"></i> Update', $model->getUpdateUrl(), [
+                'class' => 'btn btn-outline-primary',
+            ]) ?>
+
+
+
             <?php
             if (Helper::checkRoute('delete')) :
                 echo Html::a('Hapus', ['delete', 'id' => $model->id], [
@@ -71,39 +103,29 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <?php if ($model->buktiPengeluaranPettyCashCashAdvance): ?>
-
-        <p><strong>Realisasi Petty Cash</strong></p>
-        <?= DetailView::widget([
-            'model' => $model->buktiPengeluaranPettyCashCashAdvance,
-            'attributes' => [
-                [
-                    'label' => 'Bukti Pengeluaran',
-                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->reference_number,
-                ],
-                [
-                    'label' => 'Job Order',
-                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jobOrder->reference_number,
-                ],
-                [
-                    'label' => 'Vendor',
-                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->vendor->nama,
-                ],
-                [
-                    'label' => 'Jenis Biaya',
-                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->jenisBiaya->name,
-                ],
-                [
-                    'label' => 'Kasbon / Cash Advance',
-                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->order,
-                ],
-                [
-                    'label' => 'Total',
-                    'value' => $model->buktiPengeluaranPettyCashCashAdvance->jobOrderDetailCashAdvance->cash_advance,
-                    'format' => ['decimal', 2],
-                ],
-            ]
-        ]) ?>
-
+        <?= $this->render('_view_bukti_pengeluaran_cash_cash_advance', ['model' => $model]) ?>
     <?php endif ?>
+
+    <?php if ($model->bukuBank): ?>
+        <?= $this->render('_view_mutasi_kas_bank', ['model' => $model]) ?>
+    <?php endif ?>
+
+    <div class="d-inline-flex gap-3">
+        <?php
+        if ($model->getPrevious()) {
+            echo Html::a('<< Previous', ['view', 'id' => $model->getPrevious()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => 1,
+                'id' => 'prev-page'
+            ]);
+        }
+
+        if ($model->getNext()) {
+            echo Html::a('Next >>', ['view', 'id' => $model->getNext()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => "1",
+                'id' => 'next-page'
+            ]);
+        }
+        ?>
+    </div>
 
 </div>

@@ -16,4 +16,12 @@
         ]) ?>
     <?php endif ?>
 
+    <!-- Mutasi Bank -->
+    <?php if ($model->bukuBank) : ?>
+        <?= $this->render('_view_mutasi_kas_bank', [
+            'model' => $model
+        ]) ?>
+    <?php endif ?>
+
+
 </div>

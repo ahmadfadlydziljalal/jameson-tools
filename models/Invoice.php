@@ -40,6 +40,7 @@ class Invoice extends BaseInvoice
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'tanggal_invoice' => 'Tgl. Invoice',
+            'nomor_rekening_tagihan_id' => 'Rekening Tagihan',
         ]);
     }
 

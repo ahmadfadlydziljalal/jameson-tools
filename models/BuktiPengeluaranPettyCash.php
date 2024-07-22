@@ -241,13 +241,44 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     {
         $string = 'Kasbon ke ' . $this->jobOrderDetailCashAdvance?->order;
         if ($this->buktiPenerimaanPettyCash) {
-            $string .= ' ' . Html::tag('span', $this->buktiPenerimaanPettyCash->reference_number, [
+            $string .= '<br/>' . Html::tag('span', $this->buktiPenerimaanPettyCash->reference_number, [
                     'class' => 'badge bg-success'
                 ]);
         } else {
             $string .= ' ' . Html::tag('span', 'Kasbon belum lunas', ['class' => 'badge bg-danger']);
         }
         return $string;
+    }
+
+
+    public function getUpdateUrl()
+    {
+        if($this->jobOrderDetailCashAdvance){
+            return ['bukti-pengeluaran-petty-cash/update-by-cash-advance', 'id' => $this->id];
+        }
+
+        if($this->jobOrderBill){
+            return ['bukti-pengeluaran-petty-cash/update-by-bill', 'id' => $this->id];
+        }
+
+        return '';
+        # Bill Payment
+    }
+
+    /**
+     * @return $this
+     */
+    public function getNext()
+    {
+        return $this->find()->where(['>', 'id', $this->id])->one();
+    }
+
+    /**
+     * @return $this
+     */
+    public function getPrevious()
+    {
+        return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
 
 
