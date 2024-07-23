@@ -19,6 +19,7 @@ use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
 use yii\helpers\VarDumper;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -384,6 +385,12 @@ class BukuBankController extends Controller
         return TransaksiBukuBankLainnya::find()->otherTransactionLiveSearchById($q, $id);
     }
 
+    public function actionFindById($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return BukuBank::find()->liveSearchById($q, $id);
+    }
+
     /**
      * @throws InvalidConfigException
      */
@@ -401,22 +408,36 @@ class BukuBankController extends Controller
         ]);
     }
 
+    /**
+     * @param array $attributes
+     * @return string
+     * @throws BadRequestHttpException
+     * @throws CrossReferenceException
+     * @throws InvalidConfigException
+     * @throws MpdfException
+     * @throws PdfParserException
+     * @throws PdfTypeException
+     */
     public function actionReportBySpecificDateToPdf(array $attributes): string
     {
         $model = Yii::createObject(BukuBankReportPerSpecificDate::class);
         $model->attributes = $attributes;
-        $model->find();
 
-        $pdf = Yii::$app->pdf;
-        $pdf->content = $this->renderPartial('reporting/header_result_report_by_specific_date', [
-            'model' => $model,
-        ]);
-        $pdf->content .= $this->renderPartial('reporting/result_report_by_specific_date', [
-            'model' => $model,
-        ]);
-        return $pdf->render();
+        if($model->validate()){
+            $model->find();
+
+            $pdf = Yii::$app->pdf;
+            $pdf->filename = 'Report Buku Bank ' . $model->date;
+            $pdf->content = $this->renderPartial('reporting/header_result_report_by_specific_date', [
+                'model' => $model,
+            ]);
+            $pdf->content .= $this->renderPartial('reporting/result_report_by_specific_date', [
+                'model' => $model,
+            ]);
+            return $pdf->render();
+        }
+        throw new BadRequestHttpException();
     }
-
 
     /**
      * Finds the BukuBank model based on its primary key value.

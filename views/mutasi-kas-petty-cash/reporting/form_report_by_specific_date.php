@@ -2,22 +2,19 @@
 
 /* @var $this yii\web\View */
 /* @var $model app\models\form\BukuBankReportPerSpecificDate */
+/* @see \app\controllers\MutasiKasPettyCashController::actionReportBySpecificDate() */
 
-/* @see \app\controllers\BukuBankController::actionReportBySpecificDate() */
-
-use app\models\Rekening;
 use kartik\base\BootstrapInterface;
 use kartik\date\DatePicker;
 use kartik\form\ActiveForm;
-use kartik\select2\Select2;
 use yii\helpers\Html;
 
 
 $this->title = 'Form Report';
-$this->params['breadcrumbs'][] = ['label' => 'Buku Bank', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Mutasi Kas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['report-by-specific-date']];
 
-if (Yii::$app->session->getFlash('bukuBankReportPerSpecificDateResult')) :
+if (Yii::$app->session->getFlash('mutasiKasPettyCashReportPerSpecificDateResult')) :
     $this->params['breadcrumbs'][] = 'Result';
 endif;
 
@@ -25,11 +22,9 @@ endif;
 ?>
 
 <div class="buku-bank-reporting-form-report-by-specific-date d-flex flex-column gap-3">
-
     <div class="d-flex justify-content-between align-items-center">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
     </div>
-
     <?php $form = ActiveForm::begin([
         'method' => 'get',
         'type' => ActiveForm::TYPE_HORIZONTAL,
@@ -37,9 +32,6 @@ endif;
     ]) ?>
 
     <?= $form->field($model, 'date')->widget(DatePicker::class) ?>
-    <?= $form->field($model, 'rekening')->widget(Select2::class, [
-        'data' => Rekening::find()->mapOnlyTokoSaya()
-    ]) ?>
 
     <div class="d-flex flex-row-reverse">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
@@ -47,10 +39,17 @@ endif;
 
     <?php ActiveForm::end() ?>
 
-    <?php if (Yii::$app->session->getFlash('bukuBankReportPerSpecificDateResult')) : ?>
+
+    <?php if (Yii::$app->session->getFlash('mutasiKasPettyCashReportPerSpecificDateResult')) : ?>
         <hr>
         <div class="buku-bank-reporting-form-report-by-specific-date-result">
             <p class="fw-bold">Result: </p>
+
+            <div class="d-flex justify-content-between flex-wrap fw-bold">
+                <p >Saldo Awal <?= $model->date ?></p>
+                <p ><?= Yii::$app->formatter->asDecimal($model->balanceBeforeDate, 2) ?></p>
+            </div>
+
             <?= $this->render('result_report_by_specific_date', [
                 'model' => $model,
             ]); ?>
@@ -64,6 +63,7 @@ endif;
             </div>
 
         </div>
+
     <?php endif; ?>
 
 </div>

@@ -10,7 +10,8 @@
         <p><?= Yii::$app->name ?></p>
     </div>
     <div style="float: right; width: 49%">
-        <p><?=  'Buku Bank: ' . $model->date ?></p>
+        <p style="text-align: right"><?=  'Buku Bank: ' . $model->date ?></p>
     </div>
     <div style="clear: both"></div>
 </div>
+

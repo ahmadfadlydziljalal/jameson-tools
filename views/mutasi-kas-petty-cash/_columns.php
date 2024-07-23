@@ -2,8 +2,16 @@
 
 /* @var $this View */
 
+use app\models\BuktiPenerimaanPettyCash;
+use app\models\BuktiPengeluaranPettyCash;
+use app\models\BukuBank;
 use app\models\MutasiKasPettyCash;
+use app\models\TransaksiBukuBankLainnya;
+use app\models\TransaksiMutasiKasPettyCashLainnya;
+use kartik\grid\GridViewInterface;
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 use yii\web\View;
 
 ?>
@@ -30,6 +38,11 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'tanggal_mutasi',
+        'format' => 'date',
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'voucherBukuBank',
         'value' => function ($model) {
             /** @var MutasiKasPettyCash $model */
@@ -38,25 +51,124 @@ return [
             }
             return '';
         },
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->voucherBukuBank)
+                ? BukuBank::findOne($searchModel->voucherBukuBank)->nomor_voucher
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '9em',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to('/buku-bank/find-by-id'),
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ],
         'header' => 'Buku Bank',
     ],
+
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'bukti_penerimaan_petty_cash_id',
         'format' => 'text',
-        'value' => 'buktiPenerimaanPettyCash.reference_number'
+        'value' => 'buktiPenerimaanPettyCash.reference_number',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->bukti_penerimaan_petty_cash_id)
+                ? BuktiPenerimaanPettyCash::findOne($searchModel->bukti_penerimaan_petty_cash_id)->reference_number
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '9em',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to('/bukti-penerimaan-petty-cash/find-by-id'), /** @see \app\controllers\BuktiPenerimaanPettyCashController::actionFindById()  */
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
     ],
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'bukti_pengeluaran_petty_cash_id',
         'format' => 'text',
-        'value' => 'buktiPengeluaranPettyCash.reference_number'
+        'value' => 'buktiPengeluaranPettyCash.reference_number',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->bukti_pengeluaran_petty_cash_id)
+                ? BuktiPengeluaranPettyCash::findOne($searchModel->bukti_pengeluaran_petty_cash_id)->reference_number
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '9em',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to('/bukti-pengeluaran-petty-cash/find-by-id'), /** @see \app\controllers\BuktiPengeluaranPettyCashController::actionFindById()  */
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
     ],
     [
         'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'tanggal_mutasi',
-        'format' => 'date',
+        'attribute' => 'nomorVoucherLainnya',
+        'value' => 'transaksiMutasiKasPettyCashLainnya.reference_number',
+        'header' => 'Lainnya',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->nomorVoucherLainnya)
+                ? TransaksiMutasiKasPettyCashLainnya::findOne($searchModel->nomorVoucherLainnya)->reference_number
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '9em',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to('/mutasi-kas-petty-cash/find-transaksi-mutasi-kas-lainnya'), /* @see \app\controllers\BukuBankController::actionFindTransaksiBukuBankLainnya()  */
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
     ],
+
     /*[
         'class'=>'\kartik\grid\DataColumn',
         'attribute'=>'businessProcess',

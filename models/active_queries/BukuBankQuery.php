@@ -14,5 +14,18 @@ use \app\models\BukuBank;
 class BukuBankQuery extends \yii\db\ActiveQuery
 {
 
-
+    public function liveSearchById(mixed $q, mixed $id)
+    {
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $query = parent::select(['id' => 'id', 'text' => 'nomor_voucher'])
+                ->where(['LIKE', 'nomor_voucher', $q])
+                ->orderBy('nomor_voucher')
+                ->asArray();
+            $out['results'] = array_values($query->all());
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => parent::where(['id' => $id])->one()->nomor_voucher];
+        }
+        return $out;
+    }
 }

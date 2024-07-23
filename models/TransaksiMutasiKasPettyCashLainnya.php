@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\helpers\ArrayHelper;
 use \app\models\base\TransaksiMutasiKasPettyCashLainnya as BaseTransaksiMutasiKasPettyCashLainnya;
+use mdm\autonumber\AutoNumber;
 
 /**
  * This is the model class for table "transaksi_mutasi_kas_petty_cash_lainnya".
@@ -37,6 +38,22 @@ class TransaksiMutasiKasPettyCashLainnya extends BaseTransaksiMutasiKasPettyCash
             'nominal',
         ];
         return $scenarios;
+    }
+
+    public function beforeSave($insert): bool
+    {
+        if($insert){
+            # Pengeluaran
+            if($this->jenis_biaya_id){
+                $this->reference_number = AutoNumber::generate("?" . "/PC-OUT-OTH/" .date('Y'), false, 4);
+            }
+
+            # Penerimaan
+            if($this->jenis_pendapatan_id){
+                $this->reference_number = AutoNumber::generate("?" . "/PC-IN-OTH/" .date('Y'), false, 4);
+            }
+        }
+        return parent::beforeSave($insert);
     }
 
 }

@@ -200,6 +200,17 @@ class BuktiPengeluaranPettyCashController extends Controller
     }
 
     /**
+     * @param $q
+     * @param $id
+     * @return array
+     */
+    public function actionFindById($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return BuktiPengeluaranPettyCash::find()->liveSearchById($q, $id);
+    }
+
+    /**
     * Finds the BuktiPengeluaranPettyCash model based on its primary key value.
     * If the model is not found, a 404 HTTP exception will be thrown.
     * @param integer $id

@@ -3,9 +3,9 @@
 namespace app\models\search;
 
 use app\components\helpers\ArrayHelper;
+use app\models\MutasiKasPettyCash;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\MutasiKasPettyCash;
 
 /**
  * MutasiKasPettyCashSearch represents the model behind the search form about `app\models\MutasiKasPettyCash`.
@@ -15,29 +15,32 @@ class MutasiKasPettyCashSearch extends MutasiKasPettyCash
 
     public ?string $voucherBukuBank = null;
 
+    public ?string $nomorVoucherLainnya = null;
+
 
     public function attributeLabels(): array
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'voucherBukuBank' => 'Voucher BB',
+            'nomorVoucherLainnya ' => 'Lainnya',
         ]);
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
-            [['id', 'kode_voucher_id', 'bukti_penerimaan_petty_cash_id', 'bukti_pengeluaran_petty_cash_id'], 'integer'],
-            [['nomor_voucher', 'tanggal_mutasi', 'keterangan', 'voucherBukuBank'], 'safe'],
+            [['id', 'kode_voucher_id', 'bukti_penerimaan_petty_cash_id', 'bukti_pengeluaran_petty_cash_id', 'voucherBukuBank', 'nomorVoucherLainnya'], 'integer'],
+            [['nomor_voucher', 'tanggal_mutasi', 'keterangan', ], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios() : array
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -48,10 +51,11 @@ class MutasiKasPettyCashSearch extends MutasiKasPettyCash
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search(array $params) : ActiveDataProvider
+    public function search(array $params): ActiveDataProvider
     {
         $query = MutasiKasPettyCash::find()
-        ->joinWith('bukuBank');
+            ->joinWith('transaksiMutasiKasPettyCashLainnya')
+            ->joinWith('bukuBank');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -76,12 +80,13 @@ class MutasiKasPettyCashSearch extends MutasiKasPettyCash
             'bukti_penerimaan_petty_cash_id' => $this->bukti_penerimaan_petty_cash_id,
             'bukti_pengeluaran_petty_cash_id' => $this->bukti_pengeluaran_petty_cash_id,
             'tanggal_mutasi' => $this->tanggal_mutasi,
+            'buku_bank.id' => $this->voucherBukuBank,
+            'transaksi_mutasi_kas_petty_cash_lainnya.id' => $this->nomorVoucherLainnya,
         ]);
 
         $query->andFilterWhere(['like', 'nomor_voucher', $this->nomor_voucher])
             ->andFilterWhere(['like', 'keterangan', $this->keterangan])
-            ->andFilterWhere(['like', 'buku_bank.nomor_voucher', $this->voucherBukuBank])
-        ;
+            ;
 
         return $dataProvider;
     }

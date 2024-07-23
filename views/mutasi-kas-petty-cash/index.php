@@ -18,6 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
+            <?= Html::a('Report', ['report-by-specific-date'], [
+                'class' => 'btn btn-success'
+            ]) ?>
             <?= ButtonDropdown::widget([
                 'label' => 'Debit',
                 'dropdown' => [

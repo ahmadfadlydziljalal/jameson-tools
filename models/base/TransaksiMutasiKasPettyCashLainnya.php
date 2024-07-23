@@ -12,6 +12,7 @@ use \app\models\active_queries\TransaksiMutasiKasPettyCashLainnyaQuery;
  * This is the base-model class for table "transaksi_mutasi_kas_petty_cash_lainnya".
  *
  * @property integer $id
+ * @property string $reference_number
  * @property integer $mutasi_kas_petty_cash_id
  * @property integer $card_id
  * @property integer $jenis_pendapatan_id
@@ -46,6 +47,7 @@ abstract class TransaksiMutasiKasPettyCashLainnya extends \yii\db\ActiveRecord
             [['card_id'], 'required'],
             [['nominal'], 'number'],
             [['keterangan'], 'string'],
+            [['reference_number'], 'string', 'max' => 50],
             [['mutasi_kas_petty_cash_id'], 'unique'],
             [['mutasi_kas_petty_cash_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MutasiKasPettyCash::class, 'targetAttribute' => ['mutasi_kas_petty_cash_id' => 'id']],
             [['card_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['card_id' => 'id']],
@@ -61,6 +63,7 @@ abstract class TransaksiMutasiKasPettyCashLainnya extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
+            'reference_number' => 'Reference Number',
             'mutasi_kas_petty_cash_id' => 'Mutasi Kas Petty Cash ID',
             'card_id' => 'Card ID',
             'jenis_pendapatan_id' => 'Jenis Pendapatan ID',

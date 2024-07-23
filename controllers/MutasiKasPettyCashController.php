@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\form\MutasiKasPettyCashReportPerSpecificDate;
 use app\models\KodeVoucher;
 use app\models\MutasiKasPettyCash;
 use app\models\search\MutasiKasPettyCashSearch;
@@ -15,6 +16,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -300,6 +302,58 @@ class MutasiKasPettyCashController extends Controller
     }
 
     /**
+     * @throws InvalidConfigException
+     */
+    public function actionReportBySpecificDate(): string
+    {
+        $model = Yii::createObject(MutasiKasPettyCashReportPerSpecificDate::class, []);
+        $model = new MutasiKasPettyCashReportPerSpecificDate();
+
+        if ($model->load(Yii::$app->request->get()) && $model->validate()) {
+            $model->find();
+            Yii::$app->session->setFlash('mutasiKasPettyCashReportPerSpecificDateResult', 'Hasil pencarian ditemukan');
+        }
+
+        return $this->render('reporting/form_report_by_specific_date', [
+            'model' => $model
+        ]);
+    }
+
+    /**
+     * @param array $attributes
+     * @return string
+     * @throws BadRequestHttpException
+     * @throws CrossReferenceException
+     * @throws InvalidConfigException
+     * @throws MpdfException
+     * @throws PdfParserException
+     * @throws PdfTypeException
+     */
+    public function actionReportBySpecificDateToPdf(array $attributes): string
+    {
+        $model = Yii::createObject(MutasiKasPettyCashReportPerSpecificDate::class);
+        $model->attributes = $attributes;
+
+        if($model->validate()){
+
+            $model->find();
+
+            $pdf = Yii::$app->pdf;
+            $pdf->filename = 'Report Mutasi Kas ' . $model->date;
+            $pdf->content = $this->renderPartial('reporting/header_result_report_by_specific_date', [
+                'model' => $model,
+            ]);
+            $pdf->content .= $this->renderPartial('reporting/result_report_by_specific_date', [
+                'model' => $model,
+            ]);
+            return $pdf->render();
+        }
+
+        throw new BadRequestHttpException();
+
+    }
+
+    /**
      * Updates an existing MutasiKasPettyCash model.
      * If update is successful, the browser will be redirected to the 'index' page with pagination URL
      * @param integer $id
@@ -342,6 +396,12 @@ class MutasiKasPettyCashController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return MutasiKasPettyCash::find()->liveSearchById($q, $id);
+    }
+
+    public function actionFindTransaksiMutasiKasLainnya($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return TransaksiMutasiKasPettyCashLainnya::find()->otherTransactionLiveSearchById($q, $id);
     }
 
     /**

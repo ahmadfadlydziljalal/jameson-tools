@@ -32,12 +32,12 @@
         <thead>
         <tr>
             <th>No</th>
-            <th>Nomor Voucher</th>
+            <th>Voucher</th>
             <th>Transaksi</th>
             <th>Keterangan</th>
             <th>Referensi</th>
             <th>Debit</th>
-            <th>Kredit</th>
+            <th>Credit</th>
             <th>Saldo</th>
         </tr>
         </thead>
@@ -46,7 +46,7 @@
         <?php foreach ($model->transactions as $key => $value) : ?>
             <tr>
                 <td><?= $key + 1 ?></td>
-                <td><?= $value['nomor_voucher'] ?></td>
+                <td><?= $value['voucher'] ?></td>
                 <td><?= Yii::$app->formatter->asDate($value['tanggal_transaksi']) ?></td>
                 <td class="text-nowrap">
                     <?= $value['nama'] ?><br>

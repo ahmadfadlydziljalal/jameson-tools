@@ -24,7 +24,6 @@ class BukuBankReportPerSpecificDate extends Model
     public ?string $date = null;
     public ?string $rekening = null;
 
-
     private ?string $formattedDate = null;
 
     private ?Rekening $bank = null;
@@ -102,10 +101,7 @@ class BukuBankReportPerSpecificDate extends Model
             ->from(['data' => $data])
             ->one();
 
-        $this->balanceBeforeDate =
-            $this->bank->saldo_awal +
-            $transaction['totalDebit'] -
-            $transaction['totalCredit'];
+        $this->balanceBeforeDate = $this->bank->saldo_awal + $transaction['totalDebit'] - $transaction['totalCredit'];
     }
 
     private function setTransactions(): void
@@ -262,7 +258,7 @@ class BukuBankReportPerSpecificDate extends Model
         return (new Query())
             ->select("
                bb.id                                                        AS id,
-               bb.nomor_voucher                                             AS nomor_voucher,
+               bb.nomor_voucher                                             AS voucher,
                bb.tanggal_transaksi                                         AS tanggal_transaksi,
                c.nama                                                       AS nama
             ")
@@ -296,7 +292,7 @@ class BukuBankReportPerSpecificDate extends Model
         return (new Query())
             ->select("
                bb.id                                                        AS id,
-               bb.nomor_voucher                                             AS nomor_voucher,
+               bb.nomor_voucher                                             AS voucher,
                bb.tanggal_transaksi                                         AS tanggal_transaksi,
                c.nama                                                       AS nama            
             ")
@@ -364,7 +360,7 @@ class BukuBankReportPerSpecificDate extends Model
         return (new Query())
             ->select("
                bb.id                                                  AS id,
-               bb.nomor_voucher                                       AS nomor_voucher,
+               bb.nomor_voucher                                       AS voucher,
                bb.tanggal_transaksi                                   AS tanggal_transaksi,
                c.nama                                                 AS nama,
                ")
@@ -394,7 +390,7 @@ class BukuBankReportPerSpecificDate extends Model
         return (new Query())
             ->select("
                bb.id                                                        AS id,
-               bb.nomor_voucher                                             AS nomor_voucher,
+               bb.nomor_voucher                                             AS voucher,
                bb.tanggal_transaksi                                         AS tanggal_transaksi,
                c.nama                                                       AS nama,
             ")
@@ -426,7 +422,7 @@ class BukuBankReportPerSpecificDate extends Model
         return (new Query())
             ->select("
                bb.id                                                        AS id,
-               bb.nomor_voucher                                             AS nomor_voucher,
+               bb.nomor_voucher                                             AS voucher,
                bb.tanggal_transaksi                                         AS tanggal_transaksi,
                c.nama                                                       AS nama,
             ")
@@ -460,7 +456,7 @@ class BukuBankReportPerSpecificDate extends Model
         return (new Query())
             ->select("
                bb.id                                                                    AS id,
-               bb.nomor_voucher                                                         AS nomor_voucher,
+               bb.nomor_voucher                                                         AS voucher,
                bb.tanggal_transaksi                                                     AS tanggal_transaksi,
                c.nama                                                                   AS nama,
             ")
@@ -503,5 +499,7 @@ class BukuBankReportPerSpecificDate extends Model
             $this->sumDebit -
             $this->sumCredit;
     }
+
+
 
 }

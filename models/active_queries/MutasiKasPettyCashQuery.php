@@ -24,7 +24,7 @@ class MutasiKasPettyCashQuery extends \yii\db\ActiveQuery
                 ->asArray();
             $out['results'] = array_values($query->all());
         } elseif ($id > 0) {
-            $out['results'] = ['id' => $id, 'text' => parent::where(['id' => $id])->one()->reference_number];
+            $out['results'] = ['id' => $id, 'text' => parent::where(['id' => $id])->one()->nomor_voucher];
         }
         return $out;
     }

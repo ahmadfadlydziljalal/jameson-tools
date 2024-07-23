@@ -25,9 +25,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
             Petty Cash Per Specific Date
             <ul>
-                <li>Preview  </li>
-                <li>Export To Pdf</li>
+                <li>Preview  <span class="badge text-bg-success">DONE</span> </li>
+                <li>Export To Pdf  <span class="badge text-bg-success">DONE</span></li>
             </ul>
+
+            Job Order > Kasbon,
+            <ul>
+                <li>Belum ada form edit</li>
+            </ul>
+
         </div>
     </div>
 
