@@ -29,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li>Export To Pdf  <span class="badge text-bg-success">DONE</span></li>
             </ul>
 
-            Job Order > Kasbon,
+            Job Order > Petty Cash,
             <ul>
-                <li>Belum ada form edit</li>
+                <li>Belum ada form edit <span class="badge text-bg-success">DONE</span></li>
             </ul>
 
         </div>

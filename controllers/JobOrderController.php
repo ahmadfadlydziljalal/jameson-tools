@@ -74,7 +74,6 @@ class JobOrderController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'modelPaymentKasbon' => new PaymentKasbonForm(),
         ]);
     }
 
@@ -87,7 +86,6 @@ class JobOrderController extends Controller
     public function actionCreate(): Response|string
     {
         $model = new JobOrder();
-
         if ($this->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'JobOrder: ' . $model->reference_number . ' berhasil ditambahkan.');
@@ -96,7 +94,6 @@ class JobOrderController extends Controller
                 $model->loadDefaultValues();
             }
         }
-
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -244,6 +241,16 @@ class JobOrderController extends Controller
         return $this->redirect(['view', 'id' => $model->job_order_id, '#' => 'quotation-tab-tab1']);
     }
 
+    /**
+     * @param int $id
+     * @return string
+     * @throws CrossReferenceException
+     * @throws InvalidConfigException
+     * @throws MpdfException
+     * @throws NotFoundHttpException
+     * @throws PdfParserException
+     * @throws PdfTypeException
+     */
     public function actionExportToPdfPaymentCashAdvance(int $id): string
     {
         $pdf = Yii::$app->pdf;
@@ -415,6 +422,9 @@ class JobOrderController extends Controller
         }
     }
 
+    /**
+     * @return Response|string
+     */
     public function actionCreateForPettyCash(): Response|string
     {
         $model = new JobOrder();
