@@ -45,13 +45,17 @@ RUN echo 'alias c="vendor/bin/codecept"' >> /etc/bash.bashrc
 # ==================================================================================================
 FROM development AS deploy
 
-RUN ln -s /etc/apache2/mods-available/ssl.load  /etc/apache2/mods-enabled/ssl.load
-RUN a2enmod ssl && service apache2 restart
+## Uncomment, if you want run in https
+# RUN ln -s /etc/apache2/mods-available/ssl.load  /etc/apache2/mods-enabled/ssl.load
+# RUN a2enmod headers && a2enmod ssl && a2enmod socache_shmcb && service apache2 restart
 
 COPY . .
 COPY ./web/index-prod.php web/index.php
 COPY ./.docker/php/php.ini /usr/local/etc/php/php.ini
-COPY ./.docker/php/debian-apache/000-default-prod.conf /etc/apache2/sites-available/000-default.conf
+
+## Uncomment, if you want run in https
+#COPY ./.docker/php/debian-apache/000-default-prod.conf /etc/apache2/sites-available/000-default.conf
+COPY ./.docker/php/debian-apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 RUN mkdir ./runtime ./web/assets && \
     rm -rf .docker && \
