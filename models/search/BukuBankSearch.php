@@ -18,6 +18,8 @@ class BukuBankSearch extends BukuBank
     public ?string $mutasiKas = null;
     public ?string $bankId = null;
 
+    public ?string $transaksiBukuBankLainnya = null;
+
     /**
      * @inheritdoc
      */
@@ -25,7 +27,7 @@ class BukuBankSearch extends BukuBank
     {
         return [
             [['id', 'kode_voucher_id', 'bukti_penerimaan_buku_bank_id', 'bukti_pengeluaran_buku_bank_id', 'bankId'], 'integer'],
-            [['nomor_voucher', 'tanggal_transaksi', 'keterangan', 'mutasiKas'], 'safe'],
+            [['nomor_voucher', 'tanggal_transaksi', 'keterangan', 'mutasiKas', 'transaksiBukuBankLainnya'], 'safe'],
         ];
     }
 
@@ -93,6 +95,7 @@ class BukuBankSearch extends BukuBank
             'bukti_penerimaan_buku_bank_id' => $this->bukti_penerimaan_buku_bank_id,
             'bukti_pengeluaran_buku_bank_id' => $this->bukti_pengeluaran_buku_bank_id,
             'mutasi_kas_petty_cash.id' => $this->mutasiKas,
+            'transaksi_buku_bank_lainnya.id' => $this->transaksiBukuBankLainnya,
         ]);
 
         $query->orFilterWhere([
@@ -112,7 +115,8 @@ class BukuBankSearch extends BukuBank
         }
 
         $query->andFilterWhere(['like', 'buku_bank.nomor_voucher', $this->nomor_voucher])
-            ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
+            ->andFilterWhere(['like', 'keterangan', $this->keterangan])
+        ;
         return $dataProvider;
     }
 }

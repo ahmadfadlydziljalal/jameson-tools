@@ -141,6 +141,36 @@ return [
             ],
         ]
     ],
+    [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'transaksiBukuBankLainnya',
+        'value' => 'transaksiBukuBankLainnya.reference_number',
+        'header' => 'Lainnya',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->transaksiBukuBankLainnya)
+                ? \app\models\TransaksiBukuBankLainnya::findOne($searchModel->transaksiBukuBankLainnya)->reference_number
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '9em',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to('/buku-bank/find-transaksi-buku-bank-lainnya'), /* @see \app\controllers\BukuBankController::actionFindTransaksiBukuBankLainnya()  */
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
+    ],
 
 //    [
 //        'class' => '\kartik\grid\DataColumn',

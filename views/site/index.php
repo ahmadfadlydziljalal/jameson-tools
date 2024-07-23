@@ -11,6 +11,59 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="site-index d-flex flex-column gap-3">
 
+
+    <div class="card">
+        <div class="card-header">Selasa, 23 July 2024</div>
+        <div class="card-body">
+            <p class="lead">Reporting</p>
+
+            Buku Bank Per Specific Date
+            <ul>
+                <li>Preview  <span class="badge text-bg-success">DONE</span></li>
+                <li>Export To Pdf  <span class="badge text-bg-success">DONE</span></li>
+            </ul>
+
+            Petty Cash Per Specific Date
+            <ul>
+                <li>Preview  </li>
+                <li>Export To Pdf</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Senin, 22 July 2024</div>
+        <div class="card-body">
+            <p class="lead">Bukti Pengeluaran Petty Cash</p>
+            <ul>
+                <li>Pada halaman index, lakukan hal berikut:
+                    <ol>
+                        <li>Bisa search By Nomor JO <span class="badge text-bg-success">DONE</span></li>
+                    </ol>
+                </li>
+                <li>Pada halaman view, lakukan hal berikut:
+                    <ol>
+                        <li>Style dan functionalitas button-button harus sama seperti page lainnya <span
+                                    class="badge text-bg-success">DONE</span></li>
+                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
+                    </ol>
+                </li>
+            </ul>
+
+            <p class="lead">Bukti Penerimaan Petty Cash</p>
+            <ul>
+                <li>Pada halaman view, lakukan hal berikut:
+                    <ol>
+                        <li>Style dan functionalitas button-button harus sama seperti page lainnya <span
+                                    class="badge text-bg-success">DONE</span></li>
+                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
+                    </ol>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
     <div class="card">
         <div class="card-header">Senin-Selasa, 21-22 July 2024</div>
         <div class="card-body">
@@ -20,8 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li>Invoice belum lunas</li>
                 <li>Invoice per customer</li>
                 <li>Invoice per periode</li>
-                <li>Buku Bank Per Specific Date</li>
-                <li>Petty Cash Per Specific Data</li>
+
             </ul>
 
             <p class="lead">Barang</p>
@@ -40,43 +92,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="card">
-        <div class="card-header">Senis, 22 July 2024</div>
-        <div class="card-body">
-            <p class="lead">Bukti Pengeluaran Petty Cash</p>
-            <ul>
-                <li>Pada halaman index, lakukan hal berikut:
-                    <ol>
-                        <li>Bisa search By Nomor JO <span class="badge text-bg-success">DONE</span></li>
-                    </ol>
-                </li>
-                <li>Pada halaman view, lakukan hal berikut:
-                    <ol>
-                        <li>Style dan functionalitas button-button harus sama seperti page lainnya <span class="badge text-bg-success">DONE</span></li>
-                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
-                    </ol>
-                </li>
-            </ul>
-
-            <p class="lead">Bukti Penerimaan Petty Cash</p>
-            <ul>
-                <li>Pada halaman view, lakukan hal berikut:
-                    <ol>
-                        <li>Style dan functionalitas button-button harus sama seperti page lainnya <span class="badge text-bg-success">DONE</span></li>
-                        <li>Next | Prev button <span class="badge text-bg-success">DONE</span></li>
-                    </ol>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-
-    <div class="card">
         <div class="card-header">Jumat, 19 July 2024</div>
         <div class="card-body">
 
             <p class="lead">Rekening Page</p>
             <ul>
-                <li>Tambahkan field nama_bank, nomor_account, saldo_awal, <span class="badge text-bg-success">DONE</span></li>
+                <li>Tambahkan field nama_bank, nomor_account, saldo_awal, <span
+                            class="badge text-bg-success">DONE</span></li>
                 <li>Sesuaikan kolom-kolom tersebut pada UI <span class="badge text-bg-success">DONE</span></li>
             </ul>
 
@@ -85,7 +107,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li>Belum ada fitur export to PDF, buat! <span class="badge text-bg-success">DONE</span></li>
                 <li>Pada halaman view, lakukan hal berikut:
                     <ol>
-                        <li>Attribute-attribute FK (_id) masih plain, sesuaikan! <span class="badge text-bg-success">DONE</span></li>
+                        <li>Attribute-attribute FK (_id) masih plain, sesuaikan! <span class="badge text-bg-success">DONE</span>
+                        </li>
                         <li>Tambah button update, pastikan url yang digunakan sesuai dengan karakteristik record
                             tersebut <span class="badge text-bg-success">DONE</span>
                         </li>
@@ -99,12 +122,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li>Pada halaman index. lakukan hal berikut:
                     <ol>
                         <li>Munculkan Kolom voucher buku bank <span class="badge text-bg-success">DONE</span></li>
-                        <li>Ganti informasi bank, hanya `nama` saja, bukan `atas nama` field <span class="badge text-bg-success">DONE</span></li>
+                        <li>Ganti informasi bank, hanya `nama` saja, bukan `atas nama` field <span
+                                    class="badge text-bg-success">DONE</span></li>
                     </ol>
                 </li>
                 <li>Pada halaman view. lakukan hal berikut:
                     <ol>
-                        <li>Samakan dengan gaya umum yang sudah di custom, seperti pada page lainnya <span class="badge text-bg-success">DONE</span></li>
+                        <li>Samakan dengan gaya umum yang sudah di custom, seperti pada page lainnya <span
+                                    class="badge text-bg-success">DONE</span></li>
                         <li>Button update, pastikan url yang digunakan sesuai dengan karakteristik record
                             tersebut <span class="badge text-bg-success">DONE</span>
                         </li>
@@ -119,8 +144,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <ul>
                 <li>Pada halaman index. lakukan hal berikut:
                     <ol>
-                        <li>Nama Bank belum ada, juga kemampuan melakukan search bank ini pada gridview <span class="badge text-bg-success">DONE</span></li>
-                        <li><span class="badge text-bg-danger">Bug</span> DELETE VOUCHER BUKU BANK YANG BERELASI DENGAN MUTASI KAS!  <span class="badge text-bg-success">DONE</span></li>
+                        <li>Nama Bank belum ada, juga kemampuan melakukan search bank ini pada gridview <span
+                                    class="badge text-bg-success">DONE</span></li>
+                        <li><span class="badge text-bg-danger">Bug</span> DELETE VOUCHER BUKU BANK YANG BERELASI DENGAN
+                            MUTASI KAS! <span class="badge text-bg-success">DONE</span></li>
                     </ol>
                 </li>
                 <li>Pada halaman view, lakukan hal berikut:
@@ -148,8 +175,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     </ol>
                 </li>
             </ul>
-
-
 
 
         </div>

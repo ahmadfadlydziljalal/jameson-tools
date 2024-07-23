@@ -2,7 +2,7 @@
 
 table {
 
-  page-break-inside: auto;
+  page-break-inside: avoid;
 
   //div {
   //  page-break-inside: avoid;
@@ -13,14 +13,6 @@ table {
   tr {
     page-break-inside: avoid;
     page-break-after: auto;
-  }
-
-  thead {
-    display: table-header-group
-  }
-
-  tfoot {
-    display: table-footer-group
   }
 
   &.table {
@@ -90,7 +82,7 @@ table {
         border-left: 0.1em solid $dark;
         border-right: 0;
         border-top: 0.1em solid $dark;
-        border-bottom: 0;
+        border-bottom: 0.1em solid $dark;
         border-collapse: collapse;
       }
 

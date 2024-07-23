@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\BukuBank;
+use app\models\form\BukuBankReportPerSpecificDate;
 use app\models\KodeVoucher;
 use app\models\search\BukuBankSearch;
 use app\models\TransaksiBukuBankLainnya;
@@ -16,6 +17,8 @@ use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -374,6 +377,46 @@ class BukuBankController extends Controller
         ]);
         return $pdf->render();
     }
+
+    public function actionFindTransaksiBukuBankLainnya($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return TransaksiBukuBankLainnya::find()->otherTransactionLiveSearchById($q, $id);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionReportBySpecificDate(): string
+    {
+        $model = Yii::createObject(BukuBankReportPerSpecificDate::class,[]);
+
+        if($model->load(Yii::$app->request->get()) && $model->validate()){
+            $model->find();
+            Yii::$app->session->setFlash('bukuBankReportPerSpecificDateResult', 'Hasil pencarian ditemukan');
+        }
+
+        return $this->render('reporting/form_report_by_specific_date',[
+            'model' => $model
+        ]);
+    }
+
+    public function actionReportBySpecificDateToPdf(array $attributes): string
+    {
+        $model = Yii::createObject(BukuBankReportPerSpecificDate::class);
+        $model->attributes = $attributes;
+        $model->find();
+
+        $pdf = Yii::$app->pdf;
+        $pdf->content = $this->renderPartial('reporting/header_result_report_by_specific_date', [
+            'model' => $model,
+        ]);
+        $pdf->content .= $this->renderPartial('reporting/result_report_by_specific_date', [
+            'model' => $model,
+        ]);
+        return $pdf->render();
+    }
+
 
     /**
      * Finds the BukuBank model based on its primary key value.

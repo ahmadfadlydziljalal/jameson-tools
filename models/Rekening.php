@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "rekening".
+ * @property float | integer $saldo_awal
  */
 class Rekening extends BaseRekening
 {

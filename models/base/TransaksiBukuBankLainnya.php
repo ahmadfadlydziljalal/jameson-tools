@@ -12,6 +12,7 @@ use \app\models\active_queries\TransaksiBukuBankLainnyaQuery;
  * This is the base-model class for table "transaksi_buku_bank_lainnya".
  *
  * @property integer $id
+ * @property string $reference_number
  * @property integer $buku_bank_id
  * @property integer $rekening_id
  * @property integer $card_id
@@ -48,6 +49,7 @@ abstract class TransaksiBukuBankLainnya extends \yii\db\ActiveRecord
             [['rekening_id', 'card_id'], 'required'],
             [['nominal'], 'number'],
             [['keterangan'], 'string'],
+            [['reference_number'], 'string', 'max' => 50],
             [['buku_bank_id'], 'unique'],
             [['rekening_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Rekening::class, 'targetAttribute' => ['rekening_id' => 'id']],
             [['buku_bank_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\BukuBank::class, 'targetAttribute' => ['buku_bank_id' => 'id']],
@@ -64,6 +66,7 @@ abstract class TransaksiBukuBankLainnya extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
+            'reference_number' => 'Reference Number',
             'buku_bank_id' => 'Buku Bank ID',
             'rekening_id' => 'Rekening ID',
             'card_id' => 'Card ID',

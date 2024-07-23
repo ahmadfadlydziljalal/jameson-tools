@@ -14,4 +14,5 @@ use \app\models\BukuBank;
 class BukuBankQuery extends \yii\db\ActiveQuery
 {
 
+
 }
