@@ -53,12 +53,12 @@ jobs:
           cache-from: type=registry,ref=dziljalal/jameson_tools-php:latest
           cache-to: type=inline
 
-      - name: Remote SSH DigitalOcean
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd jameson_tools2
-            docker compose pull && docker compose down && docker compose up -d --wait && docker compose exec php php /var/www/html/yii migrate --interactive=0
+#      - name: Remote SSH DigitalOcean
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.SSH_USERNAME }}
+#          key: ${{ secrets.SSH_KEY }}
+#          script: |
+#            cd jameson_tools2
+#            docker compose pull && docker compose down && docker compose up -d --wait && docker compose exec php php /var/www/html/yii migrate --interactive=0
