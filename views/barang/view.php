@@ -47,61 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
                  'class' => 'table table-bordered table-detail-view'
               ],
               'attributes' => [
-                 [
-                    'attribute' => 'tipe_pembelian_id',
-                    'value' => $model->tipePembelian->nama
-                 ],
                  'nama',
-                 'part_number',
-                 'merk_part_number',
-                 'ift_number',
-                 [
-                    'attribute' => 'originalitas_id',
-                    'value' => $model->originalitas->nama
-                 ],
-
               ],
            ]);
            ?>
         </div>
         <div class="col-12 col-lg-4">
 
-            <div class="d-flex flex-column gap-3">
-
-                <div>
-                   <?= Html::a('Upload Photo', ['barang/upload-photo', 'id' => $model->id], [
-                      'class' => 'btn btn-primary'
-                   ]) ?>
-                </div>
-                <div>
-                   <?php if ($model->photo) : ?>
-                       <div class="d-flex flex-column gap-3">
-
-                           <div>
-                              <?= Html::img($model->photo_thumbnail, [
-                                 'alt' => 'No image available',
-                                 'loading' => 'lazy'
-                              ]) ?>
-                           </div>
-
-
-                          <?php /** @see \app\controllers\BarangController::actionDeletePhoto() */ ?>
-                           <div>
-                              <?= Html::a('<i class="bi bi-trash-fill"></i> Hapus', ['barang/delete-photo',
-                                 'id' => $model->id
-                              ], [
-                                 'class' => 'btn btn-danger',
-                                 'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                 'data-method' => 'post',
-                              ]); ?>
-                           </div>
-
-                       </div>
-
-                   <?php endif; ?>
-                </div>
-
-            </div>
 
         </div>
 

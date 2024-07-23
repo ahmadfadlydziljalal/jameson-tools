@@ -121,4 +121,19 @@ class BarangQuery extends ActiveQuery
          ->asArray()
          ->all();
    }
+
+    public function liveSearchById(mixed $q, mixed $id): array
+    {
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $query = parent::select(['id' => 'id', 'text' => 'nama'])
+                ->where(['LIKE', 'nama', $q])
+                ->orderBy('nama')
+                ->asArray();
+            $out['results'] = array_values($query->all());
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => parent::where(['id' => $id])->one()->nama];
+        }
+        return $out;
+    }
 }

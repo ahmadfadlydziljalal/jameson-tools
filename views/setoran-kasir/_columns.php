@@ -75,6 +75,6 @@ return [
         // 'format'=>'text',
     // ],
     [
-        'class' => 'kartik\grid\ActionColumn',
+        'class' => 'yii\grid\ActionColumn',
     ],
 ];   

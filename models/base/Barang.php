@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\BarangQuery;
 
 /**
  * This is the base-model class for table "barang".
@@ -15,7 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property string $nama
  * @property string $part_number
  * @property string $keterangan
- * @property string $ift_number
+ * @property string $jameson_tools_number
  * @property string $merk_part_number
  * @property integer $originalitas_id
  * @property string $initialize_stock_quantity
@@ -30,18 +31,16 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\Satuan $defaultSatuan
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\HistoryLokasiBarang[] $historyLokasiBarangs
+ * @property \app\models\InvoiceDetail[] $invoiceDetails
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\Originalitas $originalitas
  * @property \app\models\ProformaDebitNoteDetailBarang[] $proformaDebitNoteDetailBarangs
  * @property \app\models\ProformaInvoiceDetailBarang[] $proformaInvoiceDetailBarangs
  * @property \app\models\QuotationBarang[] $quotationBarangs
  * @property \app\models\TipePembelian $tipePembelian
- * @property string $aliasModel
  */
 abstract class Barang extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -56,14 +55,15 @@ abstract class Barang extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
-            [['tipe_pembelian_id', 'nama', 'originalitas_id'], 'required'],
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
             [['tipe_pembelian_id', 'originalitas_id', 'default_satuan_id'], 'integer'],
+            [['nama'], 'required'],
             [['keterangan', 'photo', 'photo_thumbnail'], 'string'],
             [['initialize_stock_quantity', 'price_per_item_in_usd', 'price_per_item_in_idr'], 'number'],
             [['nama', 'merk_part_number'], 'string', 'max' => 255],
             [['part_number'], 'string', 'max' => 32],
-            [['ift_number'], 'string', 'max' => 128],
+            [['jameson_tools_number'], 'string', 'max' => 128],
             [['originalitas_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Originalitas::class, 'targetAttribute' => ['originalitas_id' => 'id']],
             [['default_satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['default_satuan_id' => 'id']],
             [['tipe_pembelian_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\TipePembelian::class, 'targetAttribute' => ['tipe_pembelian_id' => 'id']]
@@ -75,13 +75,13 @@ abstract class Barang extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'tipe_pembelian_id' => 'Tipe Pembelian ID',
             'nama' => 'Nama',
             'part_number' => 'Part Number',
             'keterangan' => 'Keterangan',
-            'ift_number' => 'Ift Number',
+            'jameson_tools_number' => 'Jameson Tools Number',
             'merk_part_number' => 'Merk Part Number',
             'originalitas_id' => 'Originalitas ID',
             'initialize_stock_quantity' => 'Initialize Stock Quantity',
@@ -90,7 +90,7 @@ abstract class Barang extends \yii\db\ActiveRecord
             'photo_thumbnail' => 'Photo Thumbnail',
             'price_per_item_in_usd' => 'Price Per Item In Usd',
             'price_per_item_in_idr' => 'Price Per Item In Idr',
-        ];
+        ]);
     }
 
     /**
@@ -98,7 +98,7 @@ abstract class Barang extends \yii\db\ActiveRecord
      */
     public function attributeHints()
     {
-        return array_merge(parent::attributeHints(), [
+        return ArrayHelper::merge(parent::attributeHints(), [
             'default_satuan_id' => 'Satuan utama yang dipakai dalam stock',
             'price_per_item_in_usd' => 'Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian',
             'price_per_item_in_idr' => 'Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian',
@@ -143,6 +143,14 @@ abstract class Barang extends \yii\db\ActiveRecord
     public function getHistoryLokasiBarangs()
     {
         return $this->hasMany(\app\models\HistoryLokasiBarang::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvoiceDetails()
+    {
+        return $this->hasMany(\app\models\InvoiceDetail::class, ['barang_id' => 'id']);
     }
 
     /**
@@ -193,16 +201,12 @@ abstract class Barang extends \yii\db\ActiveRecord
         return $this->hasOne(\app\models\TipePembelian::class, ['id' => 'tipe_pembelian_id']);
     }
 
-
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\BarangQuery the active query used by this AR class.
+     * @return BarangQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\BarangQuery(get_called_class());
+        return new BarangQuery(static::class);
     }
-
-
 }

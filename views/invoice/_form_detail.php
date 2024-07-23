@@ -3,6 +3,7 @@
 /* @var $form \yii\base\Widget|\yii\bootstrap5\ActiveForm */
 /* @var $this \yii\web\View */
 /* @var $model \app\models\Invoice|string|\yii\db\ActiveRecord */
+
 /* @var $modelsDetail \app\models\InvoiceDetail|string */
 
 use app\models\Barang;
@@ -13,6 +14,7 @@ use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 
 ?>
 
@@ -62,14 +64,36 @@ use yii\helpers\Url;
                         <i class="bi bi-arrow-right-short"></i>
                     </td>
 
-                    <td><?= $form->field($modelDetail, "[$i]barang_id", ['template' =>
-                            '{input}{error}{hint}', 'options' => ['class' => null]]) ->widget(Select2::class, [
-                            'data' => Barang::find()->map(),
-                            'options' => [
-                                'prompt' => '= Pilih Salah Satu =',
-                                'class' => 'form-control barang'
-                            ],
-                        ]); ?></td>
+                    <td><?php
+
+                        $data = [];
+                        echo $form->field($modelDetail, "[$i]barang_id", ['template' =>
+                            '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class,
+                            [
+                                'data' =>$data,
+                                'options' => [
+                                    'prompt' => '= Pilih Salah Satu =',
+                                    'class' => 'form-control barang'
+                                ],
+                                'pluginOptions' => [
+                                    'width' => '100%',
+                                    'allowClear' => true,
+                                    'minimumInputLength' => 3,
+                                    'language' => [
+                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                    ],
+                                    'ajax' => [
+                                        'url' => ['/barang/find-by-id'],
+                                        'dataType' => 'json',
+                                        'data' => new JsExpression(' function(params) { return { q:params.term};}')
+                                    ],
+                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                                ],
+                            ]);
+                    ?>
+                    </td>
 
                     <td>
                         <?= $form->field($modelDetail, "[$i]quantity", [

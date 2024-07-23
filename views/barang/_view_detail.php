@@ -2,6 +2,7 @@
 
 
 /* @var $this View */
+/* @var $model \app\models\Barang|string|\yii\db\ActiveRecord */
 
 use kartik\grid\GridView;
 use kartik\grid\SerialColumn;
@@ -26,29 +27,8 @@ use yii\web\View;
                ],
                [
                   'class' => '\yii\grid\DataColumn',
-                  'attribute' => 'vendor_id',
-                  'value' => 'vendor.nama'
-               ],
-               [
-                  'class' => '\yii\grid\DataColumn',
                   'attribute' => 'satuan_id',
                   'value' => 'satuan.nama'
-               ],
-               [
-                  'class' => '\yii\grid\DataColumn',
-                  'attribute' => 'harga_beli',
-                  'format' => ['decimal', 2],
-                  'contentOptions' => [
-                     'class' => 'text-end'
-                  ]
-               ],
-               [
-                  'class' => '\yii\grid\DataColumn',
-                  'attribute' => 'harga_jual',
-                  'format' => ['decimal', 2],
-                  'contentOptions' => [
-                     'class' => 'text-end'
-                  ]
                ],
             ]
          ]) :

@@ -41,47 +41,7 @@ class BarangSearch extends Barang
     */
    public function search(array $params): ActiveDataProvider
    {
-      $query = Barang::find()
-         ->select([
-            'id' => 'b.id',
-            'nama' => 'b.nama',
-            'part_number' => 'b.part_number',
-            'merk_part_number' => 'b.merk_part_number',
-            'originalitasNama' => 'originalitas.nama',
-            'tipePembelianNama' => 'tipe_pembelian.nama',
-            'tipe_pembelian_id' => 'tipe_pembelian_id',
-            'originalitas_id' => 'b.originalitas_id',
-            'keterangan' => 'b.keterangan',
-            'satuanHarga' => new Expression("
-                     JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'vendor', card.nama,
-                            'satuan', satuan.nama,
-                            'harga_beli' , harga_beli,
-                            'harga_jual' , harga_jual
-                        )
-                    )
-                "),
-            'photo' => 'b.photo',
-            'photo_thumbnail' => 'b.photo_thumbnail',
-         ])
-         ->alias('b')
-         ->joinWith(['barangSatuans' => function ($model) {
-            /** @var BarangSatuan $model */
-            $model->alias('bs')
-               ->joinWith('satuan', false)
-               ->joinWith('vendor', false);
-         }], false)
-         ->joinWith('originalitas', false)
-         ->joinWith('tipePembelian', false)
-         ->where([
-            "IN", 'tipe_pembelian_id', [
-               TipePembelianEnum::STOCK->value,
-               TipePembelianEnum::PERLENGKAPAN->value,
-               TipePembelianEnum::INVENTARIS->value,
-            ]
-         ])
-         ->groupBy('b.id');
+      $query = Barang::find();
 
       $dataProvider = new ActiveDataProvider([
          'query' => $query,
@@ -102,15 +62,12 @@ class BarangSearch extends Barang
 
       $query->andFilterWhere([
          'id' => $this->id,
-         'originalitas_id' => $this->originalitas_id,
          'tipe_pembelian_id' => $this->tipe_pembelian_id,
       ]);
 
       $query
-         ->andFilterWhere(['like', 'b.nama', $this->nama])
-         ->andFilterWhere(['like', 'b.part_number', $this->part_number])
-         ->andFilterWhere(['like', 'b.merk_part_number', $this->part_number])
-         ->andFilterWhere(['like', 'b.ift_number', $this->part_number]);
+         ->andFilterWhere(['like', 'nama', $this->nama])
+      ;
 
       return $dataProvider;
    }

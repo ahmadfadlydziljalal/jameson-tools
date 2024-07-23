@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\BarangSatuanQuery;
 
 /**
  * This is the base-model class for table "barang_satuan".
@@ -20,12 +21,9 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\Barang $barang
  * @property \app\models\Satuan $satuan
  * @property \app\models\Card $vendor
- * @property string $aliasModel
  */
 abstract class BarangSatuan extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -40,9 +38,10 @@ abstract class BarangSatuan extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
-            [['vendor_id', 'satuan_id'], 'required'],
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
             [['vendor_id', 'barang_id', 'satuan_id'], 'integer'],
+            [['satuan_id'], 'required'],
             [['harga_beli', 'harga_jual'], 'number'],
             [['barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Barang::class, 'targetAttribute' => ['barang_id' => 'id']],
             [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']],
@@ -55,14 +54,14 @@ abstract class BarangSatuan extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'vendor_id' => 'Vendor ID',
             'barang_id' => 'Barang ID',
             'satuan_id' => 'Satuan ID',
             'harga_beli' => 'Harga Beli',
             'harga_jual' => 'Harga Jual',
-        ];
+        ]);
     }
 
     /**
@@ -89,16 +88,12 @@ abstract class BarangSatuan extends \yii\db\ActiveRecord
         return $this->hasOne(\app\models\Card::class, ['id' => 'vendor_id']);
     }
 
-
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\BarangSatuanQuery the active query used by this AR class.
+     * @return BarangSatuanQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\BarangSatuanQuery(get_called_class());
+        return new BarangSatuanQuery(static::class);
     }
-
-
 }
