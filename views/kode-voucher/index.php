@@ -11,7 +11,7 @@ $this->title = 'Kode Voucher';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="kode-voucher-index">
+<div class="kode-voucher-index d-flex flex-column gap-3">
 
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>

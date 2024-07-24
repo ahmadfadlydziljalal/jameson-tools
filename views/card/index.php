@@ -12,14 +12,16 @@ $this->title = 'Card';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="card-index">
+<div class="card-index d-flex flex-column gap-3">
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
-            <?= $this->render('_search', ['model' => $searchModel]) ?>
+            <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
+
+    <?= $this->render('_search', ['model' => $searchModel]) ?>
 
     <?php try {
 

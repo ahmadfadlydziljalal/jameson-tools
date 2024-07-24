@@ -213,4 +213,11 @@ class CardController extends Controller
       $customerId = Yii::$app->request->post('customerId');
       return CardPersonInCharge::find()->picAsAttendant($customerId);
    }
+
+    public function actionFindById($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Card::find()->liveSearchById($q, $id);
+    }
+
 }

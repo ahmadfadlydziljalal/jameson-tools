@@ -1,5 +1,6 @@
 <?php
 
+use app\enums\TextLinkEnum;
 use kartik\bs5dropdown\ButtonDropdown;
 use mdm\admin\components\Helper;
 use yii\helpers\Html;
@@ -42,18 +43,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'encodeLabel' => false
             ]); ?>
 
-            <?= Html::a('<i class="bi bi-printer"></i> Export to PDF', ['bukti-pengeluaran-buku-bank/export-to-pdf', 'id' => $model->id], [
+            <?= Html::a(TextLinkEnum::PRINT->value, ['bukti-pengeluaran-buku-bank/export-to-pdf', 'id' => $model->id], [
                 'class' => 'btn btn-success',
                 'target' => '_blank'
             ]) ?>
 
-            <?= Html::a('<i class="bi bi-pencil"></i> Update', $model->getUpdateUrl(), [
+            <?= Html::a(TextLinkEnum::UPDATE->value, $model->getUpdateUrl(), [
                 'class' => 'btn btn-outline-primary',
             ]) ?>
 
             <?php
             if (Helper::checkRoute('delete')) :
-                echo Html::a('Hapus', ['delete', 'id' => $model->id], [
+                echo Html::a('Hapus',  $model->getDeleteUrl() , [
                     'class' => 'btn btn-outline-danger',
                     'data' => [
                         'confirm' => 'Are you sure you want to delete this item?',
@@ -62,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]);
             endif;
             ?>
+
         </div>
     </div>
 
@@ -73,6 +75,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'reference_number',
             [
+                'attribute' => 'vendor_id',
+                'value' => $model->vendor->nama,
+            ],
+            [
+                'attribute' => 'vendor_rekening_id',
+                'value' => $model->vendorRekening?->nama_bank,
+            ],
+            [
                 'attribute' => 'rekening_saya_id',
                 'value' => $model->rekeningSaya->atas_nama,
                 'format' => 'nText',
@@ -81,14 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'jenis_transfer_id',
                 'value' => $model->jenisTransfer->name,
             ],
-            [
-                'attribute' => 'vendor_id',
-                'value' => $model->vendor->nama,
-            ],
-            [
-                'attribute' => 'vendor_rekening_id',
-                'value' => $model->vendorRekening?->nama_bank,
-            ],
+
             'nomor_bukti_transaksi',
             'tanggal_transaksi:date',
             'keterangan:ntext',

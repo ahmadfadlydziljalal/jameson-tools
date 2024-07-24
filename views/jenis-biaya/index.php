@@ -11,9 +11,9 @@ $this->title = 'Jenis Biaya';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="jenis-biaya-index">
+<div class="jenis-biaya-index d-flex flex-column gap-3">
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex justify-content-between align-items-center">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
             <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>'.' Tambah', ['create'], ['class' => 'btn btn-success']) ?>

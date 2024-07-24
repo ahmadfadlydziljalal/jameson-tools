@@ -2,6 +2,7 @@
 
 namespace app\models\search;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Invoice;
@@ -62,8 +63,7 @@ class InvoiceSearch extends Invoice
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'customer_id' => $this->customer_id,
-            'tanggal_invoice' => $this->tanggal_invoice,
+            'invoice.customer_id' => $this->customer_id,
             'nomor_rekening_tagihan_id' => $this->nomor_rekening_tagihan_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -71,7 +71,13 @@ class InvoiceSearch extends Invoice
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'reference_number', $this->reference_number]);
+        if(isset($this->tanggal_invoice) and !empty($this->tanggal_invoice)){
+            $query->andFilterWhere([
+                'tanggal_invoice' => Yii::$app->formatter->asDate($this->tanggal_invoice, 'php:Y-m-d'),
+            ]);
+        }
+
+        $query->andFilterWhere(['like', 'invoice.reference_number', $this->reference_number]);
 
         return $dataProvider;
     }

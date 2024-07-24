@@ -29,7 +29,6 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'category',
         'value' => function ($model) {
-
             return $model->category ?
                 Inflector::camel2words(JenisBiayaCategoryEnum::tryFrom(intval($model->category))->name )
                 : ' ';
@@ -57,5 +56,6 @@ return [
     // ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'options'=>['style'=>'width:2px;'],
     ],
 ];   

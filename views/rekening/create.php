@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Rekening', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="rekening-create">
+<div class="rekening-create d-flex flex-column gap-3">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

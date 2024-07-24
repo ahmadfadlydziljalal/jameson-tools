@@ -309,11 +309,17 @@ class BarangController extends Controller
         return $this->redirect(['barang/view', 'id' => $id]);
     }
 
+    /**
+     * @param $q
+     * @param array $id
+     * @return array[]
+     */
     public function actionFindById($q = null, array $id = [])
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return Barang::find()->liveSearchById($q, $id);
     }
+
     /**
      * Finds the Barang model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

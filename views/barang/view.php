@@ -18,21 +18,21 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1><?= Html::encode($this->title) ?></h1>
         <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
 
-           <?= Html::a('Kembali', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
-           <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
-           <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
-           <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
-           <?php
-           if (Helper::checkRoute('delete')) :
-              echo Html::a('Hapus', ['delete', 'id' => $model->id], [
-                 'class' => 'btn btn-outline-danger',
-                 'data' => [
-                    'confirm' => 'Are you sure you want to delete this item?',
-                    'method' => 'post',
-                 ],
-              ]);
-           endif;
-           ?>
+            <?= Html::a('Kembali', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
+            <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
+            <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
+            <?php
+            if (Helper::checkRoute('delete')) :
+                echo Html::a('Hapus', ['delete', 'id' => $model->id], [
+                    'class' => 'btn btn-outline-danger',
+                    'data' => [
+                        'confirm' => 'Are you sure you want to delete this item?',
+                        'method' => 'post',
+                    ],
+                ]);
+            endif;
+            ?>
         </div>
     </div>
 
@@ -40,17 +40,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
 
         <div class="col-12 col-lg-8">
-           <?php
-           echo DetailView::widget([
-              'model' => $model,
-              'options' => [
-                 'class' => 'table table-bordered table-detail-view'
-              ],
-              'attributes' => [
-                 'nama',
-              ],
-           ]);
-           ?>
+            <?php
+            echo DetailView::widget([
+                'model' => $model,
+                'options' => [
+                    'class' => 'table table-bordered table-detail-view'
+                ],
+                'attributes' => [
+                    'nama',
+                    [
+                        'attribute' => 'price_per_item_in_idr',
+                        'format' => ['decimal', 2],
+                    ],
+                    [
+                        'attribute' => 'price_per_item_in_idr',
+                        'value' => Yii::$app->formatter->asSpellout($model->price_per_item_in_idr),
+                    ],
+                ],
+            ]);
+            ?>
         </div>
         <div class="col-12 col-lg-4">
 
@@ -59,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 
-   <?= $this->render('_view_detail', ['model' => $model]) ?>
+    <?= $this->render('_view_detail', ['model' => $model]) ?>
 
 
 </div>

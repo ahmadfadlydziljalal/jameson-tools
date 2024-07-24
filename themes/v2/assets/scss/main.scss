@@ -1,10 +1,7 @@
 @import "vars";
-
 @import "./../../../../vendor/bower-asset/bootstrap/scss/bootstrap";
-// @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-// --bs-body-font-family: 'Roboto', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap');
 
-@import url("https://fonts.googleapis.com/css2?family=Reddit+Mono&display=swap");
 :root {
-  --bs-body-font-family: "Reddit Mono", monospace;
+  --bs-body-font-family:"JetBrains Mono", monospace;
 }

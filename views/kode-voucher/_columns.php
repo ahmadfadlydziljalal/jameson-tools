@@ -1,4 +1,7 @@
 <?php
+
+/* @var $this \yii\web\View */
+
 return [
     [
         'class' => 'yii\grid\SerialColumn',
@@ -45,5 +48,6 @@ return [
     // ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'options' => ['width' => '2px'],
     ],
 ];   

@@ -22,3 +22,15 @@ create table `log`
    key `idx_log_level` (`level`),
    key `idx_log_category` (`category`)
 ) engine InnoDB;
+
+create table jameson_tools_support.session
+(
+    id         char(64) not null
+        primary key,
+    expire     int      null,
+    data       blob     null,
+    user_id    int      null,
+    last_write int      null
+)
+    charset = utf8;
+

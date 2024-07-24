@@ -24,7 +24,6 @@ use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\StringHelper;
-use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

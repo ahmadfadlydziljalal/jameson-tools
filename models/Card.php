@@ -31,15 +31,21 @@ class Card extends BaseCard
    public ?array $cardBelongsTypesForm = [];
    public ?string $cardTypeName = null;
 
-   public function behaviors()
-   {
-      return ArrayHelper::merge(
-         parent::behaviors(),
-         [
-            # custom behaviors
-         ]
-      );
-   }
+    public function behaviors(): array
+    {
+        return ArrayHelper::merge(
+            parent::behaviors(),
+            [
+
+                [
+                    'class' => 'mdm\autonumber\Behavior',
+                    'attribute' => 'kode', // required
+                    'value' =>  date('Y') . '-'. '?', // format auto number. '?' will be replaced with generated number
+                    'digit' => 4
+                ],
+            ]
+        );
+    }
 
    public function rules()
    {

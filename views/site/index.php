@@ -11,7 +11,91 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="site-index d-flex flex-column gap-3">
 
+    <div class="card">
+        <div class="card-header">Rabu, 24 July 2024</div>
+        <div class="card-body">
 
+            <p class="lead">Bukti Pengeluaran Buku Bank </p>
+            <ul>
+                <li><span class="badge text-bg-danger">Bug</span> Switching kasbon_request to cash_advance(panjar) on update action<span class="badge text-bg-success">DONE</span></li>
+            </ul>
+            <p class="lead">Job Order </p>
+
+            <ul>
+                <li>Halaman view</li>
+                <li>Halaman Index
+                    <ul>
+                        <li>Indikator kasbon belum pindah ke panjar</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p class="lead">Head logo untuk dokumen PDF </p>
+            <ul>
+                <li>Invoice <span class="badge text-bg-success">DONE</span></li>
+            </ul>
+
+            <p class="lead">Fungsi fungsi search pada setiap gridview</p>
+            <ul>
+                <li>
+                    Invoice <span class="badge text-bg-success">DONE</span>
+                    <ol>
+                        <li>Reference number</li>
+                        <li>Customer ID</li>
+                        <li>Tanggal Invoice</li>
+                        <li>Rekening</li>
+                    </ol>
+                </li>
+                <li>
+                    Job Order <span class="badge text-bg-success">DONE</span>
+                    <ol>
+                        <li>Reference number</li>
+                        <li>Main Vendor ID</li>
+                        <li>Main Customer ID</li>
+                    </ol>
+                </li>
+                <li>Setoran Kasir <span class="badge text-bg-success">DONE</span>
+                    <ol>
+                        <li>Reference number</li>
+                        <li>Tanggal Setoran</li>
+                        <li>Cashier ID</li>
+                        <li>Staff nam</li>
+                    </ol>
+                </li>
+            </ul>
+
+            <p class="lead">Barang</p>
+            <ul>
+                <li>Display harga <span class="badge text-bg-success">DONE</span></li>
+            </ul>
+
+            <p class="lead">Card</p>
+            <ul>
+                <li>Auto generate code card <span class="badge text-bg-success">DONE</span></li>
+                <li>Remove Equipment <span class="badge text-bg-success">DONE</span></li>
+            </ul>
+
+            <p class="lead">UI</p>
+            <ul>
+                <li>Card Type <span class="badge text-bg-success">DONE</span></li>
+                <li>Cashier <span class="badge text-bg-success">DONE</span></li>
+                <li>Jenis Biaya <span class="badge text-bg-success">DONE</span></li>
+                <li>Jenis Pendapatan <span class="badge text-bg-success">DONE</span></li>
+                <li>Kode Voucher <span class="badge text-bg-success">DONE</span></li>
+                <li>Petty Cash <span class="badge text-bg-success">DONE</span></li>
+                <li>Rekening <span class="badge text-bg-success">DONE</span></li>
+                <li>Satuan <span class="badge text-bg-success">DONE</span></li>
+            </ul>
+
+            <p class="lead">Reporting</p>
+            <ul>
+                <li>Invoice belum lunas</li>
+                <li>Invoice per customer</li>
+                <li>Invoice per periode</li>
+                <li>Laporan harian penerimaan dan pengeluaran toko</li>
+            </ul>
+        </div>
+    </div>
     <div class="card">
         <div class="card-header">Selasa, 23 July 2024</div>
         <div class="card-body">
@@ -32,6 +116,11 @@ $this->params['breadcrumbs'][] = $this->title;
             Job Order > Petty Cash,
             <ul>
                 <li>Belum ada form edit <span class="badge text-bg-success">DONE</span></li>
+            </ul>
+
+            <p class="lead">Barang</p>
+            <ul>
+                <li>Mulai rapikan data barang, bisa lihat backup-an data dari tahun 2022</li>
             </ul>
 
         </div>
@@ -70,32 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
     </div>
-    <div class="card">
-        <div class="card-header">Senin-Selasa, 21-22 July 2024</div>
-        <div class="card-body">
-            <p class="lead">Reporting</p>
-            <ul>
-                <li>Laporan harian penerimaan dan pengeluaran toko</li>
-                <li>Invoice belum lunas</li>
-                <li>Invoice per customer</li>
-                <li>Invoice per periode</li>
 
-            </ul>
-
-            <p class="lead">Barang</p>
-            <ul>
-                <li>Mulai rapikan data barang, bisa lihat backup-an data dari tahun 2022</li>
-            </ul>
-
-            <p class="lead">Fungsi fungsi search pada setiap gridview</p>
-            <ul>
-                <li>Invoice</li>
-                <li>Job Order</li>
-                <li>Setoran Kasir</li>
-                <li>dst.</li>
-            </ul>
-        </div>
-    </div>
 
     <div class="card">
         <div class="card-header">Jumat, 19 July 2024</div>

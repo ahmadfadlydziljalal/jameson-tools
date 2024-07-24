@@ -2,8 +2,12 @@
 
 /* @var $this yii\web\View */
 
+use app\models\Card;
+use kartik\grid\GridViewInterface;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 
 return [
     [
@@ -26,7 +30,7 @@ return [
         'value' => 'bukuBank.nomor_voucher'
     ],
     [
-        'class' => '\yii\grid\DataColumn',
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'vendor_id',
         'format' => 'text',
         'value' => 'vendor.nama',
@@ -38,6 +42,30 @@ return [
         ],
         'filterOptions' => [
             'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->vendor_id)
+                ? Card::findOne($searchModel->vendor_id)->nama
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '100%',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to(['card/find-by-id']),
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
         ]
     ],
     [

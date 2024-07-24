@@ -4,6 +4,7 @@ namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
 use app\models\JobOrderDetailCashAdvance;
+use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 use yii\web\NotFoundHttpException;
@@ -34,15 +35,22 @@ class JobOrderDetailCashAdvanceQuery extends ActiveQuery
 
     public function notYetRegistered(): array
     {
-        $data = parent::select([
-            'id' => 'job_order_detail_cash_advance.id',
-            'referenceNumber' =>new Expression("CONCAT('Kasbon ke ', job_order_detail_cash_advance.order ,': ' ,  job_order.reference_number)")
-        ])
-            ->joinWith('jobOrder')
-            ->where(['is', 'job_order_detail_cash_advance.bukti_pengeluaran_petty_cash_id' , NULL])
-            ->andWhere(['is', 'job_order_detail_cash_advance.bukti_pengeluaran_buku_bank_id' , NULL])
+        $data = parent::joinWith('jobOrder')
+            ->where(['is', 'job_order_detail_cash_advance.bukti_pengeluaran_petty_cash_id', NULL])
+            ->andWhere(['is', 'job_order_detail_cash_advance.bukti_pengeluaran_buku_bank_id', NULL])
             ->all();
 
-        return ArrayHelper::map($data, 'id', 'referenceNumber');
+        return ArrayHelper::map($data, 'id', function ($model) {
+            /** @var JobOrderDetailCashAdvance $model */
+            if ($model->bukti_pengeluaran_petty_cash_id) {
+                return 'Kasbon ke ' . $model->order .
+                    ': ' . $model->jobOrder->reference_number .
+                    ', Panjar ' . Yii::$app->formatter->asDecimal($model->cash_advance, 2);
+            }
+
+            return 'Kasbon ke ' . $model->order .
+                ': ' . $model->jobOrder->reference_number .
+                ', Request: ' . Yii::$app->formatter->asDecimal($model->kasbon_request, 2);
+        });
     }
 }

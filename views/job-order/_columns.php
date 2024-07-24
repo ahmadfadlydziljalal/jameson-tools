@@ -2,7 +2,11 @@
 
 /* @var $this \yii\web\View */
 
+use app\models\Card;
+use kartik\grid\GridViewInterface;
 use yii\bootstrap5\Html;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 
 ?>
 <?php
@@ -29,22 +33,72 @@ return [
         }
     ],
     [
-        'class' => '\yii\grid\DataColumn',
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'main_vendor_id',
         'format' => 'text',
-        'value' => 'mainVendor.nama'
+        'value' => 'mainVendor.nama',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->main_vendor_id)
+                ? Card::findOne($searchModel->main_vendor_id)->nama
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '100%',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to(['card/find-by-id']),
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
     ],
     [
-        'class' => '\yii\grid\DataColumn',
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'main_customer_id',
         'format' => 'text',
-        'value' => 'mainCustomer.nama'
+        'value' => 'mainCustomer.nama',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->main_customer_id)
+                ? Card::findOne($searchModel->main_customer_id)->nama
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '100%',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to(['card/find-by-id']),
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
     ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'totalKasbonRequest',
         'format' => ['decimal', 2],
-        'contentOptions' => ['class' => 'text-end'],
+        'contentOptions' => function($model){
+            return !empty($model->totalKasbonRequest) ? ['class' => 'text-end text-danger'] : ['class' => 'text-end'];
+        },
     ],
     [
         'class' => '\yii\grid\DataColumn',

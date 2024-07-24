@@ -83,7 +83,7 @@ use yii\web\JsExpression;
                                         'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
                                     ],
                                     'ajax' => [
-                                        'url' => ['/barang/find-by-id'],
+                                        'url' => ['/barang/find-by-id'], /* @see \app\controllers\BarangController::actionFindById() */
                                         'dataType' => 'json',
                                         'data' => new JsExpression(' function(params) { return { q:params.term};}')
                                     ],

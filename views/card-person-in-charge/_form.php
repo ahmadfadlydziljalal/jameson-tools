@@ -3,6 +3,7 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html as Bootstrap5Html;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\CardPersonInCharge */
@@ -45,7 +46,7 @@ use yii\helpers\Html;
             <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
             <div class="d-flex mt-3 justify-content-between">
-                <?= Html::a(' Tutup', ['index'], [
+                <?= Html::a(' Close', Url::to(['/card/'. $model->card_id]), [
                     'class' => 'btn btn-secondary',
                     'type' => 'button'
                 ]) ?>

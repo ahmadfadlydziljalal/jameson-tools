@@ -4,16 +4,20 @@
 /* @see app\controllers\BuktiPengeluaranBukuBankController::actionCreateByCashAdvance() */
 
 use yii\helpers\Html;
-$this->title = 'Tambah Bukti Pengeluaran Buku Bank By Cash Advance / Kasbon';
+$this->title = 'Tambah Bukti Pengeluaran';
 $this->params['breadcrumbs'][] = ['label' => 'Bukti Pengeluaran Buku Bank', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="bukti-pengeluaran-buku-bank-create">
+<div class="bukti-pengeluaran-buku-bank-create d-flex flex-column gap-3">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="d-flex justify-content-between flex-wrap align-items-center">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <span class="badge text-bg-info"> Scenario By Cash Advance / Kasbon</span>
+    </div>
 
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
+
 </div>
