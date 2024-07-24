@@ -55,6 +55,7 @@ use \app\models\active_queries\CardQuery;
  * @property \app\models\MaterialRequisition[] $materialRequisitions
  * @property \app\models\MaterialRequisition[] $materialRequisitions0
  * @property \app\models\MaterialRequisition[] $materialRequisitions1
+ * @property \app\models\PettyCash $pettyCash
  * @property \app\models\PurchaseOrder[] $purchaseOrders
  * @property \app\models\PurchaseOrder[] $purchaseOrders0
  * @property \app\models\QuotationFormJobMekanik[] $quotationFormJobMekaniks
@@ -100,7 +101,7 @@ abstract class Card extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['nama', 'kode', 'alamat'], 'required'],
+            [['nama', 'alamat'], 'required'],
             [['mata_uang_id'], 'integer'],
             [['nama', 'alamat'], 'string', 'max' => 255],
             [['kode'], 'string', 'max' => 50],
@@ -374,6 +375,14 @@ abstract class Card extends \yii\db\ActiveRecord
     public function getMaterialRequisitions1()
     {
         return $this->hasMany(\app\models\MaterialRequisition::class, ['vendor_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPettyCash()
+    {
+        return $this->hasOne(\app\models\PettyCash::class, ['card_id' => 'id']);
     }
 
     /**

@@ -9,7 +9,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Rekening', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->atas_nama, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="rekening-update">
+<div class="rekening-update d-flex flex-column gap-3">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

@@ -9,17 +9,19 @@
 //$warning: #edca28;
 //$danger: #f41534;
 
-$page: #d4d2d1;
+$page: #ffffff;
 $body-bg: #eff3f8;
-$light: #d4d2d1;
-$white: #fff;
-$dark: #090e1e;
-$primary: #322c2b;
-$secondary: #6176fc;
-$info: #e4c59e;
-$success: #803d3b;
-$warning: #af8260;
-$danger: #f10503;
+
+$light: #e1e2e4;
+$white: #ffffff;
+$dark: #010409;
+
+$primary: #003f38;
+$secondary: #3a6a38;
+$info: #009b4a;
+$success: #009939;
+$warning: #ebc300;
+$danger: #ee0037;
 
 //$dark: rgba(24, 24, 24, 1);
 $dark-text: #fff;
@@ -39,23 +41,23 @@ $gray-800: #343a40;
 $gray-900: #212529;
 
 $theme-colors: (
-  "primary": $primary,
-  "danger": $danger,
-  "success": $success,
-  "info": $info,
-  "secondary": $secondary,
-  "warning": $warning,
-  "light": $light,
-  "dark": $dark,
-  "gray-100": $gray-100,
-  "gray-200": $gray-200,
-  "gray-300": $gray-300,
-  "gray-400": $gray-400,
-  "gray-500": $gray-500,
-  "gray-600": $gray-600,
-  "gray-700": $gray-700,
-  "gray-800": $gray-800,
-  "gray-900": $gray-900,
+        "primary": $primary,
+        "danger": $danger,
+        "success": $success,
+        "info": $info,
+        "secondary": $secondary,
+        "warning": $warning,
+        "light": $light,
+        "dark": $dark,
+        "gray-100": $gray-100,
+        "gray-200": $gray-200,
+        "gray-300": $gray-300,
+        "gray-400": $gray-400,
+        "gray-500": $gray-500,
+        "gray-600": $gray-600,
+        "gray-700": $gray-700,
+        "gray-800": $gray-800,
+        "gray-900": $gray-900,
 );
 
 $h1-font-size: 1.75rem;
@@ -66,7 +68,8 @@ $h5-font-size: 1rem;
 $h6-font-size: 0.25rem;
 
 $enable-gradients: false;
-$table-border-color: rgb(224, 224, 224, 1);
+//$table-border-color: rgb(224, 224, 224, 1);
+$table-border-color: $gray-400;
 $enable-caret: false;
 
 /* padding: .5rem 1rem; */

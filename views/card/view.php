@@ -23,7 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
-            <?= Html::a('Index Card', ['index'], ['class' => 'btn btn-outline-primary']) ?>
             <?= Html::a('Buat card lain', ['create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
@@ -126,59 +125,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <hr class="text-muted p-1 w-75"
         / >
-    </div>
-
-
-    <div class="row">
-        <div class="col-12">
-            <div class="mb-3">
-                <?= Html::a('<i class="bi bi-plus-circle"></i> Tambah Equipment', ['card-own-equipment/create', 'cardId' => $model->id], [
-                    'class' => 'btn btn-primary'
-                ]) ?>
-            </div>
-
-            <?= GridView::widget([
-                'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getCardOwnEquipments(),
-                    'pagination' => false
-                ]),
-                'layout' => '{items}',
-                'rowOptions' => [
-                    'style' => [
-                        'vertical-align' => 'middle'
-                    ],
-                ],
-                'columns' => [
-                    ['class' => SerialColumn::class],
-                    'nama',
-                    'lokasi:nText',
-                    'tanggal_produk:date',
-                    'serial_number',
-                    [
-                        'class' => 'app\components\grid\ActionColumn',
-                        'template' => '{update} {delete}',
-                        'buttons' => [
-                            'update' => function ($url, $model, $key) {
-                                return Html::a(
-                                    '<i class="bi bi-pencil-fill"></i>',
-                                    ['/card-own-equipment/update', 'id' => $model->id]
-                                );
-                            },
-                            'delete' => function ($url, $model) {
-                                return Html::a(
-                                    '<i class="bi bi-trash-fill"></i>',
-                                    ['/card-own-equipment/delete', 'id' => $model->id],
-                                    [
-                                        'data-method' => 'post',
-                                        'data-confirm' => 'Are you sure to delete this ' . $model->nama . ' ?'
-                                    ]
-                                );
-                            },
-                        ],
-                    ]
-                ]
-            ]) ?>
-        </div>
     </div>
 
 </div>

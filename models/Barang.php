@@ -63,6 +63,7 @@ class Barang extends BaseBarang
             'merk_part_number' => 'Merk Part Number',
             'originalitas_id' => 'Originalitas',
             'satuanNama' => 'U.O.M',
+             'price_per_item_in_idr' => 'Harga (IDR)'
          ]
       );
    }

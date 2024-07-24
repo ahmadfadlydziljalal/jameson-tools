@@ -36,7 +36,7 @@ use yii\helpers\Html;
         ]*/
     ]); ?>
 
-    <div class="d-flex flex-column mt-0" style="gap: 1rem">
+    <div class="d-flex flex-column">
 
         <div class="form-master">
             <div class="row">

@@ -3,6 +3,8 @@
 /* @var $this yii\web\View */
 /** @var app\models\SetoranKasir $model */
 
+use kartik\date\DatePicker;
+use kartik\grid\GridViewInterface;
 use yii\bootstrap5\Html;
 
 return [
@@ -19,15 +21,28 @@ return [
         'attribute'=>'reference_number',
     ],
     [
-        'class'=>'\yii\grid\DataColumn',
+        'class'=>'\kartik\grid\DataColumn',
         'attribute'=>'tanggal_setoran',
         'format'=>'date',
+        'filterType' => GridViewInterface::FILTER_DATE,
+        'filterWidgetOptions' => [
+            'type' => DatePicker::TYPE_INPUT,
+        ],
     ],
     [
-        'class'=>'\yii\grid\DataColumn',
+        'class'=>'\kartik\grid\DataColumn',
         'attribute'=>'cashier_id',
         'format'=>'text',
-        'value'=> 'cashier.name'
+        'value'=> 'cashier.name',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'data' => \app\models\Cashier::find()->map(),
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'allowClear' => true,
+                'width' => '100%',
+            ]
+        ]
     ],
     [
         'class'=>'\yii\grid\DataColumn',
@@ -38,7 +53,7 @@ return [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'buktiPenerimaanBukuBankReferenceNumber',
         'format' => 'html',
-        'header' => 'BB Ref.',
+        'header' => 'Bukti Penerimaan',
         'value' => fn($model) => !$model->buktiPenerimaanBukuBank ? Html::tag('span', 'Belum ada', ['class' => 'badge bg-danger']) :
             $model->buktiPenerimaanBukuBank->reference_number
         ,

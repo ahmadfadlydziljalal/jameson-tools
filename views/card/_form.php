@@ -44,8 +44,6 @@ use yii\helpers\Html;
                 'autofocus' => 'autofocus'
             ]) ?>
 
-            <?= $form->field($model, 'kode')->textInput(['maxlength' => true]) ?>
-
             <?= $form->field($model, 'cardBelongsTypesForm')->widget(Select2::class, [
                 'data' => CardType::find()->map(),
                 'options' => [

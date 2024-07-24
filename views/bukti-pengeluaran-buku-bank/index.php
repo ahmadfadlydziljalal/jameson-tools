@@ -13,9 +13,9 @@ $this->title = 'Bukti Pengeluaran Buku Bank';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="bukti-pengeluaran-buku-bank-index">
+<div class="bukti-pengeluaran-buku-bank-index d-flex flex-column gap-3">
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex justify-content-between align-items-center">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
             <?= ButtonDropdown::widget([

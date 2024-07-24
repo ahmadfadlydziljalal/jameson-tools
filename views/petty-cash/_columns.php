@@ -46,5 +46,6 @@ return [
     // ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'options' => ['style' => 'width:2px;'],
     ],
 ];   

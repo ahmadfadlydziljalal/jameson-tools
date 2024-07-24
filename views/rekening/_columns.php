@@ -1,14 +1,15 @@
 <?php
 
-/* @var $this \yii\web\View */
+/* @var $this View */
+
+use app\models\Card;
+use kartik\grid\GridViewInterface;
+use yii\helpers\Url;
+use yii\web\JsExpression;
+use yii\web\View;
+
 ?>
 <?php
-
-use app\components\helpers\ArrayHelper;
-use yii\data\ArrayDataProvider;
-use yii\grid\GridView;
-use yii\grid\SerialColumn;
-use yii\helpers\Json;
 
 return [
     [
@@ -20,11 +21,34 @@ return [
     // 'format'=>'text',
     // ],
     [
-        'class' => '\yii\grid\DataColumn',
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'card_id',
         'format' => 'raw',
         'value' => 'card.nama',
-        'filter' => \app\models\Card::find()->map()
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->card_id)
+                ? Card::findOne($searchModel->card_id)->nama
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '100%',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to(['card/find-by-id']),
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
     ],
     [
         'class' => '\yii\grid\DataColumn',

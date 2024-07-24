@@ -12,10 +12,14 @@ use yii\web\View;
 
 <div class="content-section">
     <h1 class="text-center">Bukti Pengeluaran Buku Bank</h1>
-    <p>Reference: <?= $model->reference_number ?></p>
+    <div>
+        Reference: <?= $model->reference_number ?>
+        <?php if($model->bukuBank): ?>
+            <h2><?= $model->bukuBank->nomor_voucher ?></h2>
+        <?php endif ?>
+    </div>
 
     <div style="width: 100%">
-
         <div style="width: 48%; float: left">
             <strong><?= $model->jenisTransfer->name ?></strong> dari : <?= nl2br($model->rekeningSaya->atas_nama) ?>
         </div>
@@ -27,16 +31,11 @@ use yii\web\View;
 
             <p class="m-0"><strong>Nomor Transaksi</strong>: <?= $model->nomor_bukti_transaksi ?></p>
         </div>
-
         <div style="clear: both"></div>
     </div>
-
 
     <?php echo $this->render('_view_2', [
         'model' => $model,
     ]); ?>
-
-
-
 
 </div>

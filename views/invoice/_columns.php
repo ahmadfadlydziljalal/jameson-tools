@@ -4,9 +4,14 @@
 
 /** @var Invoice $model */
 
+use app\models\Card;
 use app\models\Invoice;
+use app\models\Rekening;
+use kartik\date\DatePicker;
+use kartik\grid\GridViewInterface;
 use yii\bootstrap5\Html;
-use yii\helpers\StringHelper;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 
 
 return [
@@ -24,12 +29,36 @@ return [
         'format' => 'text',
     ],
     [
-        'class' => '\yii\grid\DataColumn',
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'customer_id',
         'format' => 'text',
         'value' => 'customer.nama',
         'contentOptions' => [
             'class' => 'text-wrap'
+        ],
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->customer_id)
+                ? Card::findOne($searchModel->customer_id)->nama
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '100%',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to(['card/find-by-id']),
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
         ]
     ],
     [
@@ -37,6 +66,10 @@ return [
         'attribute' => 'tanggal_invoice',
         'width' => '100px',
         'format' => 'date',
+        'filterType' => GridViewInterface::FILTER_DATE,
+        'filterWidgetOptions' => [
+            'type' => DatePicker::TYPE_INPUT,
+        ],
     ],
     [
         'class' => '\kartik\grid\DataColumn',
@@ -44,7 +77,15 @@ return [
         'header' => 'Rekening',
         'width' => '100px',
         'format' => 'text',
-        'value' => fn($model) => StringHelper::truncate($model->nomorRekeningTagihan->nama_bank, 20)
+        'value' => fn($model) => $model->nomorRekeningTagihan->nama_bank,
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'data' => Rekening::find()->mapOnlyTokoSaya('nama_bank'),
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ]
+        ]
     ],
     [
         'class' => '\kartik\grid\DataColumn',

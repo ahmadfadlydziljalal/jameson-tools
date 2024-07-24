@@ -59,13 +59,18 @@ class SetoranKasirSearch extends SetoranKasir
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'tanggal_setoran' => $this->tanggal_setoran,
             'cashier_id' => $this->cashier_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
+
+        if(isset($this->tanggal_setoran) and !empty($this->tanggal_setoran)){
+            $query->andFilterWhere([
+                'tanggal_setoran' => \Yii::$app->formatter->asDate($this->tanggal_setoran, 'php:Y-m-d'),
+            ]);
+        }
 
         $query->andFilterWhere(['like', 'staff_name', $this->staff_name]);
         $query->andFilterWhere(['like', 'reference_number', $this->reference_number]);

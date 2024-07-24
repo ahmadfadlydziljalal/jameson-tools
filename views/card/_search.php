@@ -34,8 +34,7 @@ use yii\helpers\Html;
         <div class="d-flex flex-row gap-1">
            <?= Html::submitButton(TextLinkEnum::SEARCH->value, ['class' => 'btn btn-primary']) ?>
             <div class="ms-auto">
-               <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset Filter', ['index'], ['class' => 'btn btn-primary']) ?>
-               <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah Card', ['create'], ['class' => 'btn btn-success']) ?>
+               <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset', ['index'], ['class' => 'btn btn-outline-primary', 'title' => 'Reset Filter']) ?>
             </div>
         </div>
     </div>

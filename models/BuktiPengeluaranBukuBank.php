@@ -7,6 +7,9 @@ use app\models\base\BuktiPengeluaranBukuBank as BaseBuktiPengeluaranBukuBank;
 use Throwable;
 use Yii;
 use yii\db\Exception;
+use yii\db\Expression;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bukti_pengeluaran_buku_bank".
@@ -114,6 +117,7 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             [[
                 'vendor_id',
                 'rekening_saya_id',
+                'jenis_transfer_id',
                 'nomor_bukti_transaksi',
                 'tanggal_transaksi',
                 'cashAdvances'
@@ -180,7 +184,7 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
     public function attributeLabels(): array
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'cashAdvances' => 'Kasbon-kasbon / Cash Advance',
+            'cashAdvances' => 'Kasbon-kasbon',
             'jenis_transfer_id' => 'Transfer',
             'nomorVoucher' => 'Voucher'
         ]);
@@ -209,6 +213,41 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
     public function saveForCashAdvances(): bool
     {
         if (!$this->validate()) return false;
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if ($flag = $this->save(false)) {
+                foreach ($this->cashAdvances as $cashAdvanceID) {
+                    if ($jobOrderDetailCashAdvance = JobOrderDetailCashAdvance::findOne($cashAdvanceID)) {
+                        if (!$flag) break;
+
+                        $jobOrderDetailCashAdvance->bukti_pengeluaran_buku_bank_id = $this->id;
+                        $flag = $jobOrderDetailCashAdvance->markAsPaidFromBuktiPengeluaranBukuBank($this->id);
+                    } else {
+                        $flag = false;
+                        break;
+                    }
+                }
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+        } catch (Exception $e) {
+            Yii::error($e->getMessage());
+            $transaction->rollBack();
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function updateForCashAdvances(): bool
+    {
+        if (!$this->validate()) return false;
 
         // update case
         $setNull = [];
@@ -223,9 +262,12 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             if ($flag = $this->save(false)) {
 
                 if (!empty($setNull)) {
-
-                    JobOrderDetailCashAdvance::updateAll(
-                        ['job_order_detail_cash_advance.bukti_pengeluaran_buku_bank_id' => null],
+                    /* nomor kasbon yang dihapus, kembalikan */
+                    JobOrderDetailCashAdvance::updateAll([
+                        'job_order_detail_cash_advance.bukti_pengeluaran_buku_bank_id' => null,
+                        'job_order_detail_cash_advance.kasbon_request' => new Expression('job_order_detail_cash_advance.cash_advance'),
+                        'job_order_detail_cash_advance.cash_advance' => 0,
+                    ],
                         ['id' => $setNull]
                     );
 
@@ -233,10 +275,14 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 
                 foreach ($this->cashAdvances as $cashAdvanceID) {
                     if ($jobOrderDetailCashAdvance = JobOrderDetailCashAdvance::findOne($cashAdvanceID)) {
+
                         if (!$flag) break;
 
-                        $jobOrderDetailCashAdvance->bukti_pengeluaran_buku_bank_id = $this->id;
-                        $flag = $jobOrderDetailCashAdvance->markAsPaidFromBuktiPengeluaranBukuBank($this->id);
+                        /*  yang belum ada aja yang di save dan di-pindahkan nominal-nya */
+                        if(!$jobOrderDetailCashAdvance->bukti_pengeluaran_buku_bank_id){
+                            $flag = $jobOrderDetailCashAdvance->markAsPaidFromBuktiPengeluaranBukuBank($this->id);
+                        }
+
                     } else {
                         $flag = false;
                         break;
@@ -402,6 +448,21 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             return  ['bukti-pengeluaran-buku-bank/update-by-petty-cash', 'id' => $this->id];
         }
         return '';
+    }
+
+    public function getDeleteUrl(): array
+    {
+
+        if ($this->jobOrderDetailCashAdvances) {
+            return ['bukti-pengeluaran-buku-bank/delete-by-cash-advance', 'id' => $this->id];
+        }
+        if ($this->jobOrderBills) {
+            return ['bukti-pengeluaran-buku-bank/delete-by-bill', 'id' => $this->id];
+        }
+        if($this->jobOrderDetailPettyCash){
+            return  ['bukti-pengeluaran-buku-bank/delete-by-petty-cash', 'id' => $this->id];
+        }
+        return ['delete', 'id' => $this->id];
     }
 
 
