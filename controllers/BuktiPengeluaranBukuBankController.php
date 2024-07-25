@@ -53,10 +53,20 @@ class BuktiPengeluaranBukuBankController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView(int $id): string
+    public function actionView(int $id): string|array
     {
+        $model = $this->findModel($id);
+
+        if ($this->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'title' => $model->reference_number,
+                'content' => $this->renderAjax('_view', ['model' => $model]),
+                'footer' => ''
+            ];
+        }
         return $this->render('view', [
-            'model' => $this->findModel($id)
+            'model' => $model,
         ]);
     }
 

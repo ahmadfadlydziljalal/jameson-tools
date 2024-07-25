@@ -12,10 +12,8 @@ $this->params['breadcrumbs'][] = ['label' => $model->nomor_voucher, 'url' => ['v
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 
-<div class="buku-bank-update">
-
+<div class="buku-bank-update d-flex flex-column gap-3">
     <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

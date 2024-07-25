@@ -153,12 +153,12 @@ use yii\grid\SerialColumn;
         <tr>
             <th style="text-align: left">Saldo Akhir</th>
             <th class="text-end"
-                style="text-align: right; font-weight: bold"><?= Yii::$app->formatter->asDecimal($model->getSaldoAkhir(), 2) ?></th>
+                style="text-align: right; font-weight: bold"><?= Yii::$app->formatter->asDecimal($model->getEndingBalance(), 2) ?></th>
         </tr>
         <tr>
             <th colspan="2" style="text-align: left">
                 <p style="font-weight: bold">Terbilang: <br/>
-                    <?= Yii::$app->formatter->asSpellout($model->getSaldoAkhir()) ?>
+                    <?= Yii::$app->formatter->asSpellout($model->getEndingBalance()) ?>
                 </p>
             </th>
         </tr>

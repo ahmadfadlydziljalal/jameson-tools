@@ -3,7 +3,7 @@
 
 body {
   overflow-x: hidden;
-  background-color: vars.$light;
+  background-color: vars.$page;
   @include meta.load-css("header"); // top navigation
   main {
     padding-top: 56px;

@@ -4,7 +4,6 @@
 
 use app\models\BuktiPenerimaanBukuBank;
 use yii\helpers\Html;
-use yii\helpers\StringHelper;
 use yii\web\View;
 
 ?>
@@ -106,7 +105,7 @@ return [
         'format' => ['decimal', 2],
         'hAlign' => 'right',
         'contentOptions' => [
-            'class' => 'd-none d-lg-table-cell',
+            'class' => 'd-none d-lg-table-cell font-monospace',
         ],
         'headerOptions' => [
             'class' => 'd-none d-lg-table-cell',
@@ -121,6 +120,9 @@ return [
         'attribute' => 'jumlah_setor',
         'format' => ['decimal', 2],
         'hAlign' => 'right',
+        'contentOptions' => [
+            'class' => 'font-monospace',
+        ],
     ],
     [
         'class' => '\kartik\grid\DataColumn',

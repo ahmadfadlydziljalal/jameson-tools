@@ -9,10 +9,10 @@
 <div class="content-section">
     <!-- Header -->
     <div style="width: 100%; vertical-align: top">
-        <div class="mb-1" style=" float: left; width: 31%">
+        <div class="mb-1" style=" float: left; width: 69%">
             <p>Kepada Yth.<br/> <?= $model->customer->nama ?><br><?= $model->customer->alamat ?></p>
         </div>
-        <div class="mb-1" style=" float: right; width: 48%">
+        <div class="mb-1" style=" float: right; width: 30%">
             <p style="text-align: right">Jakarta, <?= Yii::$app->formatter->asDate($model->tanggal_invoice) ?></p>
         </div>
     </div>
@@ -47,7 +47,7 @@
         <?php /** @var \app\models\InvoiceDetail $invoiceDetail */
             foreach ($model->invoiceDetails as $key => $invoiceDetail):?>
                 <tr>
-                    <td><?= ($key + 1) ?></td>
+                    <td class="text-end"><?= ($key + 1) ?></td>
                     <td><?= $invoiceDetail->quantity ?></td>
                     <td><?= $invoiceDetail->satuan->nama ?></td>
                     <td><?= $invoiceDetail->barang->nama ?></td>
@@ -76,8 +76,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>Total</td>
-                <td><?= $model->getTotal(true) ?></td>
+                <td class="text-end">Total</td>
+                <td class="text-end"><?= $model->getTotal(true) ?></td>
             </tr>
         </tfoot>
 

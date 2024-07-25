@@ -7,7 +7,12 @@
 
 <div class="content-section">
     <h1 class="text-center">Bukti Penerimaan Buku Bank</h1>
-    <p>Reference: <?= $model->reference_number ?></p>
+    <div>
+        Reference: <?= $model->reference_number ?>
+        <?php if($model->bukuBank): ?>
+            <h2><?= $model->bukuBank->nomor_voucher ?></h2>
+        <?php endif ?>
+    </div>
 
     <?php if ($model->invoices) {
         echo $this->render('_view_invoices', [

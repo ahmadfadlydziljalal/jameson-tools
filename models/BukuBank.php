@@ -91,6 +91,7 @@ class BukuBank extends BaseBukuBank
                 'businessProcess' => 'Pengeluaran Buku Bank Lainnya',
                 'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
                 'data' => [
+                    'reference_number' =>$this->transaksiBukuBankLainnya->reference_number,
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisBiaya->name,
                     'nominal' => round($this->transaksiBukuBankLainnya->nominal, 2),
@@ -104,10 +105,10 @@ class BukuBank extends BaseBukuBank
                 'businessProcess' => 'Pendapatan Buku Bank Lainnya',
                 'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
                 'data' => [
+                    'reference_number' =>$this->transaksiBukuBankLainnya->reference_number,
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisPendapatan->name,
                     'nominal' => round($this->transaksiBukuBankLainnya->nominal, 2),
-
                 ]
             ];
         }
@@ -297,6 +298,14 @@ class BukuBank extends BaseBukuBank
         }
 
         return '';
+    }
+
+    public function getDeleteUrl(): array
+    {
+        if ($this->buktiPenerimaanPettyCash) {
+            return ['delete-with-mutasi-kas', 'id' => $this->id];
+        }
+        return ['delete', 'id' => $this->id];
     }
 
 }

@@ -5,12 +5,12 @@
 /* @var $kodeVoucher app\models\KodeVoucher */
 
 use yii\helpers\Html;
-$this->title = 'Tambah Buku Bank With Mutasi Kas '. $kodeVoucher->name;
+$this->title = 'Tambah Buku Bank With Mutasi Kas '. $kodeVoucher->singkatan;
 $this->params['breadcrumbs'][] = ['label' => 'Buku Bank', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="buku-bank-create">
+<div class="buku-bank-create d-flex flex-column gap-3">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

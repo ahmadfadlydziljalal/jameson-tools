@@ -66,7 +66,7 @@ return [
         'attribute'=>'total',
         'format'=>['decimal', 2],
         'contentOptions' => [
-            'class' => 'text-end'
+            'class' => 'text-end font-monospace'
         ]
     ],
     // [

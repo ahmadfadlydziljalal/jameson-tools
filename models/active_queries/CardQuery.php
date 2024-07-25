@@ -157,5 +157,18 @@ class CardQuery extends ActiveQuery
         return $out;
     }
 
+    public function onlyTokoSaya()
+    {
+        $q = parent::select('card.id as id, TRIM(card.nama) as nama')
+            ->joinWith(['cardBelongsTypes' => function ($cbt) {
+                $cbt->joinWith('cardType', false);
+            }], false);
+
+        $q->where([
+            'card_type.kode' => 'toko-saya'
+        ])->groupBy('card.id');
+        return $q->all();
+    }
+
 
 }

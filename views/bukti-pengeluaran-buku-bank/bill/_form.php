@@ -4,7 +4,6 @@ use app\components\helpers\ArrayHelper;
 use app\models\Card;
 use app\models\JenisTransfer;
 use app\models\JobOrderBill;
-use app\models\JobOrderDetailCashAdvance;
 use app\models\Rekening;
 use kartik\datecontrol\DateControl;
 use kartik\depdrop\DepDrop;
@@ -44,80 +43,103 @@ use yii\helpers\Url;
     ]); ?>
 
     <div class="row">
-        <div class="col-12 col-lg-8">
-            <?= $form->field($model, 'vendor_id')->widget(Select2::class, [
-                'data' => Card::find()->map(),
-                'options' => ['placeholder' => 'Pilih Vendor'],
-            ]) ?>
+        <div class="col-12 col-lg-10 col-xl-8">
 
-            <?php
-            $data = [];
-            echo $form->field($model, 'vendor_rekening_id')
-                ->widget(DepDrop::class, [
-                    'type' => DepDrop::TYPE_DEFAULT,
-                    'data' => $data,
-                    'pluginOptions' => [
-                        'depends' => [
-                            'buktipengeluaranbukubank-vendor_id'
-                        ],
+            <div class="d-flex flex-column gap-3">
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Data Vendor</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'vendor_id')->widget(Select2::class, [
+                            'data' => Card::find()->map(),
+                            'options' => ['placeholder' => 'Pilih Vendor'],
+                        ]) ?>
 
-                        'url' => Url::to(['/card/depdrop-find-rekening-card-id'])
-                    ],
-                    'options' => [
-                        'class' => 'form-control',
-                        'placeholder' => 'Select...',
-                    ]
-                ]);
+                        <?php
+                        $data = [];
+                        echo $form->field($model, 'vendor_rekening_id')
+                            ->widget(DepDrop::class, [
+                                'type' => DepDrop::TYPE_DEFAULT,
+                                'data' => $data,
+                                'pluginOptions' => [
+                                    'depends' => [
+                                        'buktipengeluaranbukubank-vendor_id'
+                                    ],
 
-            ?>
-            <?= $form->field($model, 'rekening_saya_id')->widget(Select2::class, [
-                'data' => Rekening::find()->mapOnlyTokoSaya(),
-                'options' => ['placeholder' => 'Pilih Rekening'],
-            ]) ?>
-            <?= $form->field($model, 'jenis_transfer_id')->radioList(JenisTransfer::find()->map())->inline() ?>
-            <?= $form->field($model, 'nomor_bukti_transaksi')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'tanggal_transaksi')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+                                    'url' => Url::to(['/card/depdrop-find-rekening-card-id'])
+                                ],
+                                'options' => [
+                                    'class' => 'form-control',
+                                    'placeholder' => 'Select...',
+                                ]
+                            ]);
 
+                        ?>
+                    </div>
+                </div>
 
-            <?php
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Data Transaksi</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'rekening_saya_id')->widget(Select2::class, [
+                            'data' => Rekening::find()->mapOnlyTokoSaya(),
+                            'options' => ['placeholder' => 'Pilih Rekening'],
+                        ]) ?>
+                        <?= $form->field($model, 'jenis_transfer_id')->radioList(JenisTransfer::find()->map())->inline() ?>
+                        <?= $form->field($model, 'nomor_bukti_transaksi')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'tanggal_transaksi')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+                    </div>
+                </div>
 
-            $data = [];
-            if (!$model->isNewRecord) {
-                $data = ArrayHelper::map($model->jobOrderBills, 'id', function($model){
-                    /** @var JobOrderBill $model */
-                    return $model->jobOrder->reference_number . ' - ' . $model->vendor->nama . ' - ' . Yii::$app->formatter->asDecimal($model->getTotalPrice(), 2);
-                });
-                $model->bills = array_keys($data);
-            }
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Pelunasan Tagihan</div>
+                    <div class="card-body">
+                        <?php
 
-            $data = ArrayHelper::merge($data, JobOrderBill::find()->notYetRegistered());
-            echo $form->field($model, 'bills')->widget(Select2::class, [
-                'data' => $data,
-                'options' => [
-                    'multiple' => true,
-                    'placeholder' => '...'
-                ],
-                'theme' => Select2::THEME_CLASSIC,
-                'pluginOptions' => [
-                    'width' => '100%',
-                    'allowClear' => true,
-                    /*'minimumInputLength' => 3,
-                    'language' => [
-                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                    ],
-                    'ajax' => [
-                        'url' => ['/invoice/find-not-in-buku-bank-yet'],
-                        'dataType' => 'json',
-                        'data' => $js
-                    ],
-                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
-                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),*/
-                ],
-            ]) ?>
+                        $data = [];
+                        if (!$model->isNewRecord) {
+                            $data = ArrayHelper::map($model->jobOrderBills, 'id', function($model){
+                                /** @var JobOrderBill $model */
+                                return $model->jobOrder->reference_number . ' - ' . $model->vendor->nama . ' - ' . Yii::$app->formatter->asDecimal($model->getTotalPrice(), 2);
+                            });
+                            $model->bills = array_keys($data);
+                        }
 
+                        $data = ArrayHelper::merge($data, JobOrderBill::find()->notYetRegistered());
+                        echo $form->field($model, 'bills')->widget(Select2::class, [
+                            'data' => $data,
+                            'options' => [
+                                'multiple' => true,
+                                'placeholder' => '...'
+                            ],
+                            'theme' => Select2::THEME_CLASSIC,
+                            'pluginOptions' => [
+                                'width' => '100%',
+                                'allowClear' => true,
+                                /*'minimumInputLength' => 3,
+                                'language' => [
+                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                ],
+                                'ajax' => [
+                                    'url' => ['/invoice/find-not-in-buku-bank-yet'],
+                                    'dataType' => 'json',
+                                    'data' => $js
+                                ],
+                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                'templateSelection' => new JsExpression('function (city) { return city.text; }'),*/
+                            ],
+                        ]) ?>
+                    </div>
+                </div>
 
-            <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Informasi Lainnya</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
+                    </div>
+                </div>
+
+            </div>
 
             <div class="d-flex mt-3 justify-content-between">
                 <?= Html::a('Close', ['index'], [

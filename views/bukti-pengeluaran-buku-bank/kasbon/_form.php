@@ -88,7 +88,7 @@ use yii\helpers\Url;
                 </div>
 
                 <div class="card">
-                    <div class="card-header"><i class="bi bi-table"></i> Pelunasan</div>
+                    <div class="card-header"><i class="bi bi-table"></i> Pelunasan Kasbon</div>
                     <div class="card-body">
                         <?php
                         $data = [];

@@ -9,6 +9,8 @@ use JetBrains\PhpStorm\ArrayShape;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -165,7 +167,10 @@ class SiteController extends Controller
     */
    public function actionAbout(): string
    {
-      return $this->render('about', ['withBreadcrumb' => true]);
+      return $this->render('about', [
+          'withBreadcrumb' => true,
+          'withDevelopmentStory' => true
+      ]);
    }
 
    /**
@@ -187,6 +192,34 @@ class SiteController extends Controller
       return $this->render('change-password', [
          'model' => $model,
       ]);
+   }
+
+   public function actionExportSummary(string $key){
+       $myBank = Yii::$app->cache->get($key);
+
+       $pdf = Yii::$app->pdf;
+
+       $pdf->content = $this->renderPartial('_summary', [
+           'myBank' => $myBank,
+       ]);
+       $pdf->content .= $this->renderPartial('_index_petty_cash', [
+           'myBank' => $myBank,
+       ]);
+       $pdf->content .= $this->renderPartial('_index_bank_account', [
+           'myBank' => $myBank,
+           'isPdf' => true
+       ]);
+       $pdf->content .= $this->renderPartial('_index_total_ending_balance', [
+           'myBank' => $myBank,
+           'isPdf' => true
+       ]);
+
+       return $pdf->render();
+
+
+       /*die(
+           Html::tag('pre', VarDumper::dumpAsString($cache))
+       );*/
    }
    
 }

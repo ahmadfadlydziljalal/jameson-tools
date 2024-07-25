@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Buku Bank', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="buku-bank-create">
+<div class="buku-bank-create d-flex flex-column gap-3">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

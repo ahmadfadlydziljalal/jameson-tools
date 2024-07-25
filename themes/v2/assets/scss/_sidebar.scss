@@ -39,8 +39,8 @@ aside {
         &.active {
           a {
             &.active {
-              border-radius: 8px;
-              background-color: vars.$primary;
+              border-radius: 12px;
+              background-color: vars.$gray-500;
               color: vars.$white;
             }
           }

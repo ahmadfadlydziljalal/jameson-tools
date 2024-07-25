@@ -43,11 +43,12 @@ use yii\widgets\MaskedInput;
 
     <div class="row">
         <div class="col-12 col-lg-8">
-            <?= $form->errorSummary($model) ?>
+
+            <?= $form->field($model, 'tanggal_transaksi')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+
             <?= $form->field($modelTransaksiLainnya, 'rekening_id')->widget(Select2::class,[
                     'data' => Rekening::find()->mapOnlyTokoSaya()
             ]) ?>
-            <?= $form->field($model, 'tanggal_transaksi')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
             <?= $form->field($modelTransaksiLainnya, 'card_id')->widget(Select2::class, [
                 'data' => Card::find()->map(),
                 'options' => [

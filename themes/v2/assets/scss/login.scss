@@ -8,8 +8,8 @@ body {
   //background-color: vars.$page;
   background-image: linear-gradient(
     to bottom,
-    vars.$warning 0%,
-    vars.$page 90%,
+    vars.$page 0%,
+    vars.$white 50%,
     vars.$white 100%
   );
 }

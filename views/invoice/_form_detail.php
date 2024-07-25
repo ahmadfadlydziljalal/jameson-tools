@@ -68,31 +68,33 @@ use yii\web\JsExpression;
 
                         $data = [];
                         echo $form->field($modelDetail, "[$i]barang_id", ['template' =>
-                            '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class,
-                            [
-                                'data' =>$data,
-                                'options' => [
-                                    'prompt' => '= Pilih Salah Satu =',
-                                    'class' => 'form-control barang'
+                            '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class, [
+                            'data' => $data,
+                            'initValueText' => !empty($modelDetail->barang_id)
+                                ? Barang::findOne($modelDetail->barang_id)->nama
+                                : '',
+                            'options' => [
+                                'prompt' => '= Pilih Salah Satu =',
+                                'class' => 'form-control barang'
+                            ],
+                            'pluginOptions' => [
+                                'width' => '100%',
+                                'allowClear' => true,
+                                'minimumInputLength' => 3,
+                                'language' => [
+                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
                                 ],
-                                'pluginOptions' => [
-                                    'width' => '100%',
-                                    'allowClear' => true,
-                                    'minimumInputLength' => 3,
-                                    'language' => [
-                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                    ],
-                                    'ajax' => [
-                                        'url' => ['/barang/find-by-id'], /* @see \app\controllers\BarangController::actionFindById() */
-                                        'dataType' => 'json',
-                                        'data' => new JsExpression(' function(params) { return { q:params.term};}')
-                                    ],
-                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
-                                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                                'ajax' => [
+                                    'url' => ['/barang/find-by-id'], /* @see \app\controllers\BarangController::actionFindById() */
+                                    'dataType' => 'json',
+                                    'data' => new JsExpression(' function(params) { return { q:params.term};}')
                                 ],
-                            ]);
-                    ?>
+                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                            ],
+                        ]);
+                        ?>
                     </td>
 
                     <td>
