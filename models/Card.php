@@ -14,6 +14,7 @@ use yii\web\ServerErrorHttpException;
 /**
  * This is the model class for table "card".
  * @property CardType[] $cardTypes
+ * @property \app\models\Rekening[] $rekenings
  */
 class Card extends BaseCard
 {
@@ -74,6 +75,11 @@ class Card extends BaseCard
       return $this->hasMany(CardType::class, ['id' => 'card_type_id'])
          ->via('cardBelongsTypes');
    }
+
+    public function getRekenings()
+    {
+        return $this->hasMany(\app\models\Rekening::class, ['card_id' => 'id'])->orderBy('nama_bank');
+    }
 
    public function attributeLabels()
    {

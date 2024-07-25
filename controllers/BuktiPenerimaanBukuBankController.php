@@ -55,10 +55,23 @@ class BuktiPenerimaanBukuBankController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView(int $id): string
+    public function actionView(int $id): string|array
     {
+        $model = $this->findModel($id);
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'title' => $model->reference_number,
+                'content' => $this->renderAjax('_view', [
+                    'model' => $model
+                ]),
+                'footer' => ''
+            ];
+        }
+
         return $this->render('view', [
-            'model' => $this->findModel($id)
+            'model' => $model
         ]);
     }
 
@@ -71,8 +84,8 @@ class BuktiPenerimaanBukuBankController extends Controller
         $model = new BuktiPenerimaanBukuBank();
         $model->scenario = BuktiPenerimaanBukuBank::SCENARIO_FOR_INVOICES;
 
-        if(Yii::$app->request->isPost){
-            if($model->load(Yii::$app->request->post()) && $model->saveForInvoices()){
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post()) && $model->saveForInvoices()) {
                 Yii::$app->session->setFlash('success', 'BuktiPenerimaanBukuBank berhasil ditambahkan.');
                 return $this->redirect(['index']);
             }
@@ -90,13 +103,14 @@ class BuktiPenerimaanBukuBankController extends Controller
      * @throws Exception
      * @throws NotFoundHttpException
      */
-    public function actionUpdateForInvoices(int $id): Response|string{
+    public function actionUpdateForInvoices(int $id): Response|string
+    {
         $model = $this->findModel($id);
         $model->scenario = BuktiPenerimaanBukuBank::SCENARIO_FOR_INVOICES;
 
         if ($this->request->isPost && $model->load($this->request->post())) {
 
-            if( $model->saveForInvoices()){
+            if ($model->saveForInvoices()) {
                 Yii::$app->session->setFlash('info', 'BuktiPenerimaanBukuBank: ' . $model->reference_number . ' berhasil dirubah.');
                 return $this->redirect(['index']);
             }
@@ -118,8 +132,8 @@ class BuktiPenerimaanBukuBankController extends Controller
         $model = new BuktiPenerimaanBukuBank();
         $model->scenario = BuktiPenerimaanBukuBank::SCENARIO_FOR_SETORAN_KASIR;
 
-        if(Yii::$app->request->isPost){
-            if($model->load(Yii::$app->request->post()) && $model->saveForSetoranKasir()){
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post()) && $model->saveForSetoranKasir()) {
                 Yii::$app->session->setFlash('success', 'BuktiPenerimaanBukuBank berhasil ditambahkan.');
                 return $this->redirect(['index']);
             }
@@ -137,13 +151,14 @@ class BuktiPenerimaanBukuBankController extends Controller
      * @throws Exception
      * @throws NotFoundHttpException
      */
-    public function actionUpdateForSetoranKasir(int $id): Response|string{
+    public function actionUpdateForSetoranKasir(int $id): Response|string
+    {
         $model = $this->findModel($id);
         $model->scenario = BuktiPenerimaanBukuBank::SCENARIO_FOR_SETORAN_KASIR;
 
         if ($this->request->isPost && $model->load($this->request->post())) {
 
-            if( $model->saveForSetoranKasir()){
+            if ($model->saveForSetoranKasir()) {
                 Yii::$app->session->setFlash('info', 'BuktiPenerimaanBukuBank: ' . $model->reference_number . ' berhasil dirubah.');
                 return $this->redirect(['index']);
             }
@@ -157,7 +172,8 @@ class BuktiPenerimaanBukuBankController extends Controller
         ]);
     }
 
-    public function actionExportToPdf($id){
+    public function actionExportToPdf($id)
+    {
         /** @var Pdf $pdf */
         $pdf = Yii::$app->pdf;
         $pdf->content = $this->renderPartial('_pdf', [

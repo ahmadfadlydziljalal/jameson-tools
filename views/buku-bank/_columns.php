@@ -51,6 +51,7 @@ return [
             'type' => DatePicker::TYPE_INPUT,
         ],
         'format' => 'date',
+
     ],
     [
         'class' => '\kartik\grid\DataColumn',
@@ -64,7 +65,7 @@ return [
                 : '',
             'options' => ['placeholder' => '...'],
             'pluginOptions' => [
-                'width' => '9em',
+                'width' => '100%',
                 'allowClear' => true,
                 'minimumInputLength' => 3,
                 'language' => [
@@ -80,6 +81,15 @@ return [
                 'templateResult' => new JsExpression('function(q) { return q.text; }'),
                 'templateSelection' => new JsExpression('function (q) { return q.text; }'),
             ],
+        ],
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
         ]
     ],
     [
@@ -94,7 +104,7 @@ return [
                 : '',
             'options' => ['placeholder' => '...'],
             'pluginOptions' => [
-                'width' => '9em',
+                'width' => '100%',
                 'allowClear' => true,
                 'minimumInputLength' => 3,
                 'language' => [
@@ -110,6 +120,15 @@ return [
                 'templateResult' => new JsExpression('function(q) { return q.text; }'),
                 'templateSelection' => new JsExpression('function (q) { return q.text; }'),
             ],
+        ],
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
         ]
     ],
     [
@@ -123,7 +142,7 @@ return [
                 : '',
             'options' => ['placeholder' => '...'],
             'pluginOptions' => [
-                'width' => '9em',
+                'width' => '100%',
                 'allowClear' => true,
                 'minimumInputLength' => 3,
                 'language' => [
@@ -139,6 +158,15 @@ return [
                 'templateResult' => new JsExpression('function(q) { return q.text; }'),
                 'templateSelection' => new JsExpression('function (q) { return q.text; }'),
             ],
+        ],
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
         ]
     ],
     [
@@ -153,7 +181,7 @@ return [
                 : '',
             'options' => ['placeholder' => '...'],
             'pluginOptions' => [
-                'width' => '9em',
+                'width' => '100%',
                 'allowClear' => true,
                 'minimumInputLength' => 3,
                 'language' => [
@@ -169,6 +197,15 @@ return [
                 'templateResult' => new JsExpression('function(q) { return q.text; }'),
                 'templateSelection' => new JsExpression('function (q) { return q.text; }'),
             ],
+        ],
+        'contentOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'headerOptions' => [
+            'class' => 'd-none d-lg-table-cell',
+        ],
+        'filterOptions' => [
+            'class' => 'd-none d-lg-table-cell',
         ]
     ],
 
@@ -192,7 +229,7 @@ return [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'nominal',
         'contentOptions' => [
-            'class' => 'text-end'
+            'class' => 'text-end font-monospace'
         ],
         'format' => ['decimal', 2],
 

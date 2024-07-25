@@ -43,68 +43,87 @@ use yii\web\JsExpression;
     ]); ?>
 
     <div class="row">
-        <div class="col-12 col-lg-8">
-            <?= $form->field($model, 'customer_id')->widget(Select2::class, [
-                'data' => Card::find()->map(),
-                'options' => ['placeholder' => 'Select Customer ...'],
-            ]) ?>
-            <?= $form->field($model, 'rekening_saya_id')->textInput()->widget(Select2::class, [
-                'data' => Rekening::find()->map(),
-                'options' => ['placeholder' => 'Select Rekening ...'],
-            ]) ?>
-            <?= $form->field($model, 'jumlah_setor')->widget(NumberControl::class, [
-                'maskedInputOptions' => [
-                    //'prefix' => $quotation->mataUang->singkatan,
-                    'allowMinus' => false
-                ],
-            ]) ?>
+        <div class="col-12 col-lg-10 col-xl-8">
 
+            <div class="d-flex flex-column gap-3">
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Data Customer</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'customer_id')->widget(Select2::class, [
+                            'data' => Card::find()->map(),
+                            'options' => ['placeholder' => 'Select Customer ...'],
+                        ]) ?>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Data Transaksi</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'rekening_saya_id')->textInput()->widget(Select2::class, [
+                            'data' =>Rekening::find()->mapOnlyTokoSaya(),
+                            'options' => ['placeholder' => 'Select Rekening ...'],
+                        ]) ?>
+                        <?= $form->field($model, 'jenis_transfer_id')->radioList(JenisTransfer::find()->map()) ?>
+                        <?= $form->field($model, 'nomor_transaksi_transfer')->textInput() ?>
+                        <?= $form->field($model, 'tanggal_transaksi_transfer')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+                        <?= $form->field($model, 'tanggal_jatuh_tempo')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Nominal</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'jumlah_setor')->widget(NumberControl::class, [
+                            'maskedInputOptions' => [
+                                //'prefix' => $quotation->mataUang->singkatan,
+                                'allowMinus' => false
+                            ],
+                        ])->label('Jumlah setor') ?>
+                        <?php
+                        $data = [];
+                        if (!$model->isNewRecord) {
+                            $data = ArrayHelper::map($model->setoranKasirs, 'id', 'reference_number');
+                            $model->setoranKasirKasir = array_keys($data);
+                            $js = new JsExpression('function(params) {
+                                var selectedIds = ' . Json::encode(array_keys($data)) . '; // Get pre-selected values from the select2 element
+                                return { q: params.term, id: selectedIds }; }');
+                        } else {
+                            $js = new JsExpression(' function(params) { return { q:params.term};}');
+                        }
 
-            <?php
-            $data = [];
-            if (!$model->isNewRecord) {
-                $data = ArrayHelper::map($model->setoranKasirs, 'id', 'reference_number');
-                $model->setoranKasirKasir = array_keys($data);
-                $js = new JsExpression('function(params) {
-                    var selectedIds = ' . Json::encode(array_keys($data)) . '; // Get pre-selected values from the select2 element
-                    return { q: params.term, id: selectedIds }; }');
-            } else {
-                $js = new JsExpression(' function(params) { return { q:params.term};}');
-            }
-
-            echo $form->field($model, 'setoranKasirKasir')->widget(Select2::class, [
-                'data' => $data,
-                'options' => ['placeholder' => '...'],
-                'pluginOptions' => [
-                    'multiple' => true,
-                    'allowClear' => true,
-                    'minimumInputLength' => 3,
-                    'language' => [
-                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                    ],
-                    'ajax' => [
-                        'url' => ['/setoran-kasir/find-not-in-bukti-penerimaan-buku-bank-yet'],
-                        'dataType' => 'json',
-                        'data' => $js
-                    ],
-                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
-                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),
-                ],
-            ]) ?>
-
-            <?= $form->field($model, 'jenis_transfer_id')->radioList(JenisTransfer::find()->map()) ?>
-            <?= $form->field($model, 'nomor_transaksi_transfer')->textInput() ?>
-            <?= $form->field($model, 'tanggal_transaksi_transfer')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-            <?= $form->field($model, 'tanggal_jatuh_tempo')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-            <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
-
-            <div class="d-flex mt-3 justify-content-between">
-                <?= Html::a('Close', ['index'], [
-                    'class' => 'btn btn-secondary',
-                    'type' => 'button'
-                ]) ?>
-                <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+                        echo $form->field($model, 'setoranKasirKasir')->widget(Select2::class, [
+                            'data' => $data,
+                            'options' => ['placeholder' => '...'],
+                            'pluginOptions' => [
+                                'multiple' => true,
+                                'allowClear' => true,
+                                'minimumInputLength' => 3,
+                                'language' => [
+                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                ],
+                                'ajax' => [
+                                    'url' => ['/setoran-kasir/find-not-in-bukti-penerimaan-buku-bank-yet'],
+                                    'dataType' => 'json',
+                                    'data' => $js
+                                ],
+                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                            ],
+                        ])->label('Dari Kasir-Kasir') ?>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Informasi Lainnya</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
+                    </div>
+                </div>
+                <div class="d-flex mt-3 justify-content-between">
+                    <?= Html::a('Close', ['index'], [
+                        'class' => 'btn btn-secondary',
+                        'type' => 'button'
+                    ]) ?>
+                    <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+                </div>
             </div>
 
         </div>

@@ -20,7 +20,6 @@ echo GridView::widget([
         'pagination' => false,
     ]),
     'layout' => "{items}",
-    'showPageSummary' => true,
     'columns' => [
         [
             'class' => SerialColumn::class
@@ -54,5 +53,7 @@ echo GridView::widget([
             ]
         ],
 
-    ]
+    ],
+    'showPageSummary' => true,
+    'responsive' => true,
 ]);

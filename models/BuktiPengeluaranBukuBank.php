@@ -125,6 +125,7 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             [[
                 'vendor_id',
                 'rekening_saya_id',
+                'jenis_transfer_id',
                 'nomor_bukti_transaksi',
                 'tanggal_transaksi',
                 'bills'
@@ -132,6 +133,7 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             [[
                 'vendor_id',
                 'rekening_saya_id',
+                'jenis_transfer_id',
                 'nomor_bukti_transaksi',
                 'tanggal_transaksi',
                 'pettyCash'

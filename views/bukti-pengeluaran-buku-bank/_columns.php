@@ -3,6 +3,7 @@
 /* @var $this yii\web\View */
 
 use app\models\Card;
+use app\models\JenisTransfer;
 use kartik\grid\GridViewInterface;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
@@ -73,7 +74,7 @@ return [
         'attribute' => 'jenis_transfer_id',
         'format' => 'text',
         'value' => 'jenisTransfer.name',
-        'filter' => \app\models\JenisTransfer::find()->map()
+        'filter' => JenisTransfer::find()->map()
     ],
     /*[
         'class' => '\yii\grid\DataColumn',
@@ -166,7 +167,7 @@ return [
         'attribute' => 'totalBayar',
         'format' => ['decimal', 2],
         'contentOptions' => [
-            'class' => 'd-none d-lg-table-cell',
+            'class' => 'd-none d-lg-table-cell font-monospace',
             'style' => 'text-align:right',
         ],
         'headerOptions' => [

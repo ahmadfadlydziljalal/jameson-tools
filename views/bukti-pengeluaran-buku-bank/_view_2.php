@@ -34,6 +34,7 @@ use yii\web\View;
         return $el;
     }, $columns);
     ?>
+
     <?= GridView::widget([
         'dataProvider' => new ArrayDataProvider([
             'allModels' => $model->referensiPembayaran['data'],
@@ -42,6 +43,7 @@ use yii\web\View;
         ]),
         'layout' => '{items}',
         'columns' => $columns,
-        'showPageSummary' => true
+        'showPageSummary' => true,
+        'responsive' => true
     ]) ?>
 </div>

@@ -7,10 +7,12 @@ use app\models\BuktiPenerimaanBukuBank;
 use kartik\grid\DataColumn;
 use kartik\grid\GridView;
 use kartik\grid\SerialColumn;
+use yii\bootstrap5\Html;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\web\View;
 
+echo Html::tag('p', 'Invoice');
 echo GridView::widget([
     'dataProvider' => new ActiveDataProvider([
         'query' => $model->getInvoices(),
@@ -43,7 +45,8 @@ echo GridView::widget([
         ],
 
     ],
-    'showPageSummary' => true
+    'showPageSummary' => true,
+    'responsive' => true,
 ]);
 
 ?>

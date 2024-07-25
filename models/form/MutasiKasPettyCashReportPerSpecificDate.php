@@ -336,7 +336,7 @@ class MutasiKasPettyCashReportPerSpecificDate extends Model
         return  array_sum((array_column($this->transactions['pengeluaran'], 'nominal')));
     }
 
-    public function getSaldoAkhir()
+    public function getEndingBalance()
     {
         return $this->getBalanceBeforeDate() + $this->getTotalPenerimaan() - $this->getTotalPengeluaran();
     }

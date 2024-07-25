@@ -145,7 +145,7 @@ class InvoiceController extends Controller
      * @throws HttpException
      * @throws NotFoundHttpException
      */
-    public function actionUpdate(int $id)
+    public function actionUpdate(int $id): Response|string
     {
         $request = Yii::$app->request;
         $model = $this->findModel($id);

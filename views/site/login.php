@@ -27,7 +27,7 @@ $this->title = $title . ' - Log In';
             'enableClientValidation' => false,
             'layout' => ActiveForm::LAYOUT_FLOATING,
         ]); ?>
-        <div class="card rounded-2 shadow">
+        <div class="card ">
             <div class="card-body">
                 <?= $form->field($model, 'username')->textInput([
                     'autofocus' => true,
@@ -44,7 +44,8 @@ $this->title = $title . ' - Log In';
     </div>
     <div class="about-section d-none d-md-block d-lg-block" style="max-width: 32rem; overflow-y: auto">
         <?= $this->render('about', [
-            'withBreadcrumb' => false
+            'withBreadcrumb' => false,
+            'withDevelopmentStory' => false
         ]) ?>
     </div>
 </div>

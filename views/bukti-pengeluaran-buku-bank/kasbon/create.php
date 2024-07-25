@@ -4,6 +4,8 @@
 /* @see app\controllers\BuktiPengeluaranBukuBankController::actionCreateByCashAdvance() */
 
 use yii\helpers\Html;
+use yii\helpers\Inflector;
+
 $this->title = 'Tambah Bukti Pengeluaran';
 $this->params['breadcrumbs'][] = ['label' => 'Bukti Pengeluaran Buku Bank', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -13,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="d-flex justify-content-between flex-wrap align-items-center">
         <h1><?= Html::encode($this->title) ?></h1>
-        <span class="badge text-bg-info"> Scenario By Cash Advance / Kasbon</span>
+        <span class="badge text-bg-info"> <?= ucwords(Inflector::humanize($model->scenario)) ?></span>
     </div>
 
     <?= $this->render('_form', [

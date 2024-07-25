@@ -4,17 +4,23 @@ namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
 use app\models\BuktiPengeluaranBukuBank;
+use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[BuktiPengeluaranBukuBank]].
  *
- * @see \app\models\BuktiPengeluaranBukuBank
+ * @see BuktiPengeluaranBukuBank
  * @method BuktiPengeluaranBukuBank[] all($db = null)
  * @method BuktiPengeluaranBukuBank one($db = null)
  */
-class BuktiPengeluaranBukuBankQuery extends \yii\db\ActiveQuery
+class BuktiPengeluaranBukuBankQuery extends ActiveQuery
 {
 
+    /**
+     * Record yang di-hasilkan bisa dari kasbon atau pembayaran tagihan
+     * @return array
+     */
     public function notYetRegisteredInBukuBank(): array
     {
         $data = parent::joinWith('bukuBank')
@@ -25,7 +31,8 @@ class BuktiPengeluaranBukuBankQuery extends \yii\db\ActiveQuery
             ])
             ->all();
         return ArrayHelper::map($data, 'id', function ($model) {
-            return $model->reference_number;
+            /** @var BuktiPengeluaranBukuBank $model */
+            return $model->reference_number . ': ' . $model->tujuanBayar . ' ' . Yii::$app->formatter->asCurrency($model->totalBayar);
         });
     }
 
@@ -38,8 +45,11 @@ class BuktiPengeluaranBukuBankQuery extends \yii\db\ActiveQuery
                 'IS NOT','job_order_detail_petty_cash.id', NULL
             ])
             ->all();
+
         return ArrayHelper::map($data, 'id', function ($model) {
-            return $model->reference_number;
+            /** @var BuktiPengeluaranBukuBank $model */
+            return $model->reference_number . ': '
+                . Yii::$app->formatter->asCurrency($model->jobOrderDetailPettyCash->nominal);
         });
     }
 

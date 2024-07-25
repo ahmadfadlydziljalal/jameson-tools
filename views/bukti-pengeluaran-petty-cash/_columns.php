@@ -71,8 +71,6 @@ return [
 
         }
     ],
-
-
     [
         'class' => '\yii\grid\DataColumn',
         'header' => 'Nominal',

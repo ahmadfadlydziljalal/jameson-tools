@@ -500,6 +500,10 @@ class BukuBankReportPerSpecificDate extends Model
             $this->sumCredit;
     }
 
+    public function getStartingBalance(): float|int
+    {
+        return $this->bank->saldo_awal;
+    }
 
 
 }
