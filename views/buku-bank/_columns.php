@@ -229,7 +229,7 @@ return [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'nominal',
         'contentOptions' => [
-            'class' => 'text-end font-monospace'
+            'class' => 'text-end '
         ],
         'format' => ['decimal', 2],
 

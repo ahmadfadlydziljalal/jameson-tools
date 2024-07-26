@@ -2,6 +2,7 @@
 
 namespace app\models\search;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\BuktiPengeluaranBukuBank;
@@ -41,7 +42,11 @@ class BuktiPengeluaranBukuBankSearch extends BuktiPengeluaranBukuBank
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = BuktiPengeluaranBukuBank::find()->joinWith('bukuBank');
+        $query = BuktiPengeluaranBukuBank::find()
+            ->joinWith('bukuBank')
+            ->joinWith('vendor')
+            ->joinWith('rekeningSaya')
+        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -66,12 +71,18 @@ class BuktiPengeluaranBukuBankSearch extends BuktiPengeluaranBukuBank
             'jenis_transfer_id' => $this->jenis_transfer_id,
             'vendor_id' => $this->vendor_id,
             'vendor_rekening_id' => $this->vendor_rekening_id,
-            'tanggal_transaksi' => $this->tanggal_transaksi,
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
+
+        if(isset($this->tanggal_transaksi) AND $this->tanggal_transaksi != ''){
+            $query->andFilterWhere([
+                'bukti_pengeluaran_buku_bank.tanggal_transaksi' => Yii::$app->formatter->asDate($this->tanggal_transaksi, 'php:Y-m-d'),
+            ]);
+        }
 
         $query->andFilterWhere(['like', 'reference_number', $this->reference_number])
             ->andFilterWhere(['like', 'nomor_bukti_transaksi', $this->nomor_bukti_transaksi])

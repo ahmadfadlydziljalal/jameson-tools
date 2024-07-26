@@ -1,9 +1,12 @@
 <?php
 
 /* @var $this View */
+
 /** @var BuktiPengeluaranPettyCash $model */
 
 use app\models\base\BuktiPengeluaranPettyCash;
+use kartik\date\DatePicker;
+use kartik\grid\GridViewInterface;
 use yii\helpers\Html;
 use yii\web\View;
 
@@ -22,12 +25,21 @@ return [
         'format' => 'text',
     ],
     [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'tanggal_transaksi',
+        'format' => 'date',
+        'filterType' => GridViewInterface::FILTER_DATE,
+        'filterWidgetOptions' => [
+            'type' => DatePicker::TYPE_INPUT,
+        ],
+    ],
+    [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomorJobOrder',
-        'header' => 'Jon Order',
+        'header' => 'Job Order',
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->jobOrderDetailCashAdvance){
+            if ($model->jobOrderDetailCashAdvance) {
                 return $model->jobOrderDetailCashAdvance?->jobOrder?->reference_number;
             }
             return $model->jobOrderBill?->jobOrder->reference_number;
@@ -35,28 +47,30 @@ return [
     ],
     [
         'class' => '\yii\grid\DataColumn',
-        'header' => 'Kasbon',
+        'attribute' => 'nomorVoucher',
+        'format' => 'raw',
+        'value' => function ($model) {
+            if ($model->mutasiKasPettyCash) {
+                return $model->mutasiKasPettyCash->nomor_voucher;
+            }
+            return Html::a('Register it!', ['bukti-pengeluaran-petty-cash/register-to-mutasi-kas', 'id' => $model->id], [
+                'data-pjax' => '0',
+                'data-confirm' => 'Are you sure you want to register ' . $model->reference_number . ' to Mutasi Kas?',
+                'data-method' => 'post',
+            ]);
+        }
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'header' => 'Business Process',
         'format' => 'raw',
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->jobOrderDetailCashAdvance){
+            if ($model->jobOrderDetailCashAdvance) {
                 return $model->getStatusCashAdvance();
             }
-            return '';
+            return "Bill : " . $model->jobOrderBill?->reference_number;
         }
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'header' => 'Bill Payment',
-        'value' => function ($model) {
-            /** @var app\models\BuktiPengeluaranPettyCash $model */
-            return $model->jobOrderBill?->reference_number;
-        }
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'voucher',
-        'value' => fn($model) => $model->mutasiKasPettyCash?->nomor_voucher
     ],
 
     [
@@ -64,7 +78,7 @@ return [
         'header' => 'Vendor',
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
-            if($model->jobOrderDetailCashAdvance){
+            if ($model->jobOrderDetailCashAdvance) {
                 return $model->jobOrderDetailCashAdvance?->vendor?->nama;
             }
             return $model->jobOrderBill->vendor->nama;
@@ -79,7 +93,7 @@ return [
         'value' => function ($model) {
             /** @var app\models\BuktiPengeluaranPettyCash $model */
 
-            if($model->jobOrderDetailCashAdvance){
+            if ($model->jobOrderDetailCashAdvance) {
                 return $model->jobOrderDetailCashAdvance?->cash_advance;
             }
             return $model->jobOrderBill?->getTotalPrice();
@@ -115,7 +129,7 @@ return [
                 /* @see \app\controllers\BuktiPengeluaranPettyCashController::actionUpdateByCashAdvance() */
                 /* @see \app\controllers\BuktiPengeluaranPettyCashController::actionUpdateByBill() */
                 # Kasbon / Cash Advance
-                if($model->jobOrderDetailCashAdvance){
+                if ($model->jobOrderDetailCashAdvance) {
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-petty-cash/update-by-cash-advance', 'id' => $model->id]);
                 }
 
@@ -127,7 +141,7 @@ return [
                 /* @see \app\controllers\BuktiPengeluaranPettyCashController::actionDeleteByCashAdvance() */
 
                 # Kasbon / Cash Advance
-                if($model->jobOrderDetailCashAdvance){
+                if ($model->jobOrderDetailCashAdvance) {
                     return Html::a('<i class="bi bi-trash"></i>', ['bukti-pengeluaran-petty-cash/delete-by-cash-advance', 'id' => $model->id], [
                         'data' => [
                             'confirm' => 'Are you sure you want to delete this item?',
@@ -147,7 +161,7 @@ return [
                 ]);
             },
             'export-to-pdf' => function ($url, $model) {
-                return Html::a('<i class="bi bi-printer"></i>', $url,[
+                return Html::a('<i class="bi bi-printer"></i>', $url, [
                     'target' => '_blank',
                     'data-pjax' => '0',
                 ]);

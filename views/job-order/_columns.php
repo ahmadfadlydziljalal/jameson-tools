@@ -97,26 +97,26 @@ return [
         'attribute' => 'totalKasbonRequest',
         'format' => ['decimal', 2],
         'contentOptions' => function($model){
-            return !empty($model->totalKasbonRequest) ? ['class' => 'text-end text-danger font-monospace'] : ['class' => 'text-end font-monospace'];
+            return !empty($model->totalKasbonRequest) ? ['class' => 'text-end text-danger '] : ['class' => 'text-end '];
         },
     ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'totalPanjarCashAdvance',
         'format' => ['decimal', 2],
-        'contentOptions' => ['class' => 'text-end font-monospace'],
+        'contentOptions' => ['class' => 'text-end '],
     ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'totalBill',
         'format' => ['decimal', 2],
-        'contentOptions' => ['class' => 'text-end font-monospace'],
+        'contentOptions' => ['class' => 'text-end '],
     ],
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'totalPettyCash',
         'format' => ['decimal', 2],
-        'contentOptions' => ['class' => 'text-end font-monospace'],
+        'contentOptions' => ['class' => 'text-end '],
     ],
     [
         'class' => 'kartik\grid\ActionColumn',

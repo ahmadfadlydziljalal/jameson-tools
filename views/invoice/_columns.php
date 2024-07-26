@@ -95,18 +95,12 @@ return [
         'value' => fn($model) => !$model->buktiPenerimaanBukuBank ? Html::tag('span', 'Belum ada', ['class' => 'badge bg-danger']) :
             $model->buktiPenerimaanBukuBank->reference_number
         ,
-        'contentOptions' => [
-            'class' => 'small'
-        ]
     ],
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'total',
         'format' => ['decimal', 2],
         'hAlign' => 'right',
-        'contentOptions' => [
-            'class' => 'small'
-        ]
     ],
 
     // [

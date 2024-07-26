@@ -4,10 +4,10 @@ namespace app\models;
 
 use app\components\helpers\ArrayHelper;
 use app\models\base\BuktiPengeluaranPettyCash as BaseBuktiPengeluaranPettyCash;
+use JetBrains\PhpStorm\ArrayShape;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bukti_pengeluaran_petty_cash".
@@ -47,9 +47,11 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON] = [
+            'tanggal_transaksi',
             'cashAdvanceReferenceNumber'
         ];
         $scenarios[self::SCENARIO_PENGELUARAN_BY_BILL] = [
+            'tanggal_transaksi',
             'jobOrderBillReferenceNumber'
         ];
         return $scenarios;
@@ -169,10 +171,10 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
                 }
             }
 
-            if($flag){
+            if ($flag) {
                 $transaction->commit();
                 return true;
-            }else{
+            } else {
                 $transaction->rollBack();
             }
 
@@ -200,7 +202,7 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
                     $newJobOrderBill = JobOrderBill::findOne($this->jobOrderBillReferenceNumber);
 
                     // kalau ga ada jangan jalankan transaction untuk mencegah bug
-                    if($newJobOrderBill){
+                    if ($newJobOrderBill) {
 
                         // set the new id
                         $newJobOrderBill->bukti_pengeluaran_petty_cash_id = $this->id;
@@ -211,16 +213,16 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
                         // save, always reset old by first, then save the new one
                         $flag = $this->jobOrderBill->save(false) && $newJobOrderBill->save(false);
 
-                    }else{
+                    } else {
                         $flag = false;
                     }
                 }
             }
 
-            if($flag){
+            if ($flag) {
                 $transaction->commit();
                 return true;
-            }else{
+            } else {
                 $transaction->rollBack();
             }
 
@@ -253,11 +255,11 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
 
     public function getUpdateUrl()
     {
-        if($this->jobOrderDetailCashAdvance){
+        if ($this->jobOrderDetailCashAdvance) {
             return ['bukti-pengeluaran-petty-cash/update-by-cash-advance', 'id' => $this->id];
         }
 
-        if($this->jobOrderBill){
+        if ($this->jobOrderBill) {
             return ['bukti-pengeluaran-petty-cash/update-by-bill', 'id' => $this->id];
         }
 
@@ -279,6 +281,32 @@ class BuktiPengeluaranPettyCash extends BaseBuktiPengeluaranPettyCash
     public function getPrevious()
     {
         return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
+    }
+
+    #[ArrayShape(['status' => "bool", 'message' => "string"])]
+    public function processRegisterToBukuBank(): array
+    {
+        $status = false;
+        $message = '';
+
+        $kodeVoucher = KodeVoucher::find()->pettyCashOut();
+        $model = new MutasiKasPettyCash([
+            'scenario' => MutasiKasPettyCash::SCENARIO_BUKTI_PENGELUARAN_PETTY_CASH,
+            'kode_voucher_id' => $kodeVoucher->id,
+            'bukti_pengeluaran_petty_cash_id' => $this->id,
+            'tanggal_mutasi' => $this->tanggal_transaksi
+        ]);
+
+        if ($model->saveByBuktiPengeluaranPettyCash()) {
+            $status = true;
+            $message = $this->reference_number . ' berhasil ditambahkan ke buku bank dengan nomor voucher <strong>' . $this->mutasiKasPettyCash->nomor_voucher . '</strong>' ;
+        }
+
+
+        return [
+            'status' => $status,
+            'message' => $message
+        ];
     }
 
 

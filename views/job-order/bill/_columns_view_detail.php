@@ -42,6 +42,10 @@ return [
         'contentOptions' => [
             'class' => 'text-end'
         ],
+        'pageSummary' => true,
+        'pageSummaryOptions' => [
+            'class' => 'text-end',
+        ],
         'value' => function ($model) {
             /** @var JobOrderBillDetail $model */
             return $model->getTotal();

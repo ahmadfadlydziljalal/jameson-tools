@@ -4,6 +4,7 @@
 
 use app\models\Card;
 use app\models\JenisTransfer;
+use kartik\date\DatePicker;
 use kartik\grid\GridViewInterface;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
@@ -25,10 +26,30 @@ return [
         'format' => 'text',
     ],
     [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'tanggal_transaksi',
+        'format' => 'date',
+        'filterType' => GridViewInterface::FILTER_DATE,
+        'filterWidgetOptions' => [
+            'type' => DatePicker::TYPE_INPUT,
+        ],
+    ],
+    [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomorVoucher',
-        'format' => 'text',
-        'value' => 'bukuBank.nomor_voucher'
+        'format' => 'raw',
+        'value' => function($model) {
+            if($model->bukuBank){
+                return $model->bukuBank->nomor_voucher;
+            }
+
+            return Html::a('Register it!', ['bukti-pengeluaran-buku-bank/register-to-buku-bank', 'id' => $model->id], [
+                'data-pjax' => '0',
+                'data-confirm' => 'Are you sure you want to register ' . $model->reference_number . ' to Buku Bank?',
+                'data-method' => 'post',
+            ]);
+        }
+
     ],
     [
         'class' => '\kartik\grid\DataColumn',
@@ -167,7 +188,7 @@ return [
         'attribute' => 'totalBayar',
         'format' => ['decimal', 2],
         'contentOptions' => [
-            'class' => 'd-none d-lg-table-cell font-monospace',
+            'class' => 'd-none d-lg-table-cell ',
             'style' => 'text-align:right',
         ],
         'headerOptions' => [

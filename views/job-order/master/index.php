@@ -15,7 +15,8 @@ use yii\widgets\DetailView;
         <?= Html::a(TextLinkEnum::PRINT->value, ['export-to-pdf', 'id' => $model->id], [
             'class' => 'btn btn-success',
             'target' => '_blank',
-            'rel' => 'noopener noreferrer'
+            'rel' => 'noopener noreferrer',
+            'data-pjax' => '0'
         ]) ?>
 
         <?php if(!$model->jobOrderDetailPettyCash) {

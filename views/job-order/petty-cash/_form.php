@@ -17,9 +17,7 @@ use yii\helpers\Html;
 ?>
 
 <div class="job-order-form">
-    <span class="badge text-bg-info">
-        Scenario: Penambahan Saldo Petty Cash
-    </span>
+
 
     <?php $form = ActiveForm::begin([
 
@@ -45,55 +43,69 @@ use yii\helpers\Html;
     ]); ?>
 
     <div class="row">
-        <div class="col-12 col-lg-8">
+        <div class="col-12 col-lg-10 col-xl-8">
 
-            <?= $form->field($model, 'main_vendor_id')->widget(Select2::class, [
-                'data' => Card::find()->map(),
-                'options' => [
-                    'placeholder' => '...'
-                ]
-            ]) ?>
-            <?= $form->field($model, 'main_customer_id')->widget(Select2::class, [
-                'data' => Card::find()->map(),
-                'options' => [
-                    'placeholder' => '...'
-                ]
-            ]) ?>
+            <div class="d-flex flex-column gap-3">
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Data Master</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'main_vendor_id')->widget(Select2::class, [
+                            'data' => Card::find()->map(),
+                            'options' => [
+                                'placeholder' => '...'
+                            ]
+                        ]) ?>
+                        <?= $form->field($model, 'main_customer_id')->widget(Select2::class, [
+                            'data' => Card::find()->map(),
+                            'options' => [
+                                'placeholder' => '...'
+                            ]
+                        ]) ?>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Data Petty Cash</div>
+                    <div class="card-body">
+                        <?= $form->field($modelDetail, 'jenis_biaya_id')->widget(Select2::class, [
+                            'data' => JenisBiaya::find()->mapCategory(JenisBiayaCategoryEnum::PETTY_CASH),
+                            'options' => [
+                                'placeholder' => '...'
+                            ]
+                        ]) ?>
 
-            <?= $form->field($modelDetail, 'jenis_biaya_id')->widget(Select2::class, [
-                'data' => JenisBiaya::find()->mapCategory(JenisBiayaCategoryEnum::PETTY_CASH),
-                'options' => [
-                    'placeholder' => '...'
-                ]
-            ]) ?>
+                        <?= $form->field($modelDetail, 'vendor_id')->widget(Select2::class, [
+                            'data' => Card::find()->map(),
+                            'options' => [
+                                'placeholder' => '...'
+                            ]
+                        ])->hint('Kepada siapa Petty Cash akan diberikan') ?>
 
-            <?= $form->field($modelDetail, 'vendor_id')->widget(Select2::class, [
-                'data' => Card::find()->map(),
-                'options' => [
-                    'placeholder' => '...'
-                ]
-            ]) ?>
+                        <?= $form->field($modelDetail, 'mata_uang_id')->widget(Select2::class, [
+                            'data' => MataUang::find()->map(),
+                            'options' => [
+                                'placeholder' => '...'
+                            ]
+                        ]); ?>
 
-            <?= $form->field($modelDetail, 'mata_uang_id')->widget(Select2::class, [
-                'data' => MataUang::find()->map(),
-                'options' => [
-                    'placeholder' => '...'
-                ]
-            ]) ; ?>
+                        <?= $form->field($modelDetail, 'nominal')->widget(NumberControl::class, [
+                            'maskedInputOptions' => [
+                                'allowMinus' => false
+                            ],
+                        ]); ?>
+                    </div>
+                </div>
 
-            <?= $form->field($modelDetail, 'nominal')->widget(NumberControl::class, [
-                'maskedInputOptions' => [
-                    'allowMinus' => false
-                ],
-            ]); ?>
+                <div class="card">
+                    <div class="card-header"><i class="bi bi-table"></i> Informasi Lainnya</div>
+                    <div class="card-body">
+                        <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
+                    </div>
+                </div>
+            </div>
 
-            <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
 
             <div class="d-flex mt-3 justify-content-between">
-                <?= Html::a(' Tutup', ['index'], [
-                    'class' => 'btn btn-secondary',
-                    'type' => 'button'
-                ]) ?>
+                <?= Html::a('Close', ['index'], ['class' => 'btn btn-secondary', 'type' => 'button']) ?>
                 <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
 
             </div>

@@ -71,6 +71,7 @@ class BuktiPengeluaranPettyCashController extends Controller
     {
         $model = new BuktiPengeluaranPettyCash();
         $model->scenario = BuktiPengeluaranPettyCash::SCENARIO_PENGELUARAN_BY_CASH_ADVANCE_OR_KASBON;
+
         if (Yii::$app->request->isPost) {
             if($model->load(Yii::$app->request->post()) && $model->saveByCashAdvance()){
                 Yii::$app->session->setFlash('success',  'BuktiPengeluaranPettyCash: ' . $model->reference_number.  ' berhasil ditambahkan.');
@@ -79,6 +80,7 @@ class BuktiPengeluaranPettyCashController extends Controller
                 $model->loadDefaultValues();
             }
         }
+
         return $this->render('kasbon/create', [
             'model' => $model,
         ]);
@@ -208,6 +210,20 @@ class BuktiPengeluaranPettyCashController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return BuktiPengeluaranPettyCash::find()->liveSearchById($q, $id);
+    }
+
+    /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionRegisterToMutasiKas($id): Response
+    {
+        $isSaved = $this->findModel($id)->processRegisterToBukuBank();
+        if($isSaved['status']){
+            Yii::$app->session->setFlash('success', $isSaved['message']);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**

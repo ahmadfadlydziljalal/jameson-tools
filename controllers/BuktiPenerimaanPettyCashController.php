@@ -2,32 +2,32 @@
 
 namespace app\controllers;
 
-use kartik\mpdf\Pdf;
-use Yii;
 use app\models\BuktiPenerimaanPettyCash;
 use app\models\search\BuktiPenerimaanPettyCashSearch;
+use kartik\mpdf\Pdf;
 use Throwable;
+use Yii;
 use yii\db\Exception;
+use yii\db\StaleObjectException;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\db\StaleObjectException;
 use yii\web\Response;
 
 /**
-* BuktiPenerimaanPettyCashController implements the CRUD actions for BuktiPenerimaanPettyCash model.
-*/
+ * BuktiPenerimaanPettyCashController implements the CRUD actions for BuktiPenerimaanPettyCash model.
+ */
 class BuktiPenerimaanPettyCashController extends Controller
 {
     /**
-    * {@inheritdoc}
-    */
-    public function behaviors() : array
+     * {@inheritdoc}
+     */
+    public function behaviors(): array
     {
         return [
             'verbs' => [
                 'class' => VerbFilter::class,
-                    'actions' => [
+                'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
@@ -35,10 +35,11 @@ class BuktiPenerimaanPettyCashController extends Controller
     }
 
     /**
-    * Lists all BuktiPenerimaanPettyCash models.
-    * @return string
-    */
-    public function actionIndex() : string {
+     * Lists all BuktiPenerimaanPettyCash models.
+     * @return string
+     */
+    public function actionIndex(): string
+    {
         $searchModel = new BuktiPenerimaanPettyCashSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -49,12 +50,12 @@ class BuktiPenerimaanPettyCashController extends Controller
     }
 
     /**
-    * Displays a single BuktiPenerimaanPettyCash model.
-    * @param integer $id
-    * @return string
-    * @throws NotFoundHttpException
-    */
-    public function actionView(int $id) : string
+     * Displays a single BuktiPenerimaanPettyCash model.
+     * @param integer $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionView(int $id): string
     {
         return $this->render('view', [
             'model' => $this->findModel($id)
@@ -72,8 +73,8 @@ class BuktiPenerimaanPettyCashController extends Controller
         $model->scenario = BuktiPenerimaanPettyCash::SCENARIO_REALISASI_KASBON;
 
         if ($this->request->isPost) {
-            if($model->load(Yii::$app->request->post()) && $model->createByCashAdvanceRealization()){
-                Yii::$app->session->setFlash('success',  'BuktiPenerimaanPettyCash: ' . $model->reference_number.  ' berhasil ditambahkan.');
+            if ($model->load(Yii::$app->request->post()) && $model->createByCashAdvanceRealization()) {
+                Yii::$app->session->setFlash('success', 'BuktiPenerimaanPettyCash: ' . $model->reference_number . ' berhasil ditambahkan.');
                 return $this->redirect(['index']);
             } else {
                 $model->loadDefaultValues();
@@ -97,13 +98,13 @@ class BuktiPenerimaanPettyCashController extends Controller
         $model = $this->findModel($id);
         $model->scenario = BuktiPenerimaanPettyCash::SCENARIO_REALISASI_KASBON;
 
-        if($this->request->isPost && $model->load($this->request->post()) ){
+        if ($this->request->isPost && $model->load($this->request->post())) {
 
-            if($model->updateByRealisasiKasbon()){
-                Yii::$app->session->setFlash('info',  'BuktiPenerimaanPettyCash: ' . $model->reference_number.  ' berhasil dirubah.');
+            if ($model->updateByRealisasiKasbon()) {
+                Yii::$app->session->setFlash('info', 'BuktiPenerimaanPettyCash: ' . $model->reference_number . ' berhasil dirubah.');
                 return $this->redirect(['index']);
             }
-            Yii::$app->session->setFlash('danger',  'BuktiPenerimaanPettyCash: ' . $model->reference_number.  ' gagal dirubah.');
+            Yii::$app->session->setFlash('danger', 'BuktiPenerimaanPettyCash: ' . $model->reference_number . ' gagal dirubah.');
         }
 
         return $this->render('kasbon/update', [
@@ -120,11 +121,12 @@ class BuktiPenerimaanPettyCashController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionDeleteByRealisasiKasbon(int $id) : Response {
+    public function actionDeleteByRealisasiKasbon(int $id): Response
+    {
         $model = $this->findModel($id);
         $model->delete();
 
-        Yii::$app->session->setFlash('danger',  'BuktiPenerimaanPettyCash: ' . $model->reference_number.  ' berhasil dihapus.');
+        Yii::$app->session->setFlash('danger', 'BuktiPenerimaanPettyCash: ' . $model->reference_number . ' berhasil dihapus.');
         return $this->redirect(['index']);
     }
 
@@ -150,13 +152,32 @@ class BuktiPenerimaanPettyCashController extends Controller
     }
 
     /**
-    * Finds the BuktiPenerimaanPettyCash model based on its primary key value.
-    * If the model is not found, a 404 HTTP exception will be thrown.
-    * @param integer $id
-    * @return BuktiPenerimaanPettyCash the loaded model
-    * @throws NotFoundHttpException if the model cannot be found
-    */
-    protected function findModel(int $id) : BuktiPenerimaanPettyCash {
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws Exception
+     */
+    public function actionRegisterToMutasiKas($id): Response
+    {
+        $isSaved = $this->findModel($id)->processRegisterToBukuBank();
+        if ($isSaved['status']) {
+            Yii::$app->session->setFlash('success', $isSaved['message']);
+        } else {
+            Yii::$app->session->setFlash('danger', 'Gagal');
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+
+    /**
+     * Finds the BuktiPenerimaanPettyCash model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return BuktiPenerimaanPettyCash the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel(int $id): BuktiPenerimaanPettyCash
+    {
         if (($model = BuktiPenerimaanPettyCash::findOne($id)) !== null) {
             return $model;
         } else {

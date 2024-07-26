@@ -23,6 +23,35 @@ if ($withBreadcrumb) {
 <?php if ($withDevelopmentStory) : ?>
     <div class="site-about d-flex flex-column gap-3">
         <div class="card">
+            <div class="card-header">Jumat, 26 July 2024</div>
+            <div class="card-body">
+                <p class="lead">Register bukti-bukti ke BB dan PC</p>
+                <ul>
+                    <li>Bukti Penerimaan Petty Cash <span class="badge text-bg-success">DONE</span</li>
+                    <li>Bukti Pengeluaran Petty Cash <span class="badge text-bg-success">DONE</span</li>
+                    <li>Bukti Penerimaan Buku Bank <span class="badge text-bg-success">DONE</span</li>
+                    <li>Bukti Pengeluaran Buku Bank <span class="badge text-bg-success">DONE</span</li>
+                </ul>
+
+                <p class="lead">Migration</p>
+                <ul>
+                    <li>Bukti Penerimaan Petty Cash: Tanggal Transaksi <span class="badge text-bg-success">DONE</span
+                    </li>
+                    <li>Bukti Pengeluaran Petty Cash: Tanggal Transaksi <span class="badge text-bg-success">DONE</span<
+                    </li>
+                </ul>
+
+                <p class="lead">Reporting</p>
+                <ul>
+                    <li>Invoice belum lunas</li>
+                    <li>Invoice per customer</li>
+                    <li>Invoice per periode</li>
+                    <li>Laporan harian penerimaan dan pengeluaran toko</li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="card">
             <div class="card-header">Kamis, 25 July 2024</div>
             <div class="card-body">
                 <p class="lead">Invoice</p>
@@ -62,15 +91,6 @@ if ($withBreadcrumb) {
                     <li>Bukti Penerimaan Buku Bank <span class="badge text-bg-success">DONE</span></li>
                     <li>Bukti Pengeluaran Buku Bank <span class="badge text-bg-success">DONE</span></li>
                     <li>Buku Bank <span class="badge text-bg-success">DONE</span></li>
-                </ul>
-
-
-                <p class="lead">Reporting</p>
-                <ul>
-                    <li>Invoice belum lunas</li>
-                    <li>Invoice per customer</li>
-                    <li>Invoice per periode</li>
-                    <li>Laporan harian penerimaan dan pengeluaran toko</li>
                 </ul>
 
             </div>

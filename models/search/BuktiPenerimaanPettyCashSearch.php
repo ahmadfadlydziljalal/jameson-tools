@@ -2,9 +2,10 @@
 
 namespace app\models\search;
 
+use app\models\BuktiPenerimaanPettyCash;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\BuktiPenerimaanPettyCash;
 
 /**
  * BuktiPenerimaanPettyCashSearch represents the model behind the search form about `app\models\BuktiPenerimaanPettyCash`.
@@ -14,7 +15,7 @@ class BuktiPenerimaanPettyCashSearch extends BuktiPenerimaanPettyCash
     /**
      * @inheritdoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [[
@@ -26,14 +27,14 @@ class BuktiPenerimaanPettyCashSearch extends BuktiPenerimaanPettyCash
                 'created_by',
                 'updated_by'
             ], 'integer'],
-            [['reference_number', 'nomorVoucherMutasiKasPettyCash'], 'safe'],
+            [['tanggal_transaksi', 'reference_number', 'nomorVoucherMutasiKasPettyCash'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios() : array
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -44,9 +45,11 @@ class BuktiPenerimaanPettyCashSearch extends BuktiPenerimaanPettyCash
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search(array $params) : ActiveDataProvider
+    public function search(array $params): ActiveDataProvider
     {
-        $query = BuktiPenerimaanPettyCash::find()->joinWith('mutasiKasPettyCash');
+        $query = BuktiPenerimaanPettyCash::find()
+            ->joinWith('buktiPengeluaranPettyCashCashAdvance')
+            ->joinWith('mutasiKasPettyCash');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -63,6 +66,12 @@ class BuktiPenerimaanPettyCashSearch extends BuktiPenerimaanPettyCash
             // if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
+        }
+
+        if (isset($this->tanggal_transaksi) and $this->tanggal_transaksi != '') {
+            $query->andFilterWhere([
+                'bukti_penerimaan_petty_cash.tanggal_transaksi' => Yii::$app->formatter->asDate($this->tanggal_transaksi, 'php:Y-m-d'),
+            ]);
         }
 
         $query->andFilterWhere([

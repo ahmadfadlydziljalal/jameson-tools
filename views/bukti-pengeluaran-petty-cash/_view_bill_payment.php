@@ -1,14 +1,18 @@
 <?php
 
-/* @var $this \yii\web\View */
-/* @var $model \app\models\BuktiPengeluaranPettyCash|string|\yii\db\ActiveRecord */
+/* @var $this View */
 
+/* @var $model BuktiPengeluaranPettyCash|string|ActiveRecord */
+
+use app\models\BuktiPengeluaranPettyCash;
 use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveRecord;
+use yii\web\View;
 
 ?>
 <div class="">
-    <h3>Bill Payment</h3>
+    <h2>Bill Payment</h2>
     <p><?= $model->jobOrderBill->vendor->nama ?></p>
     Ref: <?= $model->jobOrderBill->reference_number ?>
     <?= GridView::widget([
@@ -19,6 +23,8 @@ use yii\data\ActiveDataProvider;
             ]
         ),
         'layout' => "{items}",
+
+        'showPageSummary' => true,
         'columns' => require(Yii::getAlias('@app') . '/views/job-order/bill/_columns_view_detail.php'),
     ]) ?>
 </div>
