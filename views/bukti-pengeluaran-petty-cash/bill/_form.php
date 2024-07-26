@@ -2,7 +2,7 @@
 
 use app\components\helpers\ArrayHelper;
 use app\models\JobOrderBill;
-use kartik\select2\Select2;
+use kartik\datecontrol\DateControl;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 
@@ -39,6 +39,8 @@ use yii\helpers\Html;
     <div class="row">
         <div class="col-12 col-lg-8">
 
+            <?= $form->field($model, 'tanggal_transaksi')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+
             <?php
             $data = [];
             if (!$model->isNewRecord) {
@@ -51,13 +53,13 @@ use yii\helpers\Html;
 
             $data = ArrayHelper::merge($data, JobOrderBill::find()->notYetRegistered());
             echo $form->field($model, 'jobOrderBillReferenceNumber')
-                ->dropDownList($data)
-                /*->widget(Select2::class, [
+                ->dropDownList($data)/*->widget(Select2::class, [
                     'data' => $data,
                     'options' => [
                         'placeholder' => 'Pilih Bill ...',
                     ]
-                ])*/;
+                ])*/
+            ;
             ?>
 
             <div class="d-flex mt-3 justify-content-between">

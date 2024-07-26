@@ -3,12 +3,12 @@
 namespace app\models;
 
 use app\components\helpers\ArrayHelper;
-use \app\models\base\BuktiPenerimaanBukuBank as BaseBuktiPenerimaanBukuBank;
+use app\models\base\BuktiPenerimaanBukuBank as BaseBuktiPenerimaanBukuBank;
+use JetBrains\PhpStorm\ArrayShape;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bukti_penerimaan_buku_bank".
@@ -50,7 +50,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
         if ($this->setoranKasirs) {
 
             $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
-            $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
+            $this->referensiPenerimaan['businessProcess'] = ucwords(Inflector::humanize(static::DANA_DARI_SETORAN_KASIR));
             $this->referensiPenerimaan['bank'] = ArrayHelper::toArray(
                 $this->rekeningSaya
             );
@@ -70,7 +70,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
         if ($this->invoices) {
 
             $this->sumberDana = ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
-            $this->referensiPenerimaan['businessProcess'] =  ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
+            $this->referensiPenerimaan['businessProcess'] = ucwords(Inflector::humanize(static::DANA_DARI_INVOICE));
             $this->referensiPenerimaan['bank'] = ArrayHelper::toArray(
                 $this->rekeningSaya
             );
@@ -79,7 +79,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
                     'invoice' => $invoice->reference_number,
                     'tanggalInvoice' => $invoice->tanggal_invoice,
                     'customer' => $invoice->customer->nama,
-                    'total' =>$invoice->total
+                    'total' => $invoice->total
                 ];
 
                 $this->jumlahSeharusnya += $invoice->total;
@@ -93,9 +93,9 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-           'jumlah_setor' => 'Setor',
-           'jumlahSeharusnya' => 'Seharusnya',
-           'rekening_saya_id' => 'Rekening Saya',
+            'jumlah_setor' => 'Setor',
+            'jumlahSeharusnya' => 'Seharusnya',
+            'rekening_saya_id' => 'Rekening Saya',
         ]);
     }
 
@@ -142,7 +142,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
 
         // update case
         $setNull = [];
-        if(!$this->isNewRecord) {
+        if (!$this->isNewRecord) {
             $oldInvoice = ArrayHelper::map($this->invoices, 'id', 'id');
             $setNull = array_diff($oldInvoice, $this->invoiceInvoice);
         }
@@ -152,7 +152,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
 
             if ($flag = $this->save(false)) {
                 if (!empty($setNull)) {
-                    Invoice::updateAll(['invoice.bukti_penerimaan_buku_bank_id' => null],[ 'id' => $setNull]);
+                    Invoice::updateAll(['invoice.bukti_penerimaan_buku_bank_id' => null], ['id' => $setNull]);
                 }
 
                 foreach ($this->invoiceInvoice as $invoiceID) {
@@ -188,7 +188,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
 
         // update case
         $setNull = [];
-        if(!$this->isNewRecord) {
+        if (!$this->isNewRecord) {
             $oldSetoranKasir = ArrayHelper::map($this->setoranKasirs, 'id', 'id');
             $setNull = array_diff($oldSetoranKasir, $this->setoranKasirKasir);
         }
@@ -198,7 +198,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
             if ($flag = $this->save(false)) {
 
                 if (!empty($setNull)) {
-                    SetoranKasir::updateAll(['setoran_kasir.bukti_penerimaan_buku_bank_id' => null],[ 'id' => $setNull]);
+                    SetoranKasir::updateAll(['setoran_kasir.bukti_penerimaan_buku_bank_id' => null], ['id' => $setNull]);
                 }
 
                 foreach ($this->setoranKasirKasir as $setoranKasirID) {
@@ -263,7 +263,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
             return ['bukti-penerimaan-buku-bank/update-for-invoices', 'id' => $this->id];
         }
         if ($this->setoranKasirs) {
-            return  ['bukti-penerimaan-buku-bank/update-for-setoran-kasir', 'id' => $this->id];
+            return ['bukti-penerimaan-buku-bank/update-for-setoran-kasir', 'id' => $this->id];
         }
         return '';
     }
@@ -282,6 +282,37 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
     public function getPrevious()
     {
         return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    #[ArrayShape(['status' => "bool", 'message' => "string"])]
+    public function processRegisterToBukuBank(): array
+    {
+        $kodeVoucher = KodeVoucher::find()->bukuBankIn();
+
+        $model = new BukuBank([
+            'scenario' => BukuBank::SCENARIO_BUKTI_PENERIMAAN_BUKU_BANK,
+            'kode_voucher_id' => $kodeVoucher->id,
+            'bukti_penerimaan_buku_bank_id' => $this->id,
+            'tanggal_transaksi' => $this->tanggal_transaksi_transfer
+        ]);
+
+        $status = false;
+        $message = '';
+
+        if ($model->save()) {
+            $status = true;
+            $message = $this->reference_number . ' berhasil ditambahkan ke buku bank dengan nomor voucher <strong>' . $this->bukuBank->nomor_voucher . '</strong>';
+        }
+
+        return [
+            'status' => $status,
+            'message' => $message
+        ];
+
     }
 
 }

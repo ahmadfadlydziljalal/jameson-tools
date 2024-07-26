@@ -1,20 +1,25 @@
 <?php
 
-use yii\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $model app\models\BuktiPengeluaranPettyCash */
+
 /* @see app\controllers\BuktiPengeluaranPettyCashController::actionUpdateByCashAdvance() */
 
-$this->title = 'Update Bukti Pengeluaran Petty Cash: ' . $model->reference_number;
+use yii\bootstrap5\Html;
+use yii\helpers\Inflector;
+
+$this->title = 'Update Bukti Pengeluaran ' . $model->reference_number;
 $this->params['breadcrumbs'][] = ['label' => 'Bukti Pengeluaran Petty Cash', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->reference_number, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 
-<div class="bukti-pengeluaran-petty-cash-update">
+<div class="bukti-pengeluaran-petty-cash-update d-flex flex-column gap-3">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="d-flex justify-content-between flex-wrap align-items-center">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <span class="badge text-bg-info"> <?= ucwords(Inflector::humanize($model->scenario)) ?></span>
+    </div>
 
     <?= $this->render('_form', [
         'model' => $model,

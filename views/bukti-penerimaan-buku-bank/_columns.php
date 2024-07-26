@@ -26,8 +26,18 @@ return [
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomorVoucher',
-        'format' => 'text',
-        'value' => 'bukuBank.nomor_voucher'
+        'format' => 'raw',
+        'value' => function($model) {
+            if($model->bukuBank){
+                return $model->bukuBank->nomor_voucher;
+            }
+
+            return Html::a('Register it!', ['bukti-penerimaan-buku-bank/register-to-buku-bank', 'id' => $model->id], [
+                'data-pjax' => '0',
+                'data-confirm' => 'Are you sure you want to register ' . $model->reference_number . ' to Buku Bank?',
+                'data-method' => 'post',
+            ]);
+        }
     ],
     [
         'class' => '\yii\grid\DataColumn',
@@ -105,7 +115,7 @@ return [
         'format' => ['decimal', 2],
         'hAlign' => 'right',
         'contentOptions' => [
-            'class' => 'd-none d-lg-table-cell font-monospace',
+            'class' => 'd-none d-lg-table-cell ',
         ],
         'headerOptions' => [
             'class' => 'd-none d-lg-table-cell',
@@ -121,7 +131,7 @@ return [
         'format' => ['decimal', 2],
         'hAlign' => 'right',
         'contentOptions' => [
-            'class' => 'font-monospace',
+            'class' => '',
         ],
     ],
     [

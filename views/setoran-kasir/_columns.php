@@ -57,16 +57,13 @@ return [
         'value' => fn($model) => !$model->buktiPenerimaanBukuBank ? Html::tag('span', 'Belum ada', ['class' => 'badge bg-danger']) :
             $model->buktiPenerimaanBukuBank->reference_number
         ,
-        'contentOptions' => [
-            'class' => 'small'
-        ]
     ],
     [
         'class'=>'\yii\grid\DataColumn',
         'attribute'=>'total',
         'format'=>['decimal', 2],
         'contentOptions' => [
-            'class' => 'text-end font-monospace'
+            'class' => 'text-end '
         ]
     ],
     // [

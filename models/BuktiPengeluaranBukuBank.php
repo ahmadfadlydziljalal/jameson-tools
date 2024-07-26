@@ -4,12 +4,11 @@ namespace app\models;
 
 use app\components\helpers\ArrayHelper;
 use app\models\base\BuktiPengeluaranBukuBank as BaseBuktiPengeluaranBukuBank;
+use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 use Yii;
 use yii\db\Exception;
 use yii\db\Expression;
-use yii\helpers\Html;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "bukti_pengeluaran_buku_bank".
@@ -66,7 +65,7 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
                     'jobOrder' => $jobOrderBill->jobOrder->reference_number,
                     'vendor' => $jobOrderBill->vendor->nama,
                     'reference_number' => $jobOrderBill->reference_number,
-                    'total' => round( $this->totalBayar, 2),
+                    'total' => round($this->totalBayar, 2),
                 ];
             }
 
@@ -281,7 +280,7 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
                         if (!$flag) break;
 
                         /*  yang belum ada aja yang di save dan di-pindahkan nominal-nya */
-                        if(!$jobOrderDetailCashAdvance->bukti_pengeluaran_buku_bank_id){
+                        if (!$jobOrderDetailCashAdvance->bukti_pengeluaran_buku_bank_id) {
                             $flag = $jobOrderDetailCashAdvance->markAsPaidFromBuktiPengeluaranBukuBank($this->id);
                         }
 
@@ -393,44 +392,44 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
 
     public function saveForPettyCash(): bool
     {
-        if(!$this->validate()){
+        if (!$this->validate()) {
             return false;
         }
 
         // Dalam kasus update, cek kalau ada perubahan pilihan petty cash
         $oldJobOrderDetailPettyCashID = null;
-        if(!$this->isNewRecord AND $oldJobOrderDetailPettyCashID != $this->pettyCash){
-            $oldJobOrderDetailPettyCashID= $this->jobOrderDetailPettyCash->id;
+        if (!$this->isNewRecord and $oldJobOrderDetailPettyCashID != $this->pettyCash) {
+            $oldJobOrderDetailPettyCashID = $this->jobOrderDetailPettyCash->id;
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            if($flag = $this->save(false)){
+            if ($flag = $this->save(false)) {
 
-                if(!is_null($oldJobOrderDetailPettyCashID)){
+                if (!is_null($oldJobOrderDetailPettyCashID)) {
                     $existingPettyCash = JobOrderDetailPettyCash::findOne($oldJobOrderDetailPettyCashID);
                     $existingPettyCash->bukti_pengeluaran_buku_bank_id = null;
                     $flag = $existingPettyCash->save(false);
                 }
 
-                if($flag){
-                    if($pettyCash = JobOrderDetailPettyCash::findOne($this->pettyCash)){
+                if ($flag) {
+                    if ($pettyCash = JobOrderDetailPettyCash::findOne($this->pettyCash)) {
                         $pettyCash->bukti_pengeluaran_buku_bank_id = $this->id;
                         $flag = $pettyCash->save(false);
-                    }else{
+                    } else {
                         $flag = false;
                     }
                 }
             }
 
-            if($flag){
+            if ($flag) {
                 $transaction->commit();
                 return true;
-            }else{
+            } else {
                 $transaction->rollBack();
             }
 
-        }catch (Exception $e){
+        } catch (Exception $e) {
             Yii::error($e->getMessage());
             $transaction->rollBack();
         }
@@ -446,8 +445,8 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         if ($this->jobOrderBills) {
             return ['bukti-pengeluaran-buku-bank/update-by-bill', 'id' => $this->id];
         }
-        if($this->jobOrderDetailPettyCash){
-            return  ['bukti-pengeluaran-buku-bank/update-by-petty-cash', 'id' => $this->id];
+        if ($this->jobOrderDetailPettyCash) {
+            return ['bukti-pengeluaran-buku-bank/update-by-petty-cash', 'id' => $this->id];
         }
         return '';
     }
@@ -461,10 +460,50 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         if ($this->jobOrderBills) {
             return ['bukti-pengeluaran-buku-bank/delete-by-bill', 'id' => $this->id];
         }
-        if($this->jobOrderDetailPettyCash){
-            return  ['bukti-pengeluaran-buku-bank/delete-by-petty-cash', 'id' => $this->id];
+        if ($this->jobOrderDetailPettyCash) {
+            return ['bukti-pengeluaran-buku-bank/delete-by-petty-cash', 'id' => $this->id];
         }
         return ['delete', 'id' => $this->id];
+    }
+
+    /**
+     * @return array
+     */
+    #[ArrayShape(['status' => "bool", 'message' => "string"])]
+    public function processRegisterToBukuBank(): array
+    {
+
+        $kodeVoucher = KodeVoucher::find()->bukuBankIn();
+        $model = new BukuBank([
+            'scenario' => BukuBank::SCENARIO_BUKTI_PENGELUARAN_BUKU_BANK,
+            'kode_voucher_id' => $kodeVoucher->id,
+            'bukti_pengeluaran_buku_bank_id' => $this->id,
+            'tanggal_transaksi' => $this->tanggal_transaksi
+        ]);
+
+        $status = false;
+        $message = '';
+
+        if ($this->jobOrderDetailPettyCash) {
+            if ($model->saveWithMutasiKasPettyCash()) {
+                $status = true;
+                $message = $this->reference_number .
+                    ' berhasil ditambahkan ke buku bank dengan nomor voucher <strong>' . $this->bukuBank->nomor_voucher . '</strong>,' .
+                    ' nomor bukti penerimaan petty cash <strong>' . $this->bukuBank->buktiPenerimaanPettyCash->reference_number . '</strong>,' .
+                    ' nomor mutasi kas <strong>' . $this->bukuBank->buktiPenerimaanPettyCash->mutasiKasPettyCash->nomor_voucher . '</strong>';
+            }
+        } else {
+            if ($model->saveWithoutMutasiKasPettyCash()) {
+                $status = true;
+                $message = $this->reference_number . ' berhasil ditambahkan ke buku bank dengan nomor voucher ' . $this->bukuBank->nomor_voucher;
+            }
+        }
+
+        return [
+            'status' => $status,
+            'message' => $message
+        ];
+
     }
 
 

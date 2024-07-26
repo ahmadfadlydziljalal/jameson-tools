@@ -1,21 +1,31 @@
 <?php
 
-/* @var $this \yii\web\View */
-/* @var $model \app\models\BuktiPengeluaranPettyCash|string|\yii\db\ActiveRecord */
+/* @var $this View */
 
+/* @var $model BuktiPengeluaranPettyCash|string|ActiveRecord */
+
+use app\models\BuktiPengeluaranPettyCash;
+use yii\db\ActiveRecord;
+use yii\web\View;
 use yii\widgets\DetailView;
 
 ?>
 
 <div class="">
-    <p><strong>Kasbon / Cash Advance</strong></p>
-
+    <h2><strong>Kasbon / Cash Advance</strong></h2>
     <?= DetailView::widget([
         'model' => $model->jobOrderDetailCashAdvance,
         'attributes' => [
             [
                 'attribute' => 'jenis_biaya_id',
                 'value' => $model->jobOrderDetailCashAdvance->jenisBiaya->name,
+                'captionOptions' => [
+                    'style' => 'text-align:left;',
+                ],
+            ],
+            [
+                'attribute' => 'vendor_id',
+                'value' => $model->jobOrderDetailCashAdvance->vendor->nama,
                 'captionOptions' => [
                     'style' => 'text-align:left;',
                 ],

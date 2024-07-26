@@ -17,6 +17,7 @@ use \app\models\active_queries\BuktiPenerimaanPettyCashQuery;
  * @property string $reference_number
  * @property integer $bukti_pengeluaran_petty_cash_cash_advance_id
  * @property integer $buku_bank_id
+ * @property string $tanggal_transaksi
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $created_by
@@ -61,6 +62,8 @@ abstract class BuktiPenerimaanPettyCash extends \yii\db\ActiveRecord
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
             [['bukti_pengeluaran_petty_cash_cash_advance_id', 'buku_bank_id'], 'integer'],
+            [['tanggal_transaksi'], 'required'],
+            [['tanggal_transaksi'], 'safe'],
             [['reference_number'], 'string', 'max' => 50],
             [['bukti_pengeluaran_petty_cash_cash_advance_id'], 'unique'],
             [['buku_bank_id'], 'unique'],
@@ -83,6 +86,7 @@ abstract class BuktiPenerimaanPettyCash extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
+            'tanggal_transaksi' => 'Tanggal Transaksi',
         ]);
     }
 

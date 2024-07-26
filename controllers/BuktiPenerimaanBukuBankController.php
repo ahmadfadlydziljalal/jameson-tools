@@ -207,6 +207,20 @@ class BuktiPenerimaanBukuBankController extends Controller
     }
 
     /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException|Exception
+     */
+    public function actionRegisterToBukuBank($id): Response
+    {
+        $isSaved = $this->findModel($id)->processRegisterToBukuBank();
+        if($isSaved['status']){
+            Yii::$app->session->setFlash('success', $isSaved['message']);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
      * Finds the BuktiPenerimaanBukuBank model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
