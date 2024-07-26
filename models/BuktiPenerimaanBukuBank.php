@@ -54,6 +54,8 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
             $this->referensiPenerimaan['bank'] = ArrayHelper::toArray(
                 $this->rekeningSaya
             );
+            $this->referensiPenerimaan['card'] = ArrayHelper::toArray($this->customer);
+
             foreach ($this->setoranKasirs as $setoranKasir) {
                 $this->referensiPenerimaan['data'][] = [
                     'setoranKasir' => $setoranKasir->reference_number,
@@ -74,6 +76,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
             $this->referensiPenerimaan['bank'] = ArrayHelper::toArray(
                 $this->rekeningSaya
             );
+            $this->referensiPenerimaan['card'] = ArrayHelper::toArray($this->customer);
             foreach ($this->invoices as $invoice) {
                 $this->referensiPenerimaan['data'][] = [
                     'invoice' => $invoice->reference_number,

@@ -2,10 +2,12 @@
 
 namespace app\models\search;
 
+use app\components\helpers\ArrayHelper;
 use app\models\BuktiPenerimaanBukuBank;
 use app\models\BuktiPengeluaranBukuBank;
 use app\models\BukuBank;
 use app\models\TransaksiBukuBankLainnya;
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -17,7 +19,7 @@ class BukuBankSearch extends BukuBank
 {
     public ?string $mutasiKas = null;
     public ?string $bankId = null;
-
+    public ?string $cardId = null;
     public ?string $transaksiBukuBankLainnya = null;
 
     /**
@@ -26,9 +28,17 @@ class BukuBankSearch extends BukuBank
     public function rules(): array
     {
         return [
-            [['id', 'kode_voucher_id', 'bukti_penerimaan_buku_bank_id', 'bukti_pengeluaran_buku_bank_id', 'bankId'], 'integer'],
+            [['id', 'kode_voucher_id', 'bukti_penerimaan_buku_bank_id', 'bukti_pengeluaran_buku_bank_id', 'bankId', 'cardId'], 'integer'],
             [['nomor_voucher', 'tanggal_transaksi', 'keterangan', 'mutasiKas', 'transaksiBukuBankLainnya'], 'safe'],
         ];
+    }
+
+    public function attributeLabels(): array
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'bankId' => 'Bank',
+            'cardId' => 'Card',
+        ]);
     }
 
     /**
@@ -53,24 +63,21 @@ class BukuBankSearch extends BukuBank
                 /** @var BuktiPenerimaanBukuBank $buktiPenerimaanBukuBank */
                 $buktiPenerimaanBukuBank->joinWith(['rekeningSaya' => function ($rekeningSaya) {
                     $rekeningSaya->from(['rekening1' => 'rekening']);
-                }]);
+                }])->joinWith(['customer' => fn($customer) => $customer->from(['customer' => 'card'])]);
             }])
             ->joinWith(['buktiPengeluaranBukuBank' => function ($buktiPengeluaranBukuBank) {
                 /** @var BuktiPengeluaranBukuBank $buktiPengeluaranBukuBank */
                 $buktiPengeluaranBukuBank->joinWith(['rekeningSaya' => function ($rekeningSaya) {
                     $rekeningSaya->from(['rekening2' => 'rekening']);
-                }]);
+                }])->joinWith(['vendor' => fn($vendor) => $vendor->from(['vendor' => 'card'])]);
             }])
             ->joinWith(['transaksiBukuBankLainnya' => function ($transaksiBukuBankLainnya) {
                 /** @var TransaksiBukuBankLainnya $transaksiBukuBankLainnya */
                 $transaksiBukuBankLainnya->joinWith(['rekening' => function ($rekeningSaya) {
                     $rekeningSaya->from(['rekening3' => 'rekening']);
-                }]);
+                }])->joinWith(['card' => fn($card) => $card->from(['card' => 'card'])]);
             }])
-            ->joinWith(['mutasiKasPettyCash' => function ($mutasiKasPettyCash) {
-
-            }])
-        ;
+            ->joinWith('mutasiKasPettyCash');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -108,15 +115,24 @@ class BukuBankSearch extends BukuBank
             'rekening3.id' => $this->bankId,
         ]);
 
+        $query->orFilterWhere([
+            'vendor.id' => $this->cardId,
+        ]);
+        $query->orFilterWhere([
+            'customer.id' => $this->cardId,
+        ]);
+        $query->orFilterWhere([
+            'card.id' => $this->cardId,
+        ]);
+
         if (isset($this->tanggal_transaksi) and !empty($this->tanggal_transaksi)) {
             $query->andFilterWhere([
-                'tanggal_transaksi' => \Yii::$app->formatter->asDate($this->tanggal_transaksi, 'php:Y-m-d'),
+                'tanggal_transaksi' => Yii::$app->formatter->asDate($this->tanggal_transaksi, 'php:Y-m-d'),
             ]);
         }
 
         $query->andFilterWhere(['like', 'buku_bank.nomor_voucher', $this->nomor_voucher])
-            ->andFilterWhere(['like', 'keterangan', $this->keterangan])
-        ;
+            ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
         return $dataProvider;
     }
 }
