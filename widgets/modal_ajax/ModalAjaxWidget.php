@@ -7,14 +7,15 @@ use yii\base\Widget;
 class ModalAjaxWidget extends Widget
 {
 
-   public function init()
-   {
-      parent::init();
-   }
+    public function init()
+    {
+        parent::init();
 
-   public function run()
-   {
-      return $this->render('index');
-   }
+    }
+
+    public function run()
+    {
+        return $this->render('index');
+    }
 
 }

@@ -19,15 +19,16 @@ use yii\widgets\DetailView;
             'data-pjax' => '0'
         ]) ?>
 
-        <?php if(!$model->jobOrderDetailPettyCash) {
+        <?php if (!$model->jobOrderDetailPettyCash) {
             echo Html::a(TextLinkEnum::UPDATE->value, ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
-        }else{
+        } else {
             echo Html::a(TextLinkEnum::UPDATE->value, ['update-for-petty-cash', 'id' => $model->id], ['class' => 'btn btn-primary']);
         } ?>
 
     </div>
 
-    <?php echo DetailView::widget([
+    <?php
+    echo DetailView::widget([
         'model' => $model,
         'options' => [
             'class' => 'table table-detail-view table-bordered'
@@ -36,11 +37,11 @@ use yii\widgets\DetailView;
             'reference_number',
             [
                 'attribute' => 'main_vendor_id',
-                'value' => $model->mainVendor->nama
+                'value' => fn($vendor) => $vendor->mainVendor->nama
             ],
             [
                 'attribute' => 'main_customer_id',
-                'value' => $model->mainCustomer->nama
+                'value' => fn($customer) => $customer->mainCustomer->nama
             ],
             'keterangan:ntext',
             [

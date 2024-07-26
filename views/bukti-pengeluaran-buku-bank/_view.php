@@ -1,8 +1,10 @@
 <?php
 
 /* @var $this yii\web\View */
-/* @var $model app\models\BuktiPengeluaranBukuBank|string|\yii\db\ActiveRecord */
 
+/* @var $model app\models\BuktiPengeluaranBukuBank|string|ActiveRecord */
+
+use yii\db\ActiveRecord;
 use yii\widgets\DetailView;
 
 ?>
@@ -49,6 +51,7 @@ use yii\widgets\DetailView;
         ],
         [
             'attribute' => 'created_by',
+//            'value' => fn($model) => $model->createdBy->username,
             'value' => function ($model) {
                 return app\models\User::findOne($model->created_by)->username;
             }
@@ -62,6 +65,8 @@ use yii\widgets\DetailView;
     ],
 ]); ?>
 
-<?php echo $this->render('_view_2', [
-    'model' => $model,
-]); ?>
+<?php
+//echo $this->render('_view_2', [
+//    'model' => $model,
+//]);
+?>

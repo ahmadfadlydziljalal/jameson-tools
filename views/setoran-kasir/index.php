@@ -12,7 +12,7 @@ $this->title = 'Setoran Kasir';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="setoran-kasir-index">
+<div class="setoran-kasir-index d-flex flex-column gap-2">
 
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>

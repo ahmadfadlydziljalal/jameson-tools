@@ -96,6 +96,7 @@ class BuktiPenerimaanBukuBank extends BaseBuktiPenerimaanBukuBank
             'jumlah_setor' => 'Setor',
             'jumlahSeharusnya' => 'Seharusnya',
             'rekening_saya_id' => 'Rekening Saya',
+            'tanggal_transaksi_transfer' => 'Tgl. Transaksi',
         ]);
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use app\enums\TextLinkEnum;
 use app\models\User;
 use kartik\dialog\Dialog;
 use mdm\admin\components\Helper;
@@ -21,21 +22,19 @@ Dialog::widget()
 <div class="invoice-view d-flex flex-column gap-3">
 
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
-
         <div class="d-inline-flex align-items-center gap-2">
             <?= Html::a('<span class="lead"><i class="bi bi-arrow-left-circle"></i></span>', Yii::$app->request->referrer, ['class' => 'text-decoration-none']) ?>
             <h1 class="m-0">
                 <?= Html::encode($this->title) ?>
             </h1>
         </div>
-
         <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
             <?= Html::a('Buat Invoice Lainnya', ['create'], ['class' => 'btn btn-success']) ?>
-            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
-            <?= Html::a('Export PDF', ['export-to-pdf', 'id' => $model->id], ['class' => 'btn btn-outline-primary', 'target' => '_blank']) ?>
+            <?= Html::a(TextLinkEnum::UPDATE->value, ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
+            <?= Html::a(TextLinkEnum::PRINT->value, ['export-to-pdf', 'id' => $model->id], ['class' => 'btn btn-outline-primary', 'target' => '_blank']) ?>
             <?php
             if (Helper::checkRoute('delete')) :
-                echo Html::a('Hapus', ['delete', 'id' => $model->id], [
+                echo Html::a(TextLinkEnum::DELETE->value, ['delete', 'id' => $model->id], [
                     'class' => 'btn btn-outline-danger',
                     'data' => [
                         'confirm' => 'Are you sure you want to delete this item?',
@@ -62,7 +61,7 @@ Dialog::widget()
                 'tanggal_invoice:date',
                 [
                     'attribute' => 'nomor_rekening_tagihan_id',
-                    'value' => $model->nomorRekeningTagihan ? nl2br( $model->nomorRekeningTagihan->atas_nama): '-',
+                    'value' => $model->nomorRekeningTagihan ? nl2br($model->nomorRekeningTagihan->atas_nama) : '-',
                     'format' => 'html',
                 ],
                 [
@@ -87,7 +86,6 @@ Dialog::widget()
                 ],
             ],
         ]);
-
         echo Html::tag('h2', 'Invoice Detail');
         echo !empty($model->invoiceDetails) ?
             GridView::widget([
@@ -110,12 +108,12 @@ Dialog::widget()
                     [
                         'class' => '\yii\grid\DataColumn',
                         'attribute' => 'satuan_id',
-                        'value' => fn ($model) => $model->satuan ? $model->satuan->nama : '-',
+                        'value' => fn($model) => $model->satuan ? $model->satuan->nama : '-',
                     ],
                     [
                         'class' => '\yii\grid\DataColumn',
                         'attribute' => 'barang_id',
-                        'value' => fn ($model) => $model->barang ? $model->barang->nama : '-',
+                        'value' => fn($model) => $model->barang ? $model->barang->nama : '-',
                     ],
                     [
                         'class' => '\yii\grid\DataColumn',
@@ -134,5 +132,23 @@ Dialog::widget()
         echo $e->getMessage();
     }
     ?>
+
+    <div class="d-inline-flex">
+        <?php
+        if ($model->getPrevious()) {
+            echo Html::a('<< Previous', ['view', 'id' => $model->getPrevious()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => 1,
+                'id' => 'prev-page'
+            ]);
+        }
+
+        if ($model->getNext()) {
+            echo Html::a('Next >>', ['view', 'id' => $model->getNext()->id], [
+                'class' => 'btn btn-primary', 'data-pjax' => "1",
+                'id' => 'next-page'
+            ]);
+        }
+        ?>
+    </div>
 
 </div>

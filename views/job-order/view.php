@@ -3,6 +3,7 @@
 use app\assets\Bootstrap5VerticalTabs;
 use app\components\helpers\ArrayHelper;
 use app\models\form\PaymentKasbonForm;
+use app\widgets\prev_next_navigation\PrevNextNavigationWidget;
 use kartik\bs5dropdown\ButtonDropdown;
 use mdm\admin\components\Helper;
 use yii\bootstrap5\Tabs;
@@ -115,24 +116,11 @@ Bootstrap5VerticalTabs::register($this);
             ]);
             ?>
         </div>
-
-        <div class="d-inline-flex gap-2">
-            <?php
-            if ($model->getPrevious()) {
-                echo Html::a('<< Previous', ['view', 'id' => $model->getPrevious()->id], [
-                    'class' => 'btn btn-primary', 'data-pjax' => 1,
-                    'id' => 'prev-page'
-                ]);
-            }
-
-            if ($model->getNext()) {
-                echo Html::a('Next >>', ['view', 'id' => $model->getNext()->id], [
-                    'class' => 'btn btn-primary', 'data-pjax' => "1",
-                    'id' => 'next-page'
-                ]);
-            }
-            ?>
-        </div>
+        
+        <?= PrevNextNavigationWidget::widget([
+            'model' => $model,
+            'isPjax' => 1
+        ]) ?>
 
     </div>
 <?php Pjax::end() ?>

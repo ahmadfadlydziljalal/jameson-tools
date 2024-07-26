@@ -44,7 +44,8 @@ class Invoice extends BaseInvoice
         ]);
     }
 
-    protected function countTotal(){
+    protected function countTotal()
+    {
         $total = 0;
         foreach ($this->invoiceDetails as $invoiceDetail) {
             $total += $invoiceDetail->jumlahHarga();
@@ -52,7 +53,7 @@ class Invoice extends BaseInvoice
         return $total;
     }
 
-    public function getTotal(bool $format= false): mixed
+    public function getTotal(bool $format = false): mixed
     {
         return $format ? Yii::$app->formatter->asDecimal($this->total, 2) : $this->total;
     }
@@ -63,5 +64,19 @@ class Invoice extends BaseInvoice
     }
 
 
+    /**
+     * @return $this
+     */
+    public function getNext()
+    {
+        return $this->find()->where(['>', 'id', $this->id])->one();
+    }
 
+    /**
+     * @return $this
+     */
+    public function getPrevious()
+    {
+        return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
+    }
 }

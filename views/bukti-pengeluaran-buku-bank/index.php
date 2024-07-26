@@ -3,6 +3,7 @@
 use kartik\bs5dropdown\ButtonDropdown;
 use kartik\grid\GridView;
 use yii\helpers\Html;
+use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\BuktiPengeluaranBukuBankSearch */
@@ -38,13 +39,27 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php echo GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => require(__DIR__ . '/_columns.php'),
-        'tableOptions' => [
-            'class' => 'table table-gridview table-fixes-last-column'
-        ],
-    ]); ?>
+    <?php if (Yii::$app->settings->get('ui.buktiPengeluaranBukuBank.index') == 'listView') : ?>
+
+        <?= ListView::widget([
+            'dataProvider' => $dataProvider,
+            'itemView' => '_item',
+            'layout' => "{items}",
+            'options' => [
+                'class' => 'd-flex flex-column gap-3'
+            ]
+        ]) ?>
+
+    <?php else : ?>
+        <?php echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => require(__DIR__ . '/_columns.php'),
+            'tableOptions' => [
+                'class' => 'table table-gridview table-fixes-last-column'
+            ],
+        ]); ?>
+
+    <?php endif ?>
 
 </div>
