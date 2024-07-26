@@ -479,18 +479,20 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
      */
     private function setReferensiPembayaranForCashAdvanceType(): void
     {
-        if ($this->jobOrderDetailCashAdvances) {
+        $jobOrderDetailCashAdvances = $this->getJobOrderDetailCashAdvances()->with(['jobOrder', 'vendor'])->all();
+        if ($jobOrderDetailCashAdvances) {
 
             $this->tujuanBayar = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
             $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
             $this->referensiPembayaran['bank'] = ArrayHelper::toArray($this->rekeningSaya);
 
-            $jobOrderDetailCashAdvances = $this->getJobOrderDetailCashAdvances()->with(['jobOrder'])->all();
+            /** @var JobOrderDetailCashAdvance $cashAdvance */
             foreach ($jobOrderDetailCashAdvances as $cashAdvance) {
                 $this->totalBayar += $cashAdvance->cash_advance;
                 $this->referensiPembayaran['data'][] = [
                     'jobOrder' => $cashAdvance->jobOrder->reference_number,
                     'reference_number' => 'Kasbon ke ' . $cashAdvance->order,
+                    'vendor' => $cashAdvance->vendor->nama,
                     'total' => round($cashAdvance->cash_advance, 2),
                 ];
             }
@@ -500,17 +502,20 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
     private function setReferensiPembayaranForBillTagihan(): void
     {
 
-        if ($this->jobOrderBills) {
+        $jobOrderBills = $this->getJobOrderBills()->with(['jobOrder'])->all();
+        if ($jobOrderBills) {
             $this->tujuanBayar = static::PEMBAYARAN_BILL_JOB_ORDER;
             $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_BILL_JOB_ORDER;
             $this->referensiPembayaran['bank'] = ArrayHelper::toArray($this->rekeningSaya);
 
-            $jobOrderBills = $this->getJobOrderBills()->with(['jobOrder'])->all();
+
+            /** @var JobOrderBill $jobOrderBill */
             foreach ($jobOrderBills as $jobOrderBill) {
                 $this->totalBayar += $jobOrderBill->totalPrice;
                 $this->referensiPembayaran['data'][] = [
                     'jobOrder' => $jobOrderBill->jobOrder->reference_number,
                     'reference_number' => $jobOrderBill->reference_number,
+                    'vendor' => $jobOrderBill->vendor->nama,
                     'total' => round($this->totalBayar, 2),
                 ];
             }
@@ -527,6 +532,7 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             $this->totalBayar = $this->jobOrderDetailPettyCash->nominal;
             $this->referensiPembayaran['data'][] = [
                 'jobOrder' => $this->jobOrderDetailPettyCash->jobOrder->reference_number,
+                'vendor' => $this->jobOrderDetailPettyCash->vendor->nama,
                 'total' => $this->totalBayar,
             ];
         }
