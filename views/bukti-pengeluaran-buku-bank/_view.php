@@ -66,7 +66,7 @@ use yii\widgets\DetailView;
 ]); ?>
 
 <?php
-//echo $this->render('_view_2', [
-//    'model' => $model,
-//]);
+echo $this->render('_view_2', [
+    'model' => $model,
+]);
 ?>
