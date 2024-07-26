@@ -25,15 +25,17 @@ aside {
         line-height: 2.5rem;
         margin-bottom: .25rem;
 
-        &:hover {
-          color: vars.$info;
-          border-radius: 8px;
-        }
 
         a {
           display: block;
           text-decoration: none;
           color: vars.$black;
+
+          &:hover {
+            color: vars.$info;
+            border-radius: 8px;
+            font-weight: 800;
+          }
         }
 
         &.active {

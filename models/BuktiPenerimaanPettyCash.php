@@ -50,23 +50,8 @@ class BuktiPenerimaanPettyCash extends BaseBuktiPenerimaanPettyCash
                 'nominal' => $this->nominal,
             ];
         }
-
-
     }
-
-    /*public function behaviors()
-    {
-        return ArrayHelper::merge(parent::behaviors(), [
-            # custom behaviors,
-            [
-                'class' => 'mdm\autonumber\Behavior',
-                'attribute' => 'reference_number', // required
-                'value' => '?' . '/BP-IN-PC/' . date('Y'), // format auto number. '?' will be replaced with generated number
-                'digit' => 4
-            ],
-        ]);
-    }*/
-
+    
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
