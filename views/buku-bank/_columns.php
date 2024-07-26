@@ -4,10 +4,15 @@
 
 use app\models\BuktiPenerimaanBukuBank;
 use app\models\BuktiPengeluaranBukuBank;
+use app\models\Card;
+use app\models\MutasiKasPettyCash;
+use app\models\Rekening;
+use app\models\TransaksiBukuBankLainnya;
 use kartik\date\DatePicker;
 use kartik\grid\GridViewInterface;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
+use yii\helpers\VarDumper;
 use yii\web\JsExpression;
 use yii\web\View;
 
@@ -15,24 +20,41 @@ return [
     [
         'class' => 'yii\grid\SerialColumn',
     ],
-/*    [
-        'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'id',
-        'format' => 'text',
-    ],*/
+    /*    [
+            'class' => '\kartik\grid\DataColumn',
+            'attribute' => 'id',
+            'format' => 'text',
+        ],*/
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'bankId',
-        'value' => fn($model) => $model->businessProcess['bank']['nama_bank'],
+        'header' => 'Bank',
+        'value' => fn($model) => $model->businessProcess['bank']['nama_bank'] ?? '',
         'filterType' => GridViewInterface::FILTER_SELECT2,
         'filterWidgetOptions' => [
-            'data' => \app\models\Rekening::find()->mapOnlyTokoSaya('nama_bank'),
+            'data' => Rekening::find()->mapOnlyTokoSaya('nama_bank'),
             'options' => ['placeholder' => '...'],
             'pluginOptions' => [
                 'allowClear' => true,
             ]
         ]
     ],
+//    [
+//        'class' => '\kartik\grid\DataColumn',
+//        'attribute' => 'businessProcess',
+//        'contentOptions' => [
+//            'class' => 'small text-wrap'
+//        ],
+//        'format' => 'raw',
+//        'value' => function ($model, $key, $index, $column) {
+//            /** @var \app\models\BukuBank $model */
+//            return \yii\helpers\Html::tag('pre', VarDumper::dumpAsString($model->businessProcess));
+////            if ($model->businessProcess) {
+////                return $model->businessProcess['businessProcess'] ?? '';
+////            }
+////            return '';
+//        }
+//    ],
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'nomor_voucher',
@@ -51,7 +73,36 @@ return [
             'type' => DatePicker::TYPE_INPUT,
         ],
         'format' => 'date',
-
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'cardId',
+        'header' => 'Card',
+        'value' => fn($model) => $model->businessProcess['card']['nama'] ?? '',
+        'filterType' => GridViewInterface::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'initValueText' => !empty($searchModel->cardId)
+                ? Card::findOne($searchModel->cardId)->nama
+                : '',
+            'options' => ['placeholder' => '...'],
+            'pluginOptions' => [
+                'width' => '100%',
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("function () { return 'Fetching ke API ...'; }"),
+                ],
+                'ajax' => [
+                    'type' => 'GET',
+                    'url' => Url::to(['card/find-by-id']),
+                    'dataType' => 'json',
+                    'data' => new JsExpression("function(params) { return {q:params.term}; }")
+                ],
+                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                'templateResult' => new JsExpression('function(q) { return q.text; }'),
+                'templateSelection' => new JsExpression('function (q) { return q.text; }'),
+            ],
+        ]
     ],
     [
         'class' => '\kartik\grid\DataColumn',
@@ -138,7 +189,7 @@ return [
         'filterType' => GridViewInterface::FILTER_SELECT2,
         'filterWidgetOptions' => [
             'initValueText' => !empty($searchModel->mutasiKas)
-                ? \app\models\MutasiKasPettyCash::findOne($searchModel->mutasiKas)->nomor_voucher
+                ? MutasiKasPettyCash::findOne($searchModel->mutasiKas)->nomor_voucher
                 : '',
             'options' => ['placeholder' => '...'],
             'pluginOptions' => [
@@ -177,7 +228,7 @@ return [
         'filterType' => GridViewInterface::FILTER_SELECT2,
         'filterWidgetOptions' => [
             'initValueText' => !empty($searchModel->transaksiBukuBankLainnya)
-                ? \app\models\TransaksiBukuBankLainnya::findOne($searchModel->transaksiBukuBankLainnya)->reference_number
+                ? TransaksiBukuBankLainnya::findOne($searchModel->transaksiBukuBankLainnya)->reference_number
                 : '',
             'options' => ['placeholder' => '...'],
             'pluginOptions' => [
@@ -189,7 +240,7 @@ return [
                 ],
                 'ajax' => [
                     'type' => 'GET',
-                    'url' => Url::to('/buku-bank/find-transaksi-buku-bank-lainnya'), /* @see \app\controllers\BukuBankController::actionFindTransaksiBukuBankLainnya()  */
+                    'url' => Url::to('/buku-bank/find-transaksi-buku-bank-lainnya'), /* @see \app\controllers\BukuBankController::actionFindTransaksiBukuBankLainnya() */
                     'dataType' => 'json',
                     'data' => new JsExpression("function(params) { return {q:params.term}; }")
                 ],
@@ -209,22 +260,7 @@ return [
         ]
     ],
 
-//    [
-//        'class' => '\kartik\grid\DataColumn',
-//        'attribute' => 'businessProcess',
-//        'contentOptions' => [
-//            'class' => 'small text-wrap'
-//        ],
-//        'format' => 'raw',
-//        'value' => function ($model, $key, $index, $column) {
-//            /** @var \app\models\BukuBank $model */
-//            /*return \yii\helpers\Html::tag('pre', VarDumper::dumpAsString($model->businessProcess));*/
-//            if ($model->businessProcess) {
-//                return $model->businessProcess['businessProcess'] ?? '';
-//            }
-//            return '';
-//        }
-//    ],
+
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'nominal',

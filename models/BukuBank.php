@@ -23,7 +23,6 @@ class BukuBank extends BaseBukuBank
 
     public string|array|null $businessProcess = null;
     public ?string $nominal = null;
-    public ?string $cardName = null;
 
     public function rules(): array
     {
@@ -78,6 +77,7 @@ class BukuBank extends BaseBukuBank
         if ($this->bukti_pengeluaran_buku_bank_id) {
             $this->nominal = $this->buktiPengeluaranBukuBank->totalBayar;
             $this->businessProcess = $this->buktiPengeluaranBukuBank->referensiPembayaran;
+
         }
 
         if ($this->bukti_penerimaan_buku_bank_id) {
@@ -90,6 +90,7 @@ class BukuBank extends BaseBukuBank
             $this->businessProcess = [
                 'businessProcess' => 'Pengeluaran Buku Bank Lainnya',
                 'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
+                'card' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->card),
                 'data' => [
                     'reference_number' => $this->transaksiBukuBankLainnya->reference_number,
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
@@ -104,6 +105,7 @@ class BukuBank extends BaseBukuBank
             $this->businessProcess = [
                 'businessProcess' => 'Pendapatan Buku Bank Lainnya',
                 'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
+                'card' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->card),
                 'data' => [
                     'reference_number' => $this->transaksiBukuBankLainnya->reference_number,
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
