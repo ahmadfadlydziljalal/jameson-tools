@@ -3,8 +3,6 @@
 namespace app\controllers;
 
 use app\models\BuktiPengeluaranBukuBank;
-use app\models\BukuBank;
-use app\models\KodeVoucher;
 use app\models\search\BuktiPengeluaranBukuBankSearch;
 use Throwable;
 use Yii;
@@ -271,8 +269,10 @@ class BuktiPengeluaranBukuBankController extends Controller
     public function actionRegisterToBukuBank($id): Response
     {
         $isSaved = $this->findModel($id)->processRegisterToBukuBank();
-        if($isSaved['status']){
+        if ($isSaved['status']) {
             Yii::$app->session->setFlash('success', $isSaved['message']);
+        } else {
+            Yii::$app->session->setFlash('danger', 'Gagal');
         }
         return $this->redirect(Yii::$app->request->referrer);
     }

@@ -40,9 +40,7 @@ use yii\helpers\Html;
                     <?= Html::tag('span', 'Waiting for Bukti Pengeluaran Buku Bank', ['class' => 'text-danger']) ?>
                     <div>
                         <?= Html::a(TextLinkEnum::UPDATE->value, ['update-for-petty-cash', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
-
                     </div>
-
                 </div>
 
             <?php endif ?>

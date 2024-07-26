@@ -53,7 +53,7 @@ class BukuBank extends BaseBukuBank
     public function beforeSave($insert): bool
     {
         if ($insert) {
-            if($this->scenario != self::SCENARIO_RESTORE) {
+            if ($this->scenario != self::SCENARIO_RESTORE) {
                 $this->nomor_voucher = AutoNumber::generate(KodeVoucherEnum::JP->name . "?", false, 4, [date('Y')]); // Reset setiap ganti tahun
             }
 
@@ -91,7 +91,7 @@ class BukuBank extends BaseBukuBank
                 'businessProcess' => 'Pengeluaran Buku Bank Lainnya',
                 'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
                 'data' => [
-                    'reference_number' =>$this->transaksiBukuBankLainnya->reference_number,
+                    'reference_number' => $this->transaksiBukuBankLainnya->reference_number,
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisBiaya->name,
                     'nominal' => round($this->transaksiBukuBankLainnya->nominal, 2),
@@ -105,7 +105,7 @@ class BukuBank extends BaseBukuBank
                 'businessProcess' => 'Pendapatan Buku Bank Lainnya',
                 'bank' => ArrayHelper::toArray($this->transaksiBukuBankLainnya->rekening),
                 'data' => [
-                    'reference_number' =>$this->transaksiBukuBankLainnya->reference_number,
+                    'reference_number' => $this->transaksiBukuBankLainnya->reference_number,
                     'vendor' => $this->transaksiBukuBankLainnya->card->nama,
                     'biaya' => $this->transaksiBukuBankLainnya->jenisPendapatan->name,
                     'nominal' => round($this->transaksiBukuBankLainnya->nominal, 2),
@@ -122,14 +122,17 @@ class BukuBank extends BaseBukuBank
         return $this->hasOne(MutasiKasPettyCash::class, ['bukti_penerimaan_petty_cash_id' => 'id'])
             ->via('buktiPenerimaanPettyCash');
     }
+
     public function getNext(): ?BukuBank
     {
         return static::find()->where(['>', 'id', $this->id])->one();
     }
+
     public function getPrevious(): ?BukuBank
     {
         return static::find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
+
     public function saveTransaksiLainnya(TransaksiBukuBankLainnya $modelTransaksiLainnya): bool
     {
         if (!$this->validate() and !$modelTransaksiLainnya->validate()) {
@@ -196,6 +199,7 @@ class BukuBank extends BaseBukuBank
                     // kalau bukti pengeluaran untuk penambahan saldo mutasi kas
                     if ($this->buktiPengeluaranBukuBank->jobOrderDetailPettyCash) {
                         $buktiPenerimaanPettyCash = new BuktiPenerimaanPettyCash();
+                        $buktiPenerimaanPettyCash->tanggal_transaksi = $this->tanggal_transaksi;
                         $buktiPenerimaanPettyCash->buku_bank_id = $this->id;
                         $flag = $buktiPenerimaanPettyCash->save(false);
 
@@ -247,11 +251,11 @@ class BukuBank extends BaseBukuBank
                 'data' => Json::encode($data)
             ]);
 
-            if($flag = $model->save()){
+            if ($flag = $model->save()) {
                 if ($flag = $this->buktiPenerimaanPettyCash->mutasiKasPettyCash->delete()) {
                     if ($flag = $this->buktiPenerimaanPettyCash->delete()) {
                         $flag = $this->delete();
-                    };
+                    }
                 }
             }
 
