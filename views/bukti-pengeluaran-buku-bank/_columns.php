@@ -7,7 +7,6 @@ use app\models\JenisTransfer;
 use kartik\date\DatePicker;
 use kartik\grid\GridViewInterface;
 use yii\helpers\Html;
-use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 
@@ -38,8 +37,8 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomorVoucher',
         'format' => 'raw',
-        'value' => function($model) {
-            if($model->bukuBank){
+        'value' => function ($model) {
+            if ($model->bukuBank) {
                 return $model->bukuBank->nomor_voucher;
             }
 
@@ -131,13 +130,13 @@ return [
         'attribute' => 'referensiPembayaran',
         'format' => 'raw',
         'value' => function ($model) {
-            $map = array_map(function($element){
+            $map = array_map(function ($element) {
                 $string = $element['jobOrder'];
-                if(isset($element['reference_number']) AND $element['reference_number']){
+                if (isset($element['reference_number']) and $element['reference_number']) {
                     $string .= ' / ' . $element['reference_number'];
                 }
                 return Html::tag('span', $string, ['class' => 'badge rounded-pill text-bg-primary']);
-            } , $model->referensiPembayaran['data']);
+            }, $model->referensiPembayaran['data']);
 
             return implode(' ', $map);
         },
@@ -261,24 +260,24 @@ return [
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-bill', 'id' => $model->id]);
                 }
 
-                if($model->jobOrderDetailPettyCash){
+                if ($model->jobOrderDetailPettyCash) {
                     return Html::a('<i class="bi bi-pencil"></i>', ['bukti-pengeluaran-buku-bank/update-by-petty-cash', 'id' => $model->id]);
                 }
                 return '';
             },
             'delete' => function ($url, $model) {
                 if ($model->jobOrderDetailCashAdvances) {
-                    return Html::a('<i class="bi bi-trash"></i>', ['bukti-pengeluaran-buku-bank/delete-by-cash-advance', 'id' => $model->id],[
+                    return Html::a('<i class="bi bi-trash"></i>', ['bukti-pengeluaran-buku-bank/delete-by-cash-advance', 'id' => $model->id], [
                         'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                         'data-method' => 'post',
-                        'class'=>'text-danger',
+                        'class' => 'text-danger',
                     ]);
                 }
 
-                return Html::a('<i class="bi bi-trash"></i>', ['bukti-pengeluaran-buku-bank/delete', 'id' => $model->id],[
+                return Html::a('<i class="bi bi-trash"></i>', ['bukti-pengeluaran-buku-bank/delete', 'id' => $model->id], [
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'data-method' => 'post',
-                    'class'=>'text-danger',
+                    'class' => 'text-danger',
                 ]);
             }
         ]

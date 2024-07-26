@@ -34,59 +34,14 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
         parent::afterFind();
 
         // Bayar untuk kasbon
-        if ($this->jobOrderDetailCashAdvances) {
-            $this->tujuanBayar = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
-            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
-            $this->referensiPembayaran['bank'] = ArrayHelper::toArray(
-                $this->rekeningSaya
-            );
-            foreach ($this->jobOrderDetailCashAdvances as $cashAdvance) {
-                $this->totalBayar += $cashAdvance->cash_advance;
-                $this->referensiPembayaran['data'][] = [
-                    'jobOrder' => $cashAdvance->jobOrder->reference_number,
-                    'vendor' => $cashAdvance->vendor->nama,
-                    'reference_number' => 'Kasbon ke ' . $cashAdvance->order,
-                    'total' => round($cashAdvance->cash_advance, 2),
-                ];
-            }
-        }
+        $this->setReferensiPembayaranForCashAdvanceType();
 
         // Bayar untuk tagihan
-        if ($this->jobOrderBills) {
-
-            $this->tujuanBayar = static::PEMBAYARAN_BILL_JOB_ORDER;
-            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_BILL_JOB_ORDER;
-            $this->referensiPembayaran['bank'] = ArrayHelper::toArray(
-                $this->rekeningSaya
-            );
-            foreach ($this->jobOrderBills as $jobOrderBill) {
-                $this->totalBayar += $jobOrderBill->totalPrice;
-                $this->referensiPembayaran['data'][] = [
-                    'jobOrder' => $jobOrderBill->jobOrder->reference_number,
-                    'vendor' => $jobOrderBill->vendor->nama,
-                    'reference_number' => $jobOrderBill->reference_number,
-                    'total' => round($this->totalBayar, 2),
-                ];
-            }
-
-        }
+        $this->setReferensiPembayaranForBillTagihan();
 
         // Bayar untuk penambahan saldo Petty Cash
-        if ($this->jobOrderDetailPettyCash) {
+        $this->setReferensiPembayaranForPettyCash();
 
-            $this->tujuanBayar = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
-            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
-            $this->referensiPembayaran['bank'] = ArrayHelper::toArray(
-                $this->rekeningSaya
-            );
-            $this->totalBayar = $this->jobOrderDetailPettyCash->nominal;
-            $this->referensiPembayaran['data'][] = [
-                'jobOrder' => $this->jobOrderDetailPettyCash->jobOrder->reference_number,
-                'vendor' => $this->jobOrderDetailPettyCash->vendor->nama,
-                'total' => $this->totalBayar,
-            ];
-
-        }
     }
 
     /**
@@ -504,6 +459,77 @@ class BuktiPengeluaranBukuBank extends BaseBuktiPengeluaranBukuBank
             'message' => $message
         ];
 
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->hasOne(User::class, ['id' => 'created_by']);
+    }
+
+    /**
+     * @see https://www.yiiframework.com/doc/guide/2.0/en/db-active-record#lazy-eager-loading
+     *
+     * Eager Loading,
+     * ```
+     * foreach($this->jobOrderDetailCashAdvances as $cashAdvance){
+     *      // SELECT * FROM `job_order_detail_cash_advance` WHERE `bukti_pengeluaran_buku_bank_id` = ...
+     * }
+     * ```
+     * @return void
+     */
+    private function setReferensiPembayaranForCashAdvanceType(): void
+    {
+        if ($this->jobOrderDetailCashAdvances) {
+
+            $this->tujuanBayar = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
+            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_CASH_ADVANCE_OR_KASBON;
+            $this->referensiPembayaran['bank'] = ArrayHelper::toArray($this->rekeningSaya);
+
+            $jobOrderDetailCashAdvances = $this->getJobOrderDetailCashAdvances()->with(['jobOrder'])->all();
+            foreach ($jobOrderDetailCashAdvances as $cashAdvance) {
+                $this->totalBayar += $cashAdvance->cash_advance;
+                $this->referensiPembayaran['data'][] = [
+                    'jobOrder' => $cashAdvance->jobOrder->reference_number,
+                    'reference_number' => 'Kasbon ke ' . $cashAdvance->order,
+                    'total' => round($cashAdvance->cash_advance, 2),
+                ];
+            }
+        }
+    }
+
+    private function setReferensiPembayaranForBillTagihan(): void
+    {
+
+        if ($this->jobOrderBills) {
+            $this->tujuanBayar = static::PEMBAYARAN_BILL_JOB_ORDER;
+            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_BILL_JOB_ORDER;
+            $this->referensiPembayaran['bank'] = ArrayHelper::toArray($this->rekeningSaya);
+
+            $jobOrderBills = $this->getJobOrderBills()->with(['jobOrder'])->all();
+            foreach ($jobOrderBills as $jobOrderBill) {
+                $this->totalBayar += $jobOrderBill->totalPrice;
+                $this->referensiPembayaran['data'][] = [
+                    'jobOrder' => $jobOrderBill->jobOrder->reference_number,
+                    'reference_number' => $jobOrderBill->reference_number,
+                    'total' => round($this->totalBayar, 2),
+                ];
+            }
+        }
+    }
+
+    private function setReferensiPembayaranForPettyCash(): void
+    {
+        if ($this->jobOrderDetailPettyCash) {
+            $this->tujuanBayar = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
+            $this->referensiPembayaran['businessProcess'] = static::PEMBAYARAN_MUTASI_KAS_PETTY_CASH;
+            $this->referensiPembayaran['bank'] = ArrayHelper::toArray($this->rekeningSaya);
+
+            $this->totalBayar = $this->jobOrderDetailPettyCash->nominal;
+            $this->referensiPembayaran['data'][] = [
+                'jobOrder' => $this->jobOrderDetailPettyCash->jobOrder->reference_number,
+                'total' => $this->totalBayar,
+            ];
+        }
     }
 
 

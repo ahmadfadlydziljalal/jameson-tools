@@ -2,10 +2,11 @@
 
 namespace app\models\search;
 
+use app\models\Invoice;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Invoice;
 
 /**
  * InvoiceSearch represents the model behind the search form about `app\models\Invoice`.
@@ -15,7 +16,7 @@ class InvoiceSearch extends Invoice
     /**
      * @inheritdoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['id', 'customer_id', 'nomor_rekening_tagihan_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
@@ -26,7 +27,7 @@ class InvoiceSearch extends Invoice
     /**
      * @inheritdoc
      */
-    public function scenarios() : array
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -36,13 +37,14 @@ class InvoiceSearch extends Invoice
      * Creates data provider instance with search query applied
      * @param array $params
      * @return ActiveDataProvider
+     * @throws InvalidConfigException
      */
-    public function search(array $params) : ActiveDataProvider
+    public function search(array $params): ActiveDataProvider
     {
         $query = Invoice::find()
             ->joinWith('nomorRekeningTagihan')
-            ->joinWith('buktiPenerimaanBukuBank')
-        ;
+            ->joinWith('customer')
+            ->joinWith('buktiPenerimaanBukuBank');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -71,7 +73,7 @@ class InvoiceSearch extends Invoice
             'updated_by' => $this->updated_by,
         ]);
 
-        if(isset($this->tanggal_invoice) and !empty($this->tanggal_invoice)){
+        if (isset($this->tanggal_invoice) and !empty($this->tanggal_invoice)) {
             $query->andFilterWhere([
                 'tanggal_invoice' => Yii::$app->formatter->asDate($this->tanggal_invoice, 'php:Y-m-d'),
             ]);

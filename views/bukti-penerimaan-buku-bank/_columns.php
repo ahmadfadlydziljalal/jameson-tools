@@ -3,6 +3,8 @@
 /* @var $this View */
 
 use app\models\BuktiPenerimaanBukuBank;
+use kartik\date\DatePicker;
+use kartik\grid\GridViewInterface;
 use yii\helpers\Html;
 use yii\web\View;
 
@@ -24,11 +26,20 @@ return [
         'format' => 'text',
     ],
     [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'tanggal_transaksi_transfer',
+        'format' => 'date',
+        'filterType' => GridViewInterface::FILTER_DATE,
+        'filterWidgetOptions' => [
+            'type' => DatePicker::TYPE_INPUT,
+        ],
+    ],
+    [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomorVoucher',
         'format' => 'raw',
-        'value' => function($model) {
-            if($model->bukuBank){
+        'value' => function ($model) {
+            if ($model->bukuBank) {
                 return $model->bukuBank->nomor_voucher;
             }
 

@@ -4,15 +4,17 @@ namespace app\models;
 
 use app\components\helpers\ArrayHelper;
 use app\models\base\JobOrder as BaseJobOrder;
+use app\models\interfaces\PrevNextInterface;
 use Yii;
 use yii\db\Exception;
-use yii\helpers\Html;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "job_order".
+ *
+ * @property-read mixed $next
+ * @property-read JobOrder $previous
  */
-class JobOrder extends BaseJobOrder
+class JobOrder extends BaseJobOrder implements PrevNextInterface
 {
 
     const SCENARIO_FOR_PETTY_CASH = 'scenario_for_petty_cash';
@@ -39,16 +41,20 @@ class JobOrder extends BaseJobOrder
     public function afterFind(): void
     {
         parent::afterFind();
-        foreach ($this->jobOrderDetailCashAdvances as $jobOrderDetailCashAdvance) {
-            $this->totalKasbonRequest += $jobOrderDetailCashAdvance->kasbon_request;
-            $this->totalPanjarCashAdvance += $jobOrderDetailCashAdvance->cash_advance;
+        if ($this->jobOrderDetailCashAdvances) {
+            foreach ($this->jobOrderDetailCashAdvances as $jobOrderDetailCashAdvance) {
+                $this->totalKasbonRequest += $jobOrderDetailCashAdvance->kasbon_request;
+                $this->totalPanjarCashAdvance += $jobOrderDetailCashAdvance->cash_advance;
+            }
         }
 
-        foreach ($this->jobOrderBills as $jobOrderBill) {
-            $this->totalBill += $jobOrderBill->getTotalPrice();
+        if ($this->jobOrderBills) {
+            foreach ($this->jobOrderBills as $jobOrderBill) {
+                $this->totalBill += $jobOrderBill->totalPrice;
+            }
         }
 
-        if($this->jobOrderDetailPettyCash){
+        if ($this->jobOrderDetailPettyCash) {
             $this->totalPettyCash = $this->jobOrderDetailPettyCash->nominal;
         }
     }
@@ -68,38 +74,36 @@ class JobOrder extends BaseJobOrder
      */
     public function getNext()
     {
-        return $this->find()->where(['>', 'id', $this->id])->one();
+        return static::find()->where(['>', 'id', $this->id])->one();
     }
 
-    /**
-     * @return $this
-     */
-    public function getPrevious()
+
+    public function getPrevious(): JobOrder
     {
-        return $this->find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
+        return static::find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
 
-    public function saveForPettyCash(JobOrderDetailPettyCash $modelDetail) :bool
+    public function saveForPettyCash(JobOrderDetailPettyCash $modelDetail): bool
     {
 
-        if(!$this->validate() and !$modelDetail->validate()) {
+        if (!$this->validate() and !$modelDetail->validate()) {
             return false;
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            if($flag = $this->save(false)) {
+            if ($flag = $this->save(false)) {
                 $modelDetail->job_order_id = $this->id;
                 $flag = $modelDetail->save(false);
             }
 
-            if($flag){
+            if ($flag) {
                 $transaction->commit();
                 return true;
-            }else{
+            } else {
                 $transaction->rollBack();
             }
-        }catch (Exception $e){
+        } catch (Exception $e) {
             Yii::error($e->getMessage());
             $transaction->rollBack();
         }

@@ -2,9 +2,9 @@
 
 namespace app\models\search;
 
+use app\models\JobOrder;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\JobOrder;
 
 /**
  * JobOrderSearch represents the model behind the search form about `app\models\JobOrder`.
@@ -14,7 +14,7 @@ class JobOrderSearch extends JobOrder
     /**
      * @inheritdoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['id', 'main_vendor_id', 'main_customer_id', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
@@ -25,7 +25,7 @@ class JobOrderSearch extends JobOrder
     /**
      * @inheritdoc
      */
-    public function scenarios() : array
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -36,9 +36,11 @@ class JobOrderSearch extends JobOrder
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search(array $params) : ActiveDataProvider
+    public function search(array $params): ActiveDataProvider
     {
-        $query = JobOrder::find();
+        $query = JobOrder::find()
+            ->joinWith('mainVendor')
+            ->joinWith('mainCustomer');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

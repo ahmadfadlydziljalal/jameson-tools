@@ -12,7 +12,7 @@ $this->title = 'Job Order';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="job-order-index">
+<div class="job-order-index d-flex flex-column gap-2">
 
     <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
@@ -29,8 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'tableOptions' => [
             'class' => 'table table-gridview table-fixes-last-column'
         ],
-    ]);
-
-    ?>
+    ]); ?>
 
 </div>

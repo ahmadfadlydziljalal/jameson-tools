@@ -30,6 +30,15 @@ class CardQuery extends ActiveQuery
     }
 
     /**
+     * @inheritdoc
+     * @return Card[]|array
+     */
+    public function all($db = null)
+    {
+        return parent::all($db);
+    }
+
+    /**
      * @param string $mode
      * @return array
      * @throws NotFoundHttpException
@@ -95,16 +104,7 @@ class CardQuery extends ActiveQuery
         endswitch;
         return ArrayHelper::map($q->orderBy('nama')->all(), 'id', 'nama');
     }
-
-    /**
-     * @inheritdoc
-     * @return Card[]|array
-     */
-    public function all($db = null)
-    {
-        return parent::all($db);
-    }
-
+    
     /**
      * @param mixed $id
      * @return Card[] | array
