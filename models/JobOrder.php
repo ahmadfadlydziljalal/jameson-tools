@@ -72,13 +72,12 @@ class JobOrder extends BaseJobOrder implements PrevNextInterface
     /**
      * @return $this
      */
-    public function getNext()
+    public function getNext(): static|null
     {
         return static::find()->where(['>', 'id', $this->id])->one();
     }
 
-
-    public function getPrevious(): JobOrder
+    public function getPrevious(): static|null
     {
         return static::find()->where(['<', 'id', $this->id])->orderBy('id desc')->one();
     }
